@@ -1,72 +1,97 @@
 import {
+  onSnapshot,
   collection,
   doc,
   getDocs,
   query,
   setDoc,
   where,
-} from "@firebase/firestore";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+} from "firebase/firestore";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { db } from "../firebase/firebase";
+import { getUserContactsFromDB } from "../helpers/contactsHelper";
 import {
-  getCurrentUsersWaContactsFromDB,
-  getUserContactsFromDB,
-} from "../helpers/contactsHelper";
+  chatNameGenerator,
+  decodeEmail,
+  encodeEmail,
+} from "../helpers/formatters";
+import { ADD_CHATNAMES, SET_USER_CONTACTS } from "../store/chatSlice";
+
 import Contact from "./Contact";
 
+//----------------------------------------------//
 export default function Contacts() {
-  const [userContacts, setUserContacts] = useState([]);
-  const [usersWAContacts, setUsersWAContacts] = useState([]);
+  console.log("CONTACTS RENDERED");
+  const dispatch = useDispatch();
 
-  const email = useSelector((state) => state?.authState?.user?.email);
-  const contacts = useSelector((state) => state?.chatState?.contacts);
-  const currentUserName = useSelector((state) => state?.authState?.user?.email);
+  //Access the store
+  const userContactsFromState = useSelector(
+    (state) => state?.chatState?.userContacts
+  );
+  const currentUserEmail = useSelector(
+    (state) => state?.authState?.user?.email
+  );
 
+  // Side effects
   useEffect(() => {
-    async function foo() {
-      const userContacts = await getUserContactsFromDB(email);
-      setUserContacts(userContacts);
-    }
-    foo();
-  }, [email]);
+    async function getUserContactsAndPopulateChats() {
+      const userContacts = await getUserContactsFromDB(currentUserEmail);
+      dispatch(SET_USER_CONTACTS(userContacts));
 
-  //add those of user's contacts which are there in master contacts list, to users WA contacts list so that they can find each other in WA
-  useEffect(() => {
-    userContacts &&
-      userContacts?.forEach(async (contact) => {
-        //TODO use cloud functions for this conversion
-        let email = contact.email.replaceAll(".", "!!"); //firestore docID cannot contain '.'
-        const q = query(
-          collection(db, "whatsApp/contactsMaster/contacts"),
-          where(email, "==", true)
+      //Populate user's whatsApp chats
+      userContacts.forEach(async (contact) => {
+        const snap = await getDocs(
+          query(
+            collection(db, "whatsApp/contactsMaster/contacts"),
+            where(encodeEmail(contact.email), "==", true)
+          )
         );
-        const querySnapshot = await getDocs(q);
-        // if that user has WA
-        if (!querySnapshot.empty) {
-          //add that contact to his WA contacts list
+        snap.forEach(async (document) => {
+          const resEmail = decodeEmail(document.id);
+          const chatName = chatNameGenerator(resEmail, currentUserEmail);
           await setDoc(
-            doc(db, "whatsApp/usersWAContacts", currentUserName, email),
-            contact
+            doc(db, "whatsApp/usersChats", currentUserEmail, chatName),
+            {
+              [encodeEmail(chatName)]: true,
+            }
           );
-        }
+        });
       });
-  }, [contacts, currentUserName, userContacts]);
-
-  //populate current user's WA contacts
-  useEffect(() => {
-    const foo = async () => {
-      setTimeout(async () => {
-        const res = await getCurrentUsersWaContactsFromDB(email);
-        setUsersWAContacts(res);
-      }, 1000);
-    };
-    if (email) {
-      foo();
     }
-  }, [email]);
+    getUserContactsAndPopulateChats();
+  }, [currentUserEmail, dispatch]);
 
-  return usersWAContacts?.map((contact) => {
-    return <Contact key={contact.email} contact={contact} />;
-  });
+  //get user's chatNames from DB and add it to state
+  useEffect(() => {
+    let chats = [];
+    const unsub = onSnapshot(
+      collection(db, "whatsApp/usersChats", currentUserEmail),
+      (snapshot) => {
+        chats = [];
+        snapshot.docChanges().forEach((change) => {
+          const chatName = change.doc.id;
+          if (change.type === "added") {
+            chats.push(chatName);
+          }
+          //TODO add modify and remove
+          if (change.type === "modified") {
+            console.log("Document modified", chatName);
+          }
+          if (change.type === "removed") {
+            console.log("Document removed", chatName);
+          }
+        });
+        dispatch(ADD_CHATNAMES(chats));
+      }
+    );
+    return unsub;
+  }, [currentUserEmail, dispatch]);
+
+  return (
+    userContactsFromState &&
+    userContactsFromState?.map((contact) => {
+      return <Contact key={contact.email} contact={contact} />;
+    })
+  );
 }

@@ -2,18 +2,22 @@ import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { addUserToContactsMaster } from "../helpers/contactsHelper";
 
+//----------------------------------------------//
 export default function Login() {
+  console.log("LOGIN RENDERED");
+
+  //State variables
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  //Side effects
   async function loginUser(e) {
     e.preventDefault();
     if (email && password)
       try {
         await signInWithEmailAndPassword(getAuth(), email, password);
 
-        // add the current user's email to the master contacts list so that users in WA can find him. '.' in email is replaced with '!!'
-        addUserToContactsMaster(email);
+        await addUserToContactsMaster(email);
       } catch (error) {
         console.log(`error.message`, error.message);
       }

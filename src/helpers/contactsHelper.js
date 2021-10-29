@@ -1,14 +1,26 @@
 import { collection, doc, getDocs, setDoc } from "@firebase/firestore";
 import { db } from "../firebase/firebase";
+import { encodeEmail } from "./formatters";
 
 async function addUserToContactsMaster(email) {
-  let formattedEmail = email.replaceAll(".", "!!");
-  await setDoc(
-    doc(db, "whatsApp/contactsMaster/contacts", email.replaceAll(".", "!!")),
-    {
-      [formattedEmail]: true,
-    }
-  );
+  let formattedEmail = encodeEmail(email);
+  await setDoc(doc(db, "whatsApp/contactsMaster/contacts", email), {
+    [formattedEmail]: true,
+  });
+}
+
+async function getUserContactsFromDB(email) {
+  if (email) {
+    let userContacts = [];
+    const snapshot = await getDocs(
+      collection(db, "contactsApp/userContacts", email)
+    );
+    snapshot.forEach((doc) => {
+      const { email, firstName, surname } = doc.data();
+      userContacts.push({ email, firstName, surname });
+    });
+    return userContacts;
+  }
 }
 
 async function getCurrentUsersWaContactsFromDB(email) {
@@ -19,15 +31,6 @@ async function getCurrentUsersWaContactsFromDB(email) {
     waContacts.push(doc.data());
   });
   return waContacts;
-}
-
-async function getUserContactsFromDB(email) {
-  let userContacts = [];
-  const snapshot = await getDocs(collection(db, "contacts/users", email));
-  snapshot.forEach((doc) => {
-    userContacts.push(doc.data());
-  });
-  return userContacts;
 }
 
 export {

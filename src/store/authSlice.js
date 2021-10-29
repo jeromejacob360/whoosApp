@@ -5,10 +5,10 @@ const initialState = {
 };
 
 export const authSlice = createSlice({
-  name: "poth",
+  name: "Where does this name show up?",
   initialState,
   reducers: {
-    SIGN_IN_USER: (state, action) => {
+    SIGN_IN_USER: (_, action) => {
       return { user: action.payload };
     },
     SIGN_OUT_USER: () => {

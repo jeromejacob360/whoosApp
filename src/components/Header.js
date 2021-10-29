@@ -1,4 +1,5 @@
 export default function Header() {
+  console.log("HEADER RENDERED");
   return (
     <header className="relative flex items-center justify-between px-4 border bg-main h-14">
       <div>

@@ -1,15 +1,19 @@
 import { useDispatch, useSelector } from "react-redux";
-import { SET_CURRENT_CHAT, SET_CURRENT_CHATTER } from "../store/chatSlice";
+import { SET_CURRENT_CHAT } from "../store/chatSlice";
 
+//----------------------------------------------//
 export default function Contact({ contact }) {
+  console.log("CONTACT RENDERED");
+
   const dispatch = useDispatch();
+
+  //Access the store
   const currentUserEmail = useSelector((state) => state?.authState.user.email);
 
   function setChat() {
     dispatch(
       SET_CURRENT_CHAT({ currentUserEmail, currentChatterEmail: contact.email })
     );
-    dispatch(SET_CURRENT_CHATTER(contact.email));
   }
 
   return (
@@ -30,7 +34,7 @@ export default function Contact({ contact }) {
         />
       </div>
       <div>
-        <h4>{contact.firstName + " " + contact.lastName}</h4>
+        <h4>{contact.firstName + " " + contact.surname}</h4>
       </div>
     </div>
   );

@@ -2,10 +2,19 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import ChatOptions from "./optionMenus/chatOptions";
 
+//----------------------------------------------//
 export default function Chat({ message }) {
+  console.log("CHAT RENDERED");
+
+  //State variables
   const [openOptions, setOpenOptions] = useState(false);
+  //Access the store
+
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
+
+  //logic
   const messageIsFromMe = message?.from === currentUserName;
+
   return (
     <div
       className={`flex ${messageIsFromMe ? "justify-end" : "justify-start"}`}

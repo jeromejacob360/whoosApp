@@ -1,19 +1,29 @@
 import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { doc, setDoc, getDoc, arrayUnion, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
+//----------------------------------------------//
 export default function MessageInput() {
+  console.log("MESSAGEINPUT RENDERED");
+
+  //State variables
   const [message, setMessage] = useState("");
   const inputRef = useRef();
+
+  //Access the store
   const currentChatName = useSelector(
     (state) => state?.chatState.currentChatName
   );
-  const currentChatterName = useSelector(
-    (state) => state?.chatState.currentChatterName
+  const currentChatterEmail = useSelector(
+    (state) => state?.chatState.currentChatterEmail
   );
   const currentUserName = useSelector((state) => state?.authState.user.email);
+  const chatHistoryRef = useSelector(
+    (state) => state?.chatState.chatHistoryRef
+  );
 
+  //Side effects
   useEffect(() => {
     inputRef.current.focus();
   }, [currentChatName]);
@@ -26,6 +36,7 @@ export default function MessageInput() {
         time: Date.now(),
         message,
         from: currentUserName,
+        to: currentChatterEmail,
       };
       setMessage("");
 
@@ -39,39 +50,11 @@ export default function MessageInput() {
           ),
           newMessage
         );
-
-        const currentUserRef = doc(
-          db,
-          "whatsApp/users/chatNames",
-          currentUserName
-        );
-        const userDocSnap = await getDoc(currentUserRef);
-
-        if (userDocSnap.exists()) {
-          await updateDoc(currentUserRef, {
-            list: arrayUnion(currentChatName),
-          });
-        } else {
-          await setDoc(currentUserRef, {
-            list: [currentChatName],
-          });
-        }
-        const currentChatterRef = doc(
-          db,
-          "whatsApp/users/chatNames",
-          currentChatterName
-        );
-        const chattererDocSnap = await getDoc(currentUserRef);
-
-        if (chattererDocSnap.exists()) {
-          await updateDoc(currentChatterRef, {
-            list: arrayUnion(currentChatName),
-          });
-        } else {
-          await setDoc(currentChatterRef, {
-            list: [currentChatName],
-          });
-        }
+        chatHistoryRef.scrollTo({
+          left: 0,
+          top: chatHistoryRef.scrollHeight,
+          behavior: "smooth",
+        });
       } catch (error) {
         console.log(`error.message`, error.message);
       }

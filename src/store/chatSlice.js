@@ -1,33 +1,39 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { chatNameGenerator } from "../helpers/formatters";
+import { createSlice } from '@reduxjs/toolkit';
+import { chatNameGenerator } from '../helpers/formatters';
 
 const initialState = {
-  contacts: [],
   chats: {},
-  messages: {},
-  currentChatName: "",
-  userContacts: "",
-  currentChatterEmail: "",
-  chatNames: "",
-  chatHistoryRef: "",
+  currentChatName: '',
+  userContacts: '',
+  currentChatterEmail: '',
+  chatNames: '',
+  userWAContacts: '',
+  messageToReply: '',
+  focusInput: false,
 };
 
 export const chatSlice = createSlice({
-  name: "chat",
+  name: 'CHATSLICE',
   initialState,
   reducers: {
     SET_USER_CONTACTS: (state, action) => {
       state.userContacts = action.payload;
     },
 
+    SET_USERS_WA_CONTACTS: (state, action) => {
+      state.userWAContacts = action.payload;
+    },
+
     SET_CURRENT_CHAT: (state, action) => {
-      const { currentUserEmail, currentChatterEmail } = action.payload;
+      const { currentUserEmail, currentChatterEmail, contactName } =
+        action.payload;
       const currentChatName = chatNameGenerator(
         currentUserEmail,
-        currentChatterEmail
+        currentChatterEmail,
       );
       state.currentChatName = currentChatName;
       state.currentChatterEmail = currentChatterEmail;
+      state.currentChatterName = contactName;
     },
 
     ADD_CHATNAMES: (state, action) => {
@@ -43,8 +49,35 @@ export const chatSlice = createSlice({
         : (state.chats[chatName] = [message]);
     },
 
-    CHAT_HISTORY_REF: (state, action) => {
-      state.chatHistoryRef = action.payload;
+    DELETE_MESSAGE: (state, action) => {
+      const { chatName, message } = action.payload;
+      state.chats[chatName] = state.chats[chatName].map((chat) =>
+        chat.time === message.time ? message : chat,
+      );
+    },
+
+    REPLY: (state, action) => {
+      const { message: messageObject, currentChatName } = action.payload;
+      const messageText = messageObject.message;
+
+      const trimmedMessage =
+        messageText.length > 20
+          ? messageText.substring(0, 20) + '...'
+          : messageText;
+
+      const messageToReply = { ...messageObject, message: trimmedMessage };
+
+      state.messageToReply = {
+        ...state.messageToReply,
+        [currentChatName]: messageToReply,
+      };
+      state.focusInput = true;
+    },
+
+    CLEAR_REPLY_MESSAGE: (state, action) => {
+      const currentChatName = action.payload;
+      state.messageToReply[currentChatName] = ''; //TODO remote the key from the object
+      state.focusInput = false;
     },
 
     CLEAR_STATE: () => {
@@ -60,8 +93,12 @@ export const {
   SET_CURRENT_CHAT,
   ADD_CHATNAMES,
   CLEAR_STATE,
+  SET_USERS_WA_CONTACTS,
   ADD_MESSAGE,
   CHAT_HISTORY_REF,
+  DELETE_MESSAGE,
+  REPLY,
+  CLEAR_REPLY_MESSAGE,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

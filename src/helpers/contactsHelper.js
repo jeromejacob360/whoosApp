@@ -23,18 +23,4 @@ async function getUserContactsFromDB(email) {
   }
 }
 
-async function getCurrentUsersWaContactsFromDB(email) {
-  let waContacts = [];
-  const q = collection(db, "whatsApp/usersWAContacts", email);
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    waContacts.push(doc.data());
-  });
-  return waContacts;
-}
-
-export {
-  getCurrentUsersWaContactsFromDB,
-  addUserToContactsMaster,
-  getUserContactsFromDB,
-};
+export { addUserToContactsMaster, getUserContactsFromDB };

@@ -15,20 +15,17 @@ function App() {
   useAuth();
 
   return (
-    <div>
-      {/* <div className="fixed w-screen bg-yellow-500 h-1/6"></div> */}
-      <div className="h-screen max-w-screen-xl mx-auto">
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              {user ? <ChatPage /> : <Redirect to="/login" />}
-            </Route>
-            <Route exact path="/login">
-              {user ? <Redirect to="/" /> : <Login />}
-            </Route>
-          </Switch>
-        </Router>
-      </div>
+    <div className="w-screen h-screen mx-auto ">
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            {user ? <ChatPage /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/login">
+            {user ? <Redirect to="/" /> : <Login />}
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }

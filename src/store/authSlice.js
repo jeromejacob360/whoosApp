@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   user: null,
 };
 
 export const authSlice = createSlice({
-  name: "Where does this name show up?",
+  name: 'AUTHSLICE',
   initialState,
   reducers: {
     SIGN_IN_USER: (_, action) => {

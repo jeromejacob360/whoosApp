@@ -1,21 +1,57 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
-import { doc, getDoc, setDoc } from "@firebase/firestore";
-import { db } from "../../firebase/firebase";
-import ClickAway from "../../hooks/ClickAway";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from '@firebase/firestore';
+import { db } from '../../firebase/firebase';
+import ClickAway from '../../hooks/ClickAway';
+import { REPLY } from '../../store/chatSlice';
 
 export default function ChatOptions({ message, setOpenOptions }) {
   const currentChatName = useSelector(
-    (state) => state?.chatState?.currentChatName
+    (state) => state?.chatState?.currentChatName,
   );
+
+  const dispatch = useDispatch();
+
+  const currentUserName = useSelector((state) => state?.authState?.user?.email);
+
+  async function reply() {
+    dispatch(REPLY({ message, currentChatName }));
+  }
+
+  async function deleteForMe() {
+    const docRef = doc(
+      db,
+      'whatsApp/chats',
+      currentChatName,
+      message.time.toString(),
+    );
+
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      await updateDoc(
+        docRef,
+        { deletedForMe: arrayUnion(currentUserName) },
+        { merge: true },
+      );
+    } else {
+      console.log('No such document!');
+    }
+  }
 
   async function deleteForEveryone() {
     const docRef = doc(
       db,
-      "whatsApp/chats",
+      'whatsApp/chats',
       currentChatName,
-      message.time.toString()
+      message.time.toString(),
     );
 
     const docSnap = await getDoc(docRef);
@@ -24,30 +60,10 @@ export default function ChatOptions({ message, setOpenOptions }) {
       await setDoc(docRef, {
         ...message,
         deleted: true,
-        message: "This message was deleted",
+        message: 'This message was deleted',
       });
     } else {
-      console.log("No such document!");
-    }
-  }
-
-  async function deleteForMe() {
-    const docRef = doc(
-      db,
-      "whatsApp/chats",
-      currentChatName,
-      message.time.toString()
-    );
-
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      await setDoc(docRef, {
-        ...message,
-        deletedForMe: true,
-      });
-    } else {
-      console.log("No such document!");
+      console.log('No such document!');
     }
   }
 
@@ -55,7 +71,7 @@ export default function ChatOptions({ message, setOpenOptions }) {
     <ClickAway setToggle={setOpenOptions}>
       <motion.div
         initial={{ width: 0, height: 0 }}
-        animate={{ width: "auto", height: "auto" }}
+        animate={{ width: 'auto', height: 'auto' }}
         exit={{ width: 0, height: 0 }}
         className={`z-10 absolute bg-white rounded-md shadow-md right-4 top-5 overflow-hidden`}
       >
@@ -63,7 +79,7 @@ export default function ChatOptions({ message, setOpenOptions }) {
           <li className="w-full cursor-pointer hover:bg-dim">
             <div className="py-1 pl-6">Message info</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
+          <li onClick={reply} className="w-full cursor-pointer hover:bg-dim">
             <div className="py-1 pl-6">Reply</div>
           </li>
           <li className="w-full cursor-pointer hover:bg-dim">

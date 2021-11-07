@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors: {
         dim: "#f0f2f5",
-        main: "#ededed",
+        main: "#f7faf9",
         selected: "#e4e6eb",
         icons: "#65676b",
         dodgerblue: "#1877f2",

@@ -1,7 +1,6 @@
 export default function Header() {
-  console.log("HEADER RENDERED");
   return (
-    <header className="relative flex items-center justify-between px-4 border bg-main h-14">
+    <header className="relative flex items-center justify-between px-4 border border-main bg-main h-14">
       <div>
         <img
           className="object-cover w-10 h-10 rounded-full cursor-pointer"

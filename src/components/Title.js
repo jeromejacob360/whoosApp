@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import Options from "./optionMenus/Options";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import Options from './optionMenus/Options';
 
 export default function Title() {
   const displayName = useSelector(
-    (state) => state?.authState?.user?.displayName
+    (state) => state?.authState?.user?.displayName,
   );
 
   const [openOptions, setOpenOptions] = useState(false);
   return (
-    <div
-      className="z-10 flex items-center justify-between px-4 py-2 bg-main" //TODO fix height to 3.5 rem without padding
-    >
-      {openOptions && <Options />}
+    <div className="relative z-10 flex items-center justify-between px-4 py-2 bg-dim">
+      {openOptions && <Options setOpenOptions={setOpenOptions} />}
       <div className="flex items-center space-x-2">
         <img
           className="w-10 h-10 rounded-full"

@@ -7,10 +7,12 @@ import {
   ADD_MESSAGE,
   CLEAR_UNREAD_MESSAGES,
   DELETE_MESSAGE,
+  FORWARD_MODE_OFF,
 } from '../store/chatSlice';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
+  console.count('ChatHistory rendered');
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
@@ -27,6 +29,26 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function scrollToBottom(behavior = 'smooth') {
+    chatHistoryRef.current &&
+      chatHistoryRef.current.scrollTo({
+        left: 0,
+        top: chatHistoryRef.current.scrollHeight,
+        behavior: behavior,
+      });
+  }
+
+  //scroll to bottom on chat open
+  useEffect(() => {
+    scrollToBottom('auto');
+  }, [scrollToBottom]);
+
+  //turn off forward mode when chat changes
+  useEffect(() => {
+    dispatch(FORWARD_MODE_OFF());
+  }, [currentChatName, dispatch]);
 
   // clear unread messages when chat is opened
   useEffect(() => {
@@ -70,17 +92,10 @@ export default function ChatHistory({ chatHistoryRef }) {
         unsubList.push(unsub);
       });
     }
-
-    function scrollToBottom() {
-      chatHistoryRef.current &&
-        chatHistoryRef.current.scrollTo({
-          left: 0,
-          top: chatHistoryRef.current.scrollHeight,
-          behavior: 'smooth',
-        });
-    }
+    scrollToBottom();
 
     return unsubList.forEach((unsub) => unsub);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatHistoryRef, chatNames, dispatch]);
 
   //logic

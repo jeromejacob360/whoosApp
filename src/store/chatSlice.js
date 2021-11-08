@@ -12,7 +12,14 @@ const initialState = {
   focusInput: false,
   namelessChats: [],
   unreadMessages: {},
+  forwardMode: false,
+  messagesToForward: {},
+  totalForwards: 0,
 };
+
+function calculateForwardMessagesLength(state) {
+  return Object.keys(state.messagesToForward).length;
+}
 
 export const chatSlice = createSlice({
   name: 'CHATSLICE',
@@ -130,6 +137,30 @@ export const chatSlice = createSlice({
       state.focusInput = false;
     },
 
+    //forwarding messages
+
+    FORWARD_MODE_ON: (state) => {
+      state.forwardMode = true;
+    },
+
+    FORWARD_MODE_OFF: (state) => {
+      state.forwardMode = false;
+      state.messagesToForward = {};
+      state.totalForwards = 0;
+    },
+
+    ADD_MESSAGE_TO_FORWARDS: (state, action) => {
+      const { time } = action.payload;
+      state.messagesToForward[time] = action.payload.message;
+      state.totalForwards = calculateForwardMessagesLength(state);
+    },
+
+    REMOVE_MESSAGE_TO_FORWARDS: (state, action) => {
+      const { time } = action.payload;
+      delete state.messagesToForward[time];
+      state.totalForwards = calculateForwardMessagesLength(state);
+    },
+
     CLEAR_STATE: () => {
       return initialState;
     },
@@ -155,6 +186,10 @@ export const {
   REMOVE_NAMELESS_CHAT,
   REMOVE_USER_CONTACT,
   UPDATE_USER_CONTACTS,
+  FORWARD_MODE_ON,
+  FORWARD_MODE_OFF,
+  ADD_MESSAGE_TO_FORWARDS,
+  REMOVE_MESSAGE_TO_FORWARDS,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

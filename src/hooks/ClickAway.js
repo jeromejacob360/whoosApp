@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
-export default function ClickAway({ children, setToggle }) {
+export default function ClickAway({ children, setToggle, classNames }) {
   const ref = useRef();
   useEffect(() => {
     function cb(e) {
@@ -8,9 +8,13 @@ export default function ClickAway({ children, setToggle }) {
         setToggle(false);
       }
     }
-    document.addEventListener("click", cb);
-    return () => document.removeEventListener("click", cb);
+    document.addEventListener('click', cb);
+    return () => document.removeEventListener('click', cb);
   }, [setToggle]);
 
-  return <div ref={ref}>{children}</div>;
+  return (
+    <div className={classNames} ref={ref}>
+      {children}
+    </div>
+  );
 }

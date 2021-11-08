@@ -5,3 +5,7 @@
 svg {
   @apply cursor-pointer text-icons;
 }
+
+.no-cursor * {
+  cursor: not-allowed !important;
+}

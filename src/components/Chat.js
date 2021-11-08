@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  ADD_MESSAGE_TO_FORWARDS,
+  REMOVE_MESSAGE_TO_FORWARDS,
+} from '../store/chatSlice';
 import ChatOptions from './optionMenus/chatOptions';
 
 //----------------------------------------------//
@@ -8,9 +12,13 @@ export default function Chat({ message }) {
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
   const [largeMessageCutoff, setLargeMessageCutoff] = useState(50);
+  const [selected, setSelected] = useState(false);
+
+  const dispatch = useDispatch();
 
   //Access the store
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
+  const forwardMode = useSelector((state) => state?.chatState?.forwardMode);
 
   //logic
   const messageIsFromMe = message?.from === currentUserName;
@@ -27,6 +35,12 @@ export default function Chat({ message }) {
   }
 
   useEffect(() => {
+    if (!forwardMode) {
+      setSelected(false);
+    }
+  }, [forwardMode]);
+
+  useEffect(() => {
     function trimLargeMessage() {
       const trimmedMessage = message.message.substring(0, largeMessageCutoff);
       setLargeMessage(trimmedMessage + '...');
@@ -36,12 +50,22 @@ export default function Chat({ message }) {
     } else setLargeMessage('');
   }, [largeMessageCutoff, message]);
 
+  // add or remove selected message to forward
+  function addOrRemove() {
+    setSelected((prev) => {
+      !prev
+        ? dispatch(ADD_MESSAGE_TO_FORWARDS(message))
+        : dispatch(REMOVE_MESSAGE_TO_FORWARDS(message));
+      return !prev;
+    });
+  }
+
   return (
     <div
       id={message.time}
-      className={`flex ${
-        messageIsFromMe ? 'justify-end' : 'justify-start'
-      } duration-500`}
+      className={`flex duration-500 my-1 bg-opacity-30 ${
+        selected ? 'bg-selected' : 'bg-transparent'
+      } ${messageIsFromMe ? 'justify-end' : 'justify-start'} `}
     >
       {!message?.deletedForMe.includes(currentUserName) && (
         <div
@@ -49,6 +73,14 @@ export default function Chat({ message }) {
             messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
           }`}
         >
+          {forwardMode && (
+            <div
+              onClick={addOrRemove}
+              className="p-1 text-center rounded-l cursor-pointer bg-dim"
+            >
+              {selected ? 'selected' : 'not selected'}
+            </div>
+          )}
           {/* Options button */}
           {!message.deleted && (
             <div className="absolute opacity-0 top-1 right-1 group-hover:opacity-100">
@@ -69,7 +101,11 @@ export default function Chat({ message }) {
           {/* Options menu */}
           <div onClick={() => setOpenOptions(false)}>
             {openOptions && !message.deleted && (
-              <ChatOptions message={message} setOpenOptions={setOpenOptions} />
+              <ChatOptions
+                message={message}
+                setOpenOptions={setOpenOptions}
+                setSelected={setSelected}
+              />
             )}
           </div>
           {/* Replied message */}

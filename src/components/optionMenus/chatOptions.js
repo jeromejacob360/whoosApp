@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,9 +10,13 @@ import {
 } from '@firebase/firestore';
 import { db } from '../../firebase/firebase';
 import ClickAway from '../../hooks/ClickAway';
-import { REPLY } from '../../store/chatSlice';
+import {
+  ADD_MESSAGE_TO_FORWARDS,
+  FORWARD_MODE_ON,
+  REPLY,
+} from '../../store/chatSlice';
 
-export default function ChatOptions({ message, setOpenOptions }) {
+export default function ChatOptions({ message, setOpenOptions, setSelected }) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
@@ -25,6 +29,12 @@ export default function ChatOptions({ message, setOpenOptions }) {
 
   async function reply() {
     dispatch(REPLY({ message, currentChatName }));
+  }
+
+  function forwardMessage() {
+    setSelected(true);
+    dispatch(FORWARD_MODE_ON());
+    dispatch(ADD_MESSAGE_TO_FORWARDS(message));
   }
 
   async function deleteForMe() {
@@ -84,7 +94,10 @@ export default function ChatOptions({ message, setOpenOptions }) {
           <li onClick={reply} className="w-full cursor-pointer hover:bg-dim">
             <div className="py-1 pl-6">Reply</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
+          <li
+            onClick={forwardMessage}
+            className="w-full cursor-pointer hover:bg-dim"
+          >
             <div className="py-1 pl-6">Forward message</div>
           </li>
           <li className="w-full cursor-pointer hover:bg-dim">

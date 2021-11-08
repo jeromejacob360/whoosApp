@@ -11,6 +11,7 @@ const initialState = {
   messageToReply: '',
   focusInput: false,
   namelessChats: [],
+  unreadMessages: {},
 };
 
 export const chatSlice = createSlice({
@@ -93,6 +94,12 @@ export const chatSlice = createSlice({
       state.chats[chatName]
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
+
+      if (chatName !== state.currentChatName) {
+        state.unreadMessages[chatName]
+          ? state.unreadMessages[chatName]++
+          : (state.unreadMessages[chatName] = 1);
+      }
     },
 
     DELETE_MESSAGE: (state, action) => {
@@ -100,6 +107,10 @@ export const chatSlice = createSlice({
       state.chats[chatName] = state.chats[chatName].map((chat) =>
         chat.time === message.time ? message : chat,
       );
+    },
+
+    CLEAR_UNREAD_MESSAGES: (state) => {
+      state.unreadMessages[state.currentChatName] = 0;
     },
 
     REPLY: (state, action) => {
@@ -138,6 +149,7 @@ export const {
   SET_USER_CONTACTS,
   SET_CURRENT_CHAT,
   CLEAR_CURRENT_CHAT,
+  CLEAR_UNREAD_MESSAGES,
   ADD_CHATNAMES,
   CLEAR_STATE,
   SET_USERS_WA_CONTACTS,

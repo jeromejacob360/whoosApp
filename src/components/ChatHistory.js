@@ -3,15 +3,17 @@ import { onSnapshot, collection } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { ADD_MESSAGE, DELETE_MESSAGE } from '../store/chatSlice';
-import { useHistory } from 'react-router';
+import {
+  ADD_MESSAGE,
+  CLEAR_UNREAD_MESSAGES,
+  DELETE_MESSAGE,
+} from '../store/chatSlice';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
-  const history = useHistory();
 
   //Access the store
   const chatNames = useSelector((state) => state?.chatState?.chatNames);
@@ -25,6 +27,11 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
+
+  // clear unread messages when chat is opened
+  useEffect(() => {
+    dispatch(CLEAR_UNREAD_MESSAGES());
+  }, [dispatch, currentChatterEmail]);
 
   useEffect(() => {
     if (namelessChats.includes(currentChatName)) {
@@ -41,7 +48,7 @@ export default function ChatHistory({ chatHistoryRef }) {
 
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {
-        const q = collection(db, 'whatsApp/chats', chatName); //TODO setup unsubscribe
+        const q = collection(db, 'whatsApp/chats', chatName);
 
         const unsub = onSnapshot(q, (snapshot) => {
           snapshot.docChanges().forEach((change) => {
@@ -50,7 +57,7 @@ export default function ChatHistory({ chatHistoryRef }) {
               dispatch(ADD_MESSAGE({ chatName, message }));
               scrollToBottom();
             }
-            if (change.type === 'modified') {
+            if (change.type === 'removed') {
               const message = change.doc.data();
               dispatch(DELETE_MESSAGE({ chatName, message }));
             }
@@ -74,10 +81,6 @@ export default function ChatHistory({ chatHistoryRef }) {
 
   //logic
 
-  function addContact() {
-    // history.push('http://www.google.com');
-  }
-
   return (
     <div
       ref={chatHistoryRef}
@@ -85,10 +88,7 @@ export default function ChatHistory({ chatHistoryRef }) {
     >
       {addOptionsToSaveContact && (
         <div className="flex p-4 space-x-4 shadow-sm bg-dim">
-          <button
-            onClick={addContact}
-            className="px-4 py-1 text-white bg-blue-500 rounded-md"
-          >
+          <button className="px-4 py-1 text-white bg-blue-500 rounded-md">
             <a
               target="_blank"
               href={`${process.env.REACT_APP_contactsRedirectUrl}/person/edit/${currentChatterEmail}`}

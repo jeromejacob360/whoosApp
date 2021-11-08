@@ -21,7 +21,11 @@ export default function Contact({ contact }) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
+
   const chatName = chatNameGenerator(contact.email, currentUserEmail);
+  const unreadMessagecount = useSelector(
+    (state) => state?.chatState?.unreadMessages[chatName],
+  );
 
   //Check if the contact has a name
   useEffect(() => {
@@ -89,6 +93,11 @@ export default function Contact({ contact }) {
           {contactName}
         </h4>
       </div>
+      {unreadMessagecount && (
+        <div className="absolute grid w-6 h-6 text-xs text-white bg-blue-500 rounded-full place-items-center right-4">
+          {unreadMessagecount}
+        </div>
+      )}
     </div>
   );
 }

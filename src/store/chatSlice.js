@@ -30,7 +30,7 @@ export const chatSlice = createSlice({
 
     REMOVE_USER_CONTACT: (state, action) => {
       console.log('REMOVE USER CONTACT');
-      const { deletedContact, currentUserEmail } = action.payload;
+      const { deletedContact } = action.payload;
 
       state.userContacts = state.userContacts.filter(
         (contact) => contact.email !== deletedContact.email,
@@ -38,13 +38,6 @@ export const chatSlice = createSlice({
       state.userWAContacts = state.userWAContacts.filter(
         (contact) => contact.email !== deletedContact.email,
       );
-      const chatName = chatNameGenerator(
-        currentUserEmail,
-        deletedContact.email,
-      );
-      if (chatName === state.currentChatName) {
-        state.currentChatName = '';
-      }
     },
 
     SET_USERS_WA_CONTACTS: (state, action) => {

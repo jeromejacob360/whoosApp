@@ -22,17 +22,7 @@ export default async function useGetUserContactsAndPopulateChats(
 
   useEffect(() => {
     if (currentUserEmail) {
-      const q = collection(db, 'whatsApp/userContacts', currentUserEmail);
-
-      onSnapshot(q, (querySnapshot) => {
-        let waContacts = [];
-        querySnapshot.forEach((doc) => {
-          waContacts.push(doc.data());
-        });
-        dispatch(SET_USERS_WA_CONTACTS(waContacts));
-      });
-
-      //Populate user's whatsApp contacts
+      //Populate user's whatsApp contacts in DB
       userContacts &&
         userContacts?.forEach(async (contact) => {
           const snap = await getDocs(
@@ -51,6 +41,16 @@ export default async function useGetUserContactsAndPopulateChats(
             );
           });
         });
+
+      const q = collection(db, 'whatsApp/userContacts', currentUserEmail);
+
+      onSnapshot(q, (querySnapshot) => {
+        let waContacts = [];
+        querySnapshot.forEach((doc) => {
+          waContacts.push(doc.data());
+        });
+        dispatch(SET_USERS_WA_CONTACTS(waContacts));
+      });
     }
   }, [currentUserEmail, dispatch, userContacts]);
 }

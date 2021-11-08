@@ -93,7 +93,7 @@ export default function Contact({ contact }) {
           {contactName}
         </h4>
       </div>
-      {unreadMessagecount && (
+      {unreadMessagecount > 0 && (
         <div className="absolute grid w-6 h-6 text-xs text-white bg-blue-500 rounded-full place-items-center right-4">
           {unreadMessagecount}
         </div>

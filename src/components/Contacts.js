@@ -29,7 +29,7 @@ export default function Contacts() {
   // update the user's WA chats from userContacts set just above
   useGetUserContactsAndPopulateChats(currentUserEmail);
 
-  //get user's chatNames from DB and add it to state
+  // get user's chatNames from DB and add it to state
   useEffect(() => {
     let chats = [];
     const unsub = onSnapshot(

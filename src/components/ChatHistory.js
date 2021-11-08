@@ -1,5 +1,5 @@
 import Chat from './Chat';
-import { onSnapshot, collection } from 'firebase/firestore';
+import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -48,7 +48,11 @@ export default function ChatHistory({ chatHistoryRef }) {
 
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {
-        const q = collection(db, 'whatsApp/chats', chatName);
+        const q = query(
+          collection(db, 'whatsApp/chats', chatName),
+          // prevent reading flag as that will add to unread messages count
+          where('from', '>=', ''),
+        );
 
         const unsub = onSnapshot(q, (snapshot) => {
           snapshot.docChanges().forEach((change) => {

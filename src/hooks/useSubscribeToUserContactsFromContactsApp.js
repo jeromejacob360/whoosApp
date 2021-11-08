@@ -14,7 +14,7 @@ import {
   UPDATE_USER_CONTACTS,
 } from '../store/chatSlice';
 import { db } from '../firebase/firebase';
-import { chatNameGenerator } from '../helpers/formatters';
+import { chatNameGenerator, encodeEmail } from '../helpers/formatters';
 
 export function useSubscribeToUserContactsFromContactsApp(currentUserEmail) {
   const dispatch = useDispatch();
@@ -44,8 +44,10 @@ export function useSubscribeToUserContactsFromContactsApp(currentUserEmail) {
           }
           if (change.type === 'removed') {
             // delete that contact from user's waContacts
-            deleteDoc(
+            const encodedEmail = encodeEmail(contact.email);
+            setDoc(
               doc(db, 'whatsApp/userContacts', currentUserEmail, contact.email),
+              { [encodedEmail]: true, email: contact.email },
             ).then(() => {
               // delete the flag that started off this conversation so that it can be re-added by next incoming chat
               const chatName = chatNameGenerator(
@@ -54,12 +56,6 @@ export function useSubscribeToUserContactsFromContactsApp(currentUserEmail) {
               );
               deleteDoc(doc(db, 'whatsApp/chats', chatName, 'flag'));
             });
-            dispatch(
-              REMOVE_USER_CONTACT({
-                deletedContact: contact,
-                currentUserEmail,
-              }),
-            );
           }
         });
         dispatch(SET_USER_CONTACTS(userContacts));

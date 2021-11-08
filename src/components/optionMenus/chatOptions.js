@@ -21,6 +21,8 @@ export default function ChatOptions({ message, setOpenOptions }) {
 
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
 
+  const messageIsFromMe = message?.from === currentUserName;
+
   async function reply() {
     dispatch(REPLY({ message, currentChatName }));
   }
@@ -94,12 +96,14 @@ export default function ChatOptions({ message, setOpenOptions }) {
           >
             <div className="py-1 pl-6">Delete for me</div>
           </li>
-          <li
-            onClick={deleteForEveryone}
-            className="w-full cursor-pointer hover:bg-dim"
-          >
-            <div className="py-1 pl-6">Delete for everyone</div>
-          </li>
+          {messageIsFromMe && (
+            <li
+              onClick={deleteForEveryone}
+              className="w-full cursor-pointer hover:bg-dim"
+            >
+              <div className="py-1 pl-6">Delete for everyone</div>
+            </li>
+          )}
         </ul>
       </motion.div>
     </ClickAway>

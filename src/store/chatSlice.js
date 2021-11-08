@@ -10,6 +10,7 @@ const initialState = {
   userWAContacts: '',
   messageToReply: '',
   focusInput: false,
+  namelessChats: [],
 };
 
 export const chatSlice = createSlice({
@@ -18,6 +19,31 @@ export const chatSlice = createSlice({
   reducers: {
     SET_USER_CONTACTS: (state, action) => {
       state.userContacts = action.payload;
+    },
+
+    UPDATE_USER_CONTACTS: (state, action) => {
+      state.userContacts = state.userContacts.map((contact) =>
+        contact.email === action.payload.email ? action.payload : contact,
+      );
+    },
+
+    REMOVE_USER_CONTACT: (state, action) => {
+      console.log('REMOVE USER CONTACT');
+      const { deletedContact, currentUserEmail } = action.payload;
+
+      state.userContacts = state.userContacts.filter(
+        (contact) => contact.email !== deletedContact.email,
+      );
+      state.userWAContacts = state.userWAContacts.filter(
+        (contact) => contact.email !== deletedContact.email,
+      );
+      const chatName = chatNameGenerator(
+        currentUserEmail,
+        deletedContact.email,
+      );
+      if (chatName === state.currentChatName) {
+        state.currentChatName = '';
+      }
     },
 
     SET_USERS_WA_CONTACTS: (state, action) => {
@@ -36,8 +62,28 @@ export const chatSlice = createSlice({
       state.currentChatterName = contactName;
     },
 
+    CLEAR_CURRENT_CHAT: (state) => {
+      state.currentChatName = '';
+    },
+
     ADD_CHATNAMES: (state, action) => {
       state.chatNames = action.payload;
+    },
+
+    NAMELESS_CHAT: (state, action) => {
+      state.namelessChats.push(action.payload);
+    },
+
+    REMOVE_NAMELESS_CHAT: (state, action) => {
+      const chatName = action.payload;
+      const namelessChats = state.namelessChats;
+
+      const index = namelessChats.indexOf(chatName);
+      if (index > -1) {
+        namelessChats.splice(index, 1);
+      }
+
+      state.namelessChats = namelessChats;
     },
 
     //manage messaging
@@ -91,6 +137,7 @@ export const chatSlice = createSlice({
 export const {
   SET_USER_CONTACTS,
   SET_CURRENT_CHAT,
+  CLEAR_CURRENT_CHAT,
   ADD_CHATNAMES,
   CLEAR_STATE,
   SET_USERS_WA_CONTACTS,
@@ -99,6 +146,10 @@ export const {
   DELETE_MESSAGE,
   REPLY,
   CLEAR_REPLY_MESSAGE,
+  NAMELESS_CHAT,
+  REMOVE_NAMELESS_CHAT,
+  REMOVE_USER_CONTACT,
+  UPDATE_USER_CONTACTS,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

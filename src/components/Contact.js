@@ -1,11 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { chatNameGenerator } from '../helpers/formatters';
-import { SET_CURRENT_CHAT } from '../store/chatSlice';
+import {
+  NAMELESS_CHAT,
+  REMOVE_NAMELESS_CHAT,
+  SET_CURRENT_CHAT,
+} from '../store/chatSlice';
 import noAvatar from '../images/no_avatar.png';
+import { useEffect, useState } from 'react';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
+import { db } from '../firebase/firebase';
 
 //----------------------------------------------//
 export default function Contact({ contact }) {
   const dispatch = useDispatch();
+
+  const [contactHasName, setContactHasName] = useState(true);
 
   //Access the store
   const currentUserEmail = useSelector((state) => state?.authState.user.email);
@@ -15,10 +24,38 @@ export default function Contact({ contact }) {
   const chatName = chatNameGenerator(contact.email, currentUserEmail);
 
   //Check if the contact has a name
-  const contactHasName = !!(contact.firstName || contact.surname);
+  useEffect(() => {
+    setContactHasName(!!(contact.firstName || contact.surname));
+  }, [contact]);
+
+  useEffect(() => {
+    if (contact && !contactHasName) {
+      async function findThisContactInUsersContacts(email) {
+        const snap = await getDoc(
+          doc(db, 'contactsApp/userContacts', currentUserEmail, email),
+        );
+        if (snap.exists()) {
+          const contact = snap.data();
+          await setDoc(
+            doc(db, 'whatsApp/userContacts', currentUserEmail, email),
+            contact,
+          );
+        }
+      }
+      findThisContactInUsersContacts(contact.email);
+    }
+  }, [contact, contact.email, contactHasName, currentUserEmail]);
+
+  useEffect(() => {
+    if (contactHasName === false) {
+      dispatch(NAMELESS_CHAT(chatName));
+    } else {
+      dispatch(REMOVE_NAMELESS_CHAT(chatName));
+    }
+  }, [contactHasName, chatName, dispatch]);
 
   const contactName = contactHasName
-    ? `${contact.firstName} ${contact.surname}`
+    ? `${contact.firstName} ${contact.surname ? contact.surname : ''}`
     : contact.email;
 
   function setChat() {

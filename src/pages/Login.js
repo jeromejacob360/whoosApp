@@ -1,14 +1,12 @@
-import { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { addUserToContactsMaster } from "../helpers/contactsHelper";
+import { useState } from 'react';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { addUserToContactsMaster } from '../helpers/contactsHelper';
 
 //----------------------------------------------//
 export default function Login() {
-  console.log("LOGIN RENDERED");
-
   //State variables
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   //Side effects
   async function loginUser(e) {
@@ -52,7 +50,7 @@ export default function Login() {
         <a
           target="_blank"
           className="text-sm text-center text-blue-600 underline"
-          href="https://secretsilentpanda.github.io/react-contacts/signup"
+          href={process.env.REACT_APP_contactsRedirectUrl}
           rel="noreferrer"
         >
           Create a React-contacts account

@@ -22,9 +22,9 @@ export default function MessageInput({ chatHistoryRef }) {
     (state) => state?.chatState.currentChatterEmail,
   );
   const currentUserName = useSelector((state) => state?.authState.user.email);
-  const messageToReply = useSelector(
-    (state) => state?.chatState.messageToReply[currentChatName],
-  );
+  const messageToReply =
+    useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
+    '';
   const focusInput = useSelector((state) => state?.chatState.focusInput);
 
   if (focusInput) {
@@ -49,11 +49,10 @@ export default function MessageInput({ chatHistoryRef }) {
         messageToReply,
       };
       setMessage('');
-
-      dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
+      if (messageToReply) dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
 
       try {
-        // check if that chat contains "read" flag
+        // check if that chat contains "read" flag //TODO limit this check to once per chat per session
         const snap = await getDoc(
           doc(db, 'whatsApp/chats', currentChatName, 'flag'),
         );

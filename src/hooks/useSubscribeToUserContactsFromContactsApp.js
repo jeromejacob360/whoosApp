@@ -9,11 +9,7 @@ import {
   query,
   setDoc,
 } from '@firebase/firestore';
-import {
-  REMOVE_USER_CONTACT,
-  SET_USER_CONTACTS,
-  UPDATE_USER_CONTACTS,
-} from '../store/chatSlice';
+import { SET_USER_CONTACTS, UPDATE_USER_CONTACTS } from '../store/chatSlice';
 import { db } from '../firebase/firebase';
 import { chatNameGenerator, encodeEmail } from '../helpers/formatters';
 

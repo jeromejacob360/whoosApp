@@ -13,12 +13,12 @@ const initialState = {
   namelessChats: [],
   unreadMessages: {},
   forwardMode: false,
-  messagesToForward: {},
-  totalForwards: 0,
+  selectedMessages: {},
+  totalSelectedMessages: 0,
 };
 
 function calculateForwardMessagesLength(state) {
-  return Object.keys(state.messagesToForward).length;
+  return Object.keys(state.selectedMessages).length;
 }
 
 export const chatSlice = createSlice({
@@ -145,20 +145,20 @@ export const chatSlice = createSlice({
 
     FORWARD_MODE_OFF: (state) => {
       state.forwardMode = false;
-      state.messagesToForward = {};
-      state.totalForwards = 0;
+      state.selectedMessages = {};
+      state.totalSelectedMessages = 0;
     },
 
     ADD_MESSAGE_TO_FORWARDS: (state, action) => {
       const { time } = action.payload;
-      state.messagesToForward[time] = action.payload.message;
-      state.totalForwards = calculateForwardMessagesLength(state);
+      state.selectedMessages[time] = action.payload.message;
+      state.totalSelectedMessages = calculateForwardMessagesLength(state);
     },
 
     REMOVE_MESSAGE_TO_FORWARDS: (state, action) => {
       const { time } = action.payload;
-      delete state.messagesToForward[time];
-      state.totalForwards = calculateForwardMessagesLength(state);
+      delete state.selectedMessages[time];
+      state.totalSelectedMessages = calculateForwardMessagesLength(state);
     },
 
     CLEAR_STATE: () => {

@@ -1,18 +1,18 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
-import { encodeEmail } from '../helpers/formatters';
 import { CLEAR_REPLY_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import Picker from 'emoji-picker-react';
 
 import { ReactComponent as CloseIcon } from '../assets/icons/closeSVG.svg';
+import ContactsPicker from './ContactsPicker';
+import sendMessagetoDB from '../helpers/sendMessage';
 
 //----------------------------------------------//
 export default function MessageInput({ chatHistoryRef }) {
   //State variables
   const [message, setMessage] = useState('');
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+  const [openContactsPicker, setOpenContactsPicker] = useState(false);
 
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -32,9 +32,8 @@ export default function MessageInput({ chatHistoryRef }) {
 
   // forwarding messages
   const forwardMode = useSelector((state) => state?.chatState.forwardMode);
-  const totalForwards = useSelector((state) => state?.chatState.totalForwards);
-  const messagesToForward = useSelector(
-    (state) => state?.chatState.messagesToForward,
+  const totalSelectedMessages = useSelector(
+    (state) => state?.chatState.totalSelectedMessages,
   );
 
   if (focusInput) {
@@ -49,67 +48,22 @@ export default function MessageInput({ chatHistoryRef }) {
   // logic
 
   function openContactsPickerForForwarding() {
-    console.log('FORWARDS: ', messagesToForward);
+    setOpenContactsPicker(true);
   }
   async function sendMessage(e) {
-    setOpenEmojiPicker(false);
-    let newMessage;
     e.preventDefault();
-    if (message) {
-      newMessage = {
-        time: Date.now(),
-        message,
-        from: currentUserName,
-        to: currentChatterEmail,
-        deletedForMe: [],
-        messageToReply,
-      };
-      setMessage('');
-      if (messageToReply) dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
+    setOpenEmojiPicker(false);
+    if (messageToReply) dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
 
-      try {
-        // check if that chat contains "read" flag //TODO limit this check to once per chat per session
-        const snap = await getDoc(
-          doc(db, 'whatsApp/chats', currentChatName, 'flag'),
-        );
-
-        // if it doesn't have, add it
-        if (!snap.data()) {
-          const encodedEmail = encodeEmail(newMessage.from);
-          await setDoc(
-            doc(db, 'whatsApp/userContacts', newMessage.to, newMessage.from),
-            {
-              [encodedEmail]: true,
-              email: newMessage.from,
-            },
-          );
-          await setDoc(doc(db, 'whatsApp/chats', currentChatName, 'flag'), {
-            read: false,
-          });
-        }
-
-        // add the message to the chat
-        await setDoc(
-          doc(
-            db,
-            'whatsApp/chats',
-            currentChatName,
-            newMessage.time.toString(),
-          ),
-          newMessage,
-        );
-
-        // scroll down to reveal the new message
-        chatHistoryRef.current &&
-          chatHistoryRef.current.scrollTo({
-            left: 0,
-            top: chatHistoryRef.current.scrollHeight,
-            behavior: 'smooth',
-          });
-      } catch (error) {
-        console.log(`error.message`, error.message);
-      }
-    }
+    sendMessagetoDB(
+      message,
+      currentChatterEmail,
+      currentUserName,
+      currentChatName,
+      setMessage,
+      chatHistoryRef,
+      messageToReply,
+    );
   }
 
   const onEmojiClick = (event, emojiObject) => {
@@ -117,12 +71,20 @@ export default function MessageInput({ chatHistoryRef }) {
     inputRef.current.focus();
   };
 
+  if (openContactsPicker) {
+    return (
+      <div className="px-4 bg-selected">
+        <ContactsPicker setOpenContactsPicker={setOpenContactsPicker} />
+      </div>
+    );
+  }
+
   if (forwardMode) {
     return (
       <div className="px-4 bg-selected">
         <div className="flex items-center justify-between h-10 ">
           <button onClick={() => dispatch(FORWARD_MODE_OFF())}>x</button>
-          <span>{totalForwards} selected</span>
+          <span>{totalSelectedMessages} selected</span>
           <div>
             {/* TODO add starring */}
             <button>star</button>

@@ -12,7 +12,6 @@ import {
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
-  console.count('ChatHistory rendered');
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();

@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function ClickAway({ children, setToggle, classNames }) {
+export default function ClickAway({ children, onClickAway, classNames }) {
   const ref = useRef();
   useEffect(() => {
     function cb(e) {
       if (!ref.current?.contains(e.target)) {
-        setToggle(false);
+        onClickAway();
       }
     }
     document.addEventListener('click', cb);
     return () => document.removeEventListener('click', cb);
-  }, [setToggle]);
+  }, [onClickAway]);
 
   return (
     <div className={classNames} ref={ref}>

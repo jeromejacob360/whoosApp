@@ -8,6 +8,7 @@ import {
   CLEAR_UNREAD_MESSAGES,
   DELETE_MESSAGE,
   FORWARD_MODE_OFF,
+  MODIFY_MESSAGE,
 } from '../store/chatSlice';
 
 //----------------------------------------------//
@@ -82,6 +83,10 @@ export default function ChatHistory({ chatHistoryRef }) {
               dispatch(ADD_MESSAGE({ chatName, message }));
               scrollToBottom();
             }
+            if (change.type === 'modified') {
+              const message = change.doc.data();
+              dispatch(MODIFY_MESSAGE({ chatName, message }));
+            }
             if (change.type === 'removed') {
               const message = change.doc.data();
               dispatch(DELETE_MESSAGE({ chatName, message }));
@@ -96,8 +101,6 @@ export default function ChatHistory({ chatHistoryRef }) {
     return unsubList.forEach((unsub) => unsub);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatHistoryRef, chatNames, dispatch]);
-
-  //logic
 
   return (
     <div

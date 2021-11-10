@@ -104,6 +104,13 @@ export const chatSlice = createSlice({
 
     DELETE_MESSAGE: (state, action) => {
       const { chatName, message } = action.payload;
+      state.chats[chatName] = state.chats[chatName].filter(
+        (chat) => chat.time !== message.time,
+      );
+    },
+
+    MODIFY_MESSAGE: (state, action) => {
+      const { chatName, message } = action.payload;
       state.chats[chatName] = state.chats[chatName].map((chat) =>
         chat.time === message.time ? message : chat,
       );
@@ -178,8 +185,9 @@ export const {
   CLEAR_STATE,
   SET_USERS_WA_CONTACTS,
   ADD_MESSAGE,
-  CHAT_HISTORY_REF,
+  MODIFY_MESSAGE,
   DELETE_MESSAGE,
+  CHAT_HISTORY_REF,
   REPLY,
   CLEAR_REPLY_MESSAGE,
   NAMELESS_CHAT,

@@ -11,7 +11,10 @@ export default function Options({ setOpenOptions }) {
       .catch((error) => console.log(`error`, error));
   }
   return (
-    <ClickAway classNames="absolute top-0 -right-8" setToggle={setOpenOptions}>
+    <ClickAway
+      classNames="absolute top-0 -right-8"
+      onClickAway={() => setOpenOptions(false)}
+    >
       <motion.div
         initial={{ width: 0, height: 0 }}
         animate={{ width: 'auto', height: 'auto' }}

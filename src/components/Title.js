@@ -9,7 +9,7 @@ export default function Title() {
 
   const [openOptions, setOpenOptions] = useState(false);
   return (
-    <div className="relative z-10 flex items-center justify-between px-4 py-2 bg-dim">
+    <div className="relative flex items-center justify-between px-4 py-2 z-1 bg-dim">
       {openOptions && <Options setOpenOptions={setOpenOptions} />}
       <div className="flex items-center space-x-2">
         <img

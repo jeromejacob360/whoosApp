@@ -31,17 +31,22 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
         );
   }
 
-  function sendAway() {
+  async function sendAway() {
+    const argsList = [];
     selectedContacts.forEach((contact) => {
       const currentChatName = chatNameGenerator(contact, currentUserName);
       const messages = Object.values(messagesToForward);
       messages.forEach((message) => {
-        sendMessagetoDB(message, contact, currentUserName, currentChatName);
+        argsList.push([message, contact, currentUserName, currentChatName]);
       });
     });
+
     setOpenContactsPicker(false);
 
-    dispatch(FORWARD_MODE_OFF());
+    // send messages to each contact one at a time
+    for (let i = 0; i < argsList.length; i++) {
+      await sendMessagetoDB(...argsList[i]);
+    }
   }
 
   function endForwardMode() {
@@ -51,7 +56,7 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
 
   return (
     <main className="fixed inset-0 grid w-screen h-screen bg-white bg-opacity-80 place-items-center">
-      <ClickAway setToggle={endForwardMode}>
+      <ClickAway onClickAway={endForwardMode}>
         <div className="relative flex flex-col p-2 border rounded-md shadow-lg bg-main">
           {userWAContacts?.map((contact) => {
             const contactName = `${contact.firstName} ${contact.surname}`;

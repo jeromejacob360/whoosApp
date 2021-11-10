@@ -73,6 +73,7 @@ export default function ChatOptions({ message, setOpenOptions, setSelected }) {
         ...message,
         deleted: true,
         message: 'This message was deleted',
+        mediaUrl: '',
       });
     } else {
       console.log('No such document!');
@@ -80,7 +81,7 @@ export default function ChatOptions({ message, setOpenOptions, setSelected }) {
   }
 
   return (
-    <ClickAway setToggle={setOpenOptions}>
+    <ClickAway onClickAway={() => setOpenOptions(false)}>
       <motion.div
         initial={{ width: 0, height: 0 }}
         animate={{ width: 'auto', height: 'auto' }}

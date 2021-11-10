@@ -9,3 +9,13 @@ svg {
 .no-cursor * {
   cursor: not-allowed !important;
 }
+
+.spin {
+  animation: rotate 1s infinite linear;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

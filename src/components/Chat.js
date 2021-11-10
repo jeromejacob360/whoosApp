@@ -7,7 +7,7 @@ import {
 import ChatOptions from './optionMenus/chatOptions';
 
 //----------------------------------------------//
-export default function Chat({ message }) {
+export default function Chat({ message: messageObj }) {
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
@@ -21,7 +21,7 @@ export default function Chat({ message }) {
   const forwardMode = useSelector((state) => state?.chatState?.forwardMode);
 
   //logic
-  const messageIsFromMe = message?.from === currentUserName;
+  const messageIsFromMe = messageObj?.from === currentUserName;
 
   function scrollIntoView(id) {
     const element = document.getElementById(id);
@@ -42,48 +42,47 @@ export default function Chat({ message }) {
 
   useEffect(() => {
     function trimLargeMessage() {
-      const trimmedMessage = message.message.substring(0, largeMessageCutoff);
+      const trimmedMessage = messageObj.message.substring(
+        0,
+        largeMessageCutoff,
+      );
       setLargeMessage(trimmedMessage + '...');
     }
-    if (message.message.length > largeMessageCutoff) {
+    if (messageObj.message.length > largeMessageCutoff) {
       trimLargeMessage();
     } else setLargeMessage('');
-  }, [largeMessageCutoff, message]);
+  }, [largeMessageCutoff, messageObj]);
+
+  useEffect(() => {
+    selected
+      ? dispatch(ADD_MESSAGE_TO_FORWARDS(messageObj))
+      : dispatch(REMOVE_MESSAGE_TO_FORWARDS(messageObj));
+  }, [dispatch, messageObj, selected]);
 
   // add or remove selected message to forward
   function addOrRemove() {
-    setSelected((prev) => {
-      !prev
-        ? dispatch(ADD_MESSAGE_TO_FORWARDS(message))
-        : dispatch(REMOVE_MESSAGE_TO_FORWARDS(message));
-      return !prev;
-    });
+    setSelected((prev) => !prev);
   }
 
   return (
     <div
-      id={message.time}
-      className={`flex duration-500 my-1 bg-opacity-30 ${
+      onClick={forwardMode ? addOrRemove : null}
+      id={messageObj.time}
+      className={`flex duration-200 my-1 bg-opacity-30 ${
         selected ? 'bg-selected' : 'bg-transparent'
-      } ${messageIsFromMe ? 'justify-end' : 'justify-start'} `}
+      } ${messageIsFromMe ? 'justify-end' : 'justify-start'} ${
+        forwardMode ? 'cursor-pointer' : ''
+      }`}
     >
-      {!message?.deletedForMe.includes(currentUserName) && (
+      {!messageObj?.deletedForMe.includes(currentUserName) && (
         <div
-          className={`px-1 group py-1 mx-2 my-4 break-words border-main rounded-lg shadow-sm w-52 relative ${
+          className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
             messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
           }`}
         >
-          {forwardMode && (
-            <div
-              onClick={addOrRemove}
-              className="p-1 text-center rounded-l cursor-pointer bg-dim"
-            >
-              {selected ? 'selected' : 'not selected'}
-            </div>
-          )}
           {/* Options button */}
-          {!message.deleted && (
-            <div className="absolute opacity-0 top-1 right-1 group-hover:opacity-100">
+          {!messageObj.deleted && !forwardMode && (
+            <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
               <svg
                 onClick={() => setOpenOptions((prev) => !prev)}
                 className="h-5 w-5h-5 text-icons"
@@ -100,27 +99,41 @@ export default function Chat({ message }) {
           )}
           {/* Options menu */}
           <div onClick={() => setOpenOptions(false)}>
-            {openOptions && !message.deleted && (
+            {openOptions && !messageObj.deleted && (
               <ChatOptions
-                message={message}
+                message={messageObj}
                 setOpenOptions={setOpenOptions}
                 setSelected={setSelected}
               />
             )}
           </div>
           {/* Replied message */}
-          {message.messageToReply && (
+          {messageObj.messageToReply && (
             <div
-              onClick={() => scrollIntoView(message.messageToReply.time)}
+              onClick={() => scrollIntoView(messageObj.messageToReply.time)}
               className="p-1 border-l-8 border-yellow-700 rounded-lg cursor-pointer bg-dim"
             >
-              {message.messageToReply.message}
+              {messageObj.messageToReply.mediaUrl && (
+                <div>
+                  <span>Photo</span>
+                  <img
+                    className="h-8 "
+                    src={messageObj.messageToReply.mediaUrl}
+                    alt=""
+                  />
+                </div>
+              )}
+              {messageObj.messageToReply.message}
             </div>
+          )}
+
+          {messageObj.mediaUrl && (
+            <img className="rounded-md" src={messageObj.mediaUrl} alt="" />
           )}
 
           <div
             className={`${
-              message?.deleted && 'text-sm text-gray-600 italic'
+              messageObj?.deleted && 'text-sm text-gray-600 italic'
             } pl-4`}
           >
             {largeMessage ? (
@@ -134,11 +147,11 @@ export default function Chat({ message }) {
                 </button>
               </div>
             ) : (
-              message.message
+              messageObj.message
             )}
           </div>
-          <p className={`text-xs text-right text-gray-400`}>
-            {new Date(message?.time).toLocaleTimeString()}
+          <p className={`text-xs text-right text-gray-400 mt-1`}>
+            {new Date(messageObj?.time).toLocaleTimeString()}
           </p>
         </div>
       )}

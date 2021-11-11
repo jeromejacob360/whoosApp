@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { chatNameGenerator } from '../helpers/formatters';
+import { current } from 'immer';
 
 const initialState = {
   chats: {},
@@ -15,6 +16,7 @@ const initialState = {
   forwardMode: false,
   selectedMessages: {},
   totalSelectedMessages: 0,
+  sortedWAContactNames: [],
 };
 
 function calculateForwardMessagesLength(state) {
@@ -95,6 +97,7 @@ export const chatSlice = createSlice({
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
 
+      // add to unread messages count
       if (
         chatName !== state.currentChatName &&
         message.from !== action.payload.currentUserEmail

@@ -81,6 +81,7 @@ export default function ChatHistory({ chatHistoryRef }) {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
+
               dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
               scrollToBottom();
             }

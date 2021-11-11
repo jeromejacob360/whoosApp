@@ -87,26 +87,6 @@ export default function MessageInput({ chatHistoryRef }) {
       dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
     }
 
-    const now = Date.now();
-
-    const messageToStore = {
-      time: now,
-      message,
-      capturedImage,
-      from: currentUserName,
-      to: currentChatterEmail,
-      deletedForMe: [],
-      messageToReply,
-    };
-
-    dispatch(
-      ADD_MESSAGE({
-        chatName: currentChatName,
-        message: messageToStore,
-        currentUserEmail,
-      }),
-    );
-
     let mediaUrl = '';
     if (capturedImage) {
       setImageUploading(true);
@@ -124,7 +104,6 @@ export default function MessageInput({ chatHistoryRef }) {
       chatHistoryRef,
       messageToReply,
       mediaUrl,
-      now,
     );
   }
 

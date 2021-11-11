@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { chatNameGenerator } from '../helpers/formatters';
-import { current } from 'immer';
 
 const initialState = {
   chats: {},

@@ -1,6 +1,5 @@
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { enableIndexedDbPersistence } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,

@@ -110,7 +110,6 @@ export const chatSlice = createSlice({
           : (state.chats[chatName] = [message]);
       }
 
-      // move this chat to the top
       const senderEmail = chatName.replace(currentUserEmail, '');
       const userWAContacts = state.userWAContacts;
 

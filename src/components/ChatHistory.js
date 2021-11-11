@@ -77,32 +77,24 @@ export default function ChatHistory({ chatHistoryRef }) {
           where('from', '>=', ''),
         );
 
-        const unsub = onSnapshot(
-          q,
-          { includeMetadataChanges: true },
-          (snapshot) => {
-            snapshot.docChanges().forEach((change) => {
-              if (change.type === 'added') {
-                const message = change.doc.data();
+        const unsub = onSnapshot(q, (snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            if (change.type === 'added') {
+              const message = change.doc.data();
 
-                dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
-                scrollToBottom();
-              }
-              if (change.type === 'modified') {
-                const message = change.doc.data();
-                dispatch(MODIFY_MESSAGE({ chatName, message }));
-              }
-              if (change.type === 'removed') {
-                const message = change.doc.data();
-                dispatch(DELETE_MESSAGE({ chatName, message }));
-              }
-              const source = snapshot.metadata.fromCache
-                ? 'local cache'
-                : 'server';
-              console.log('Data came from ' + source);
-            });
-          },
-        );
+              dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
+              scrollToBottom();
+            }
+            if (change.type === 'modified') {
+              const message = change.doc.data();
+              dispatch(MODIFY_MESSAGE({ chatName, message }));
+            }
+            if (change.type === 'removed') {
+              const message = change.doc.data();
+              dispatch(DELETE_MESSAGE({ chatName, message }));
+            }
+          });
+        });
         unsubList.push(unsub);
       });
     }

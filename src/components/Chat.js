@@ -4,6 +4,7 @@ import {
   ADD_MESSAGE_TO_FORWARDS,
   REMOVE_MESSAGE_TO_FORWARDS,
 } from '../store/chatSlice';
+import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
 
 //----------------------------------------------//
@@ -13,6 +14,7 @@ export default function Chat({ message: messageObj }) {
   const [largeMessage, setLargeMessage] = useState('');
   const [largeMessageCutoff, setLargeMessageCutoff] = useState(50);
   const [selected, setSelected] = useState(false);
+  const [imageToPreview, setImageToPreview] = useState('');
 
   const dispatch = useDispatch();
 
@@ -74,6 +76,12 @@ export default function Chat({ message: messageObj }) {
         forwardMode ? 'cursor-pointer' : ''
       }`}
     >
+      {/* Image modal */}
+      {imageToPreview && (
+        <Modal onClickAway={() => setImageToPreview('')}>
+          <img src={imageToPreview} alt="preview" />
+        </Modal>
+      )}
       {!messageObj?.deletedForMe.includes(currentUserName) && (
         <div
           className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
@@ -128,7 +136,12 @@ export default function Chat({ message: messageObj }) {
           )}
 
           {messageObj.mediaUrl && (
-            <img className="rounded-md" src={messageObj.mediaUrl} alt="" />
+            <img
+              onClick={() => setImageToPreview(messageObj.mediaUrl)}
+              className="rounded-md cursor-pointer"
+              src={messageObj.mediaUrl}
+              alt=""
+            />
           )}
 
           <div

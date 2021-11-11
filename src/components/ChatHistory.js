@@ -29,6 +29,7 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
+  const currentUserEmail = useSelector((state) => state?.authState.user?.email);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function scrollToBottom(behavior = 'smooth') {
@@ -80,7 +81,7 @@ export default function ChatHistory({ chatHistoryRef }) {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
-              dispatch(ADD_MESSAGE({ chatName, message }));
+              dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
               scrollToBottom();
             }
             if (change.type === 'modified') {

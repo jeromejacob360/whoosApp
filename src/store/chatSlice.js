@@ -95,7 +95,10 @@ export const chatSlice = createSlice({
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
 
-      if (chatName !== state.currentChatName) {
+      if (
+        chatName !== state.currentChatName &&
+        message.from !== action.payload.currentUserEmail
+      ) {
         state.unreadMessages[chatName]
           ? state.unreadMessages[chatName]++
           : (state.unreadMessages[chatName] = 1);

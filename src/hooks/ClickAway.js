@@ -1,6 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function ClickAway({ children, onClickAway, classNames }) {
+export default function ClickAway({
+  children,
+  onClickAway,
+  classNames,
+  props,
+}) {
   const ref = useRef();
   useEffect(() => {
     function cb(e) {
@@ -13,7 +18,7 @@ export default function ClickAway({ children, onClickAway, classNames }) {
   }, [onClickAway]);
 
   return (
-    <div className={classNames} ref={ref}>
+    <div className={classNames} {...props} ref={ref}>
       {children}
     </div>
   );

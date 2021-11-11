@@ -35,6 +35,7 @@ export default function MessageInput({ chatHistoryRef }) {
   const [openContactsPicker, setOpenContactsPicker] = useState(false);
   const [cameraPreviewOn, setCameraPreviewOn] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [capturedImage, setCapturedImage] = useState('');
 
   const inputRef = useRef();
@@ -79,6 +80,13 @@ export default function MessageInput({ chatHistoryRef }) {
     if (messageToReply) {
       dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
     }
+    let mediaUrl = '';
+    if (capturedImage) {
+      setImageUploading(true);
+      mediaUrl = await uploadImage();
+      setCapturedImage('');
+      setImageUploading(false);
+    }
 
     await sendMessagetoDB(
       message,
@@ -88,6 +96,7 @@ export default function MessageInput({ chatHistoryRef }) {
       setMessage,
       chatHistoryRef,
       messageToReply,
+      mediaUrl,
     );
   }
 
@@ -120,7 +129,7 @@ export default function MessageInput({ chatHistoryRef }) {
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     setCapturedImage(canvas.toDataURL());
-    closeCamera();
+    terminateImageSending();
   }
 
   function closeCamera() {
@@ -131,7 +140,6 @@ export default function MessageInput({ chatHistoryRef }) {
   }
 
   function terminateImageSending() {
-    setCapturedImage('');
     closeCamera();
   }
 
@@ -140,30 +148,23 @@ export default function MessageInput({ chatHistoryRef }) {
     openCamera();
   }
 
-  function sendImage() {
+  function uploadImage() {
     // send image to DB
-    console.log('Uploading');
-    const storage = getStorage();
-    const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
-    const storageRef = ref(storage, location);
-    uploadString(storageRef, capturedImage.split(',')[1], 'base64', {
-      contentType: 'image/jpeg',
-    }).then(() => {
-      console.log('Uploaded');
-      getDownloadURL(ref(storage, location)).then(async (url) => {
-        await sendMessagetoDB(
-          message,
-          currentChatterEmail,
-          currentUserName,
-          currentChatName,
-          setMessage,
-          chatHistoryRef,
-          messageToReply,
-          url,
-        );
-        console.log('MESSAGE SENT');
-        terminateImageSending();
-      });
+    return new Promise((resolve, reject) => {
+      try {
+        const storage = getStorage();
+        const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
+        const storageRef = ref(storage, location);
+        uploadString(storageRef, capturedImage.split(',')[1], 'base64', {
+          contentType: 'image/jpeg',
+        }).then(() => {
+          getDownloadURL(ref(storage, location)).then(async (url) => {
+            resolve(url);
+          });
+        });
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 
@@ -209,59 +210,38 @@ export default function MessageInput({ chatHistoryRef }) {
           </div>
         )}
 
-        {(capturedImage || cameraPreviewOn) && (
+        {cameraPreviewOn && (
           <div className="fixed inset-0 grid w-screen h-screen bg-white place-items-center bg-opacity-80">
             <ClickAway onClickAway={closeCamera}>
               <div className="max-w-xl">
                 <div className="flex items-center justify-end h-10 bg-blue-400">
-                  {capturedImage && (
-                    <button
-                      onClick={retake}
-                      className="flex items-center text-white"
-                    >
-                      <BiUndo className="w-6 h-6 mr-2 text-white" />
-                      <span>Retake</span>
-                    </button>
-                  )}
                   <AiOutlineCloseCircle
                     onClick={terminateImageSending}
                     className="w-6 h-6 ml-8 mr-4 text-white"
                   />
                 </div>
                 {/* Camera feed */}
-                {cameraPreviewOn && (
-                  <video
-                    ref={videoRef}
-                    src=""
-                    className="w-full h-auto"
-                  ></video>
-                )}
-                {/* View the captured image */}
-                <canvas
-                  className={`w-full h-auto ${
-                    capturedImage
-                      ? 'opacity-100'
-                      : 'opacity-0 w-0 h-0 fixed -bottom-full -top-full'
-                  }`}
-                  ref={canvasRef}
-                ></canvas>
+                <video ref={videoRef} src="" className="w-full h-auto"></video>
+
                 <div className="flex items-center h-10 bg-blue-400">
                   <button className="z-10 ml-auto mr-2">
-                    {capturedImage ? (
-                      <AiOutlineSend
-                        onClick={sendImage}
-                        className="w-16 h-16 p-2 mb-10 text-yellow-500 rounded-full shadow-lg cursor-pointer bg-dim"
-                      />
-                    ) : (
-                      <AiOutlineCamera
-                        onClick={captureImage}
-                        className="w-16 h-16 p-2 mb-10 text-yellow-500 rounded-full shadow-lg cursor-pointer bg-dim"
-                      />
-                    )}
+                    <AiOutlineCamera
+                      onClick={captureImage}
+                      className="w-16 h-16 p-2 mb-10 text-yellow-500 rounded-full shadow-lg cursor-pointer bg-dim"
+                    />
                   </button>
                 </div>
               </div>
             </ClickAway>
+
+            <canvas
+              className={`w-full h-auto ${
+                capturedImage
+                  ? 'opacity-100'
+                  : 'opacity-0 w-0 h-0 fixed -bottom-full -top-full'
+              }`}
+              ref={canvasRef}
+            ></canvas>
           </div>
         )}
         {/* Emoji picker */}
@@ -290,6 +270,36 @@ export default function MessageInput({ chatHistoryRef }) {
                 <span> {messageToReply.message}</span>
               )}
             </div>
+          </div>
+        )}
+        {/* Image preview before upload */}
+        {capturedImage && (
+          <div className="relative shadow-md bg-dim">
+            {imageUploading && (
+              <div className="absolute inset-0 grid bg-white bg-opacity-50 place-items-center">
+                <AiOutlineLoading className="absolute w-12 h-12 spin" />
+              </div>
+            )}
+            <div className="flex justify-between py-1 bg-dim px-28">
+              <button
+                onClick={retake}
+                className="flex items-center px-2 rounded-md mr-28"
+              >
+                <BiUndo className="w-6 h-6" />
+                <span>Retake</span>
+              </button>
+              <button
+                onClick={() => setCapturedImage('')}
+                className="flex items-center px-2 rounded-md"
+              >
+                <AiOutlineClose className="w-6 h-6" />
+              </button>
+            </div>
+            <img
+              className="mx-auto bg-dim md:w-full xl:w-1/2 lg:w-2/3"
+              src={capturedImage}
+              alt=""
+            />
           </div>
         )}
         {/* Input methods */}

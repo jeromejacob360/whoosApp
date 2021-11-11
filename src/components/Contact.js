@@ -15,6 +15,7 @@ export default function Contact({ contact }) {
   const dispatch = useDispatch();
 
   const [contactHasName, setContactHasName] = useState(true);
+  const [chatOpened, setChatOpened] = useState(false);
 
   //Access the store
   const currentUserEmail = useSelector((state) => state?.authState.user.email);
@@ -63,6 +64,7 @@ export default function Contact({ contact }) {
     : contact.email;
 
   function setChat() {
+    setChatOpened(true);
     dispatch(
       SET_CURRENT_CHAT({
         currentUserEmail,
@@ -74,9 +76,7 @@ export default function Contact({ contact }) {
 
   return (
     <div
-      className={` ${
-        contactHasName ? ' border-dim' : 'border-blue-600'
-      } relative flex rounded-md items-center px-3 py-2 space-x-2 duration-100 border cursor-pointer hover:border-dodgerblue ${
+      className={`relative flex items-center px-3 py-2 space-x-2 duration-100 border cursor-pointer hover:border-dodgerblue ${
         currentChatName === chatName ? 'bg-blue-200' : 'bg-main'
       }`}
       onClick={setChat}
@@ -89,6 +89,9 @@ export default function Contact({ contact }) {
         />
       </div>
       <div>
+        {!contactHasName && !chatOpened && (
+          <div className="absolute text-xs text-red-600 top-2">New!</div>
+        )}
         <h4 className={`${contactHasName ? 'text-black' : 'text-blue-800'}`}>
           {contactName}
         </h4>

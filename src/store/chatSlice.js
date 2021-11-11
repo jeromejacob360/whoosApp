@@ -15,7 +15,6 @@ const initialState = {
   forwardMode: false,
   selectedMessages: {},
   totalSelectedMessages: 0,
-  sortedWAContactNames: [],
 };
 
 function calculateForwardMessagesLength(state) {
@@ -91,10 +90,23 @@ export const chatSlice = createSlice({
     //manage messaging
 
     ADD_MESSAGE: (state, action) => {
-      const { chatName, message } = action.payload;
+      const { chatName, message, currentUserEmail } = action.payload;
       state.chats[chatName]
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
+
+      const senderEmail = chatName.replace(currentUserEmail, '');
+      const userWAContacts = state.userWAContacts;
+
+      let indexOfContact;
+      userWAContacts.forEach((contact, index) => {
+        if (contact.email === senderEmail) {
+          return (indexOfContact = index);
+        }
+      });
+      const firstContact = userWAContacts[indexOfContact];
+      userWAContacts.splice(indexOfContact, 1);
+      userWAContacts.unshift(firstContact);
 
       // add to unread messages count
       if (

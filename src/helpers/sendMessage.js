@@ -11,6 +11,7 @@ export default async function sendMessagetoDB(
   chatHistoryRef,
   messageToReply,
   mediaUrl = '',
+  time,
 ) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -23,7 +24,7 @@ export default async function sendMessagetoDB(
         }
 
         newMessage = {
-          time: Date.now(),
+          time,
           message,
           mediaUrl,
           from: currentUserName,

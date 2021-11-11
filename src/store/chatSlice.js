@@ -91,15 +91,31 @@ export const chatSlice = createSlice({
 
     ADD_MESSAGE: (state, action) => {
       const { chatName, message, currentUserEmail } = action.payload;
-      state.chats[chatName]
-        ? state.chats[chatName].push(message)
-        : (state.chats[chatName] = [message]);
+      const currentChat = state.chats[chatName] || [];
+      let messageReceived = false;
+      // looping from last to first to check if the message is already in the state
+      if (message.from === currentUserEmail)
+        for (let i = currentChat?.length - 1; i > 0; i--) {
+          const chat = currentChat[i];
+          if (chat.time === message.time) {
+            messageReceived = true; //if message already exists, don't add it
+            return;
+          }
+        }
+      // state.chats[chatName]?.sort((a, b) => a.time - b.time);
+
+      if (!messageReceived) {
+        state.chats[chatName]
+          ? state.chats[chatName].push(message)
+          : (state.chats[chatName] = [message]);
+      }
 
       // move this chat to the top
       const senderEmail = chatName.replace(currentUserEmail, '');
       const userWAContacts = state.userWAContacts;
 
       let indexOfContact;
+
       userWAContacts.forEach((contact, index) => {
         if (contact.email === senderEmail) {
           return (indexOfContact = index);

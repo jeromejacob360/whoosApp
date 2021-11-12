@@ -3,11 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ReactComponent as CloseIcon } from '../assets/icons/closeSVG.svg';
 import Picker from 'emoji-picker-react';
 import ContactsPicker from './ContactsPicker';
-import {
-  ADD_MESSAGE,
-  CLEAR_REPLY_MESSAGE,
-  FORWARD_MODE_OFF,
-} from '../store/chatSlice';
+import { CLEAR_REPLY_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import sendMessagetoDB from '../helpers/sendMessage';
 import ClickAway from '../hooks/ClickAway';
 
@@ -65,7 +61,6 @@ export default function MessageInput({ chatHistoryRef }) {
   const totalSelectedMessages = useSelector(
     (state) => state?.chatState.totalSelectedMessages,
   );
-  const currentUserEmail = useSelector((state) => state?.authState.user?.email);
 
   if (focusInput) {
     inputRef.current.focus();

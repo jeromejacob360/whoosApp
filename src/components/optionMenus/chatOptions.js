@@ -27,8 +27,8 @@ export default function ChatOptions({ message, setOpenOptions, setSelected }) {
 
   const messageIsFromMe = message?.from === currentUserName;
 
-  async function reply() {
-    dispatch(REPLY({ message, currentChatName }));
+  function reply() {
+    dispatch(REPLY({ message }));
   }
 
   function forwardMessage() {
@@ -86,7 +86,7 @@ export default function ChatOptions({ message, setOpenOptions, setSelected }) {
         initial={{ width: 0, height: 0 }}
         animate={{ width: 'auto', height: 'auto' }}
         exit={{ width: 0, height: 0 }}
-        className={`z-10 absolute bg-white rounded-md shadow-md right-4 top-5 overflow-hidden`}
+        className={`absolute bg-white rounded-md shadow-md right-4 top-5 overflow-hidden z-50`}
       >
         <ul className="w-40 py-3 space-y-3 text-sm text-icons">
           <li className="w-full cursor-pointer hover:bg-dim">

@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   ADD_MESSAGE_TO_FORWARDS,
   REMOVE_MESSAGE_TO_FORWARDS,
+  REPLY,
 } from '../store/chatSlice';
 import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
+import { motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj }) {
@@ -82,92 +84,92 @@ export default function Chat({ message: messageObj }) {
           <img src={imageToPreview} alt="preview" />
         </Modal>
       )}
-      {!messageObj?.deletedForMe.includes(currentUserName) && (
-        <div
-          className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
-            messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
-          }`}
-        >
-          {/* Options button */}
-          {!messageObj.deleted && !forwardMode && (
-            <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
-              <svg
-                onClick={() => setOpenOptions((prev) => !prev)}
-                className="h-5 w-5h-5 text-icons"
-                viewBox="0 0 20 20"
-                fill="blue"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          )}
-          {/* Options menu */}
-          <div onClick={() => setOpenOptions(false)}>
-            {openOptions && !messageObj.deleted && (
-              <ChatOptions
-                message={messageObj}
-                setOpenOptions={setOpenOptions}
-                setSelected={setSelected}
-              />
-            )}
-          </div>
-          {/* Replied message */}
-          {messageObj.messageToReply && (
-            <div
-              onClick={() => scrollIntoView(messageObj.messageToReply.time)}
-              className="p-1 border-l-8 border-yellow-700 rounded-lg cursor-pointer bg-dim"
-            >
-              {messageObj.messageToReply.mediaUrl && (
-                <div>
-                  <span>Photo</span>
-                  <img
-                    className="h-8 "
-                    src={messageObj.messageToReply.mediaUrl}
-                    alt=""
-                  />
-                </div>
-              )}
-              {messageObj.messageToReply.message}
-            </div>
-          )}
 
-          {messageObj.mediaUrl && (
-            <img
-              onClick={() => setImageToPreview(messageObj.mediaUrl)}
-              className="rounded-md cursor-pointer"
-              src={messageObj.mediaUrl}
-              alt=""
+      <div
+        exit={{ opacity: 0, scale: 0 }}
+        className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
+          messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
+        }`}
+      >
+        {/* Options button */}
+        {!messageObj.deleted && !forwardMode && (
+          <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
+            <svg
+              onClick={() => setOpenOptions((prev) => !prev)}
+              className="h-5 w-5h-5 text-icons"
+              viewBox="0 0 20 20"
+              fill="blue"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+        )}
+        {/* Options menu */}
+        <div onClick={() => setOpenOptions(false)}>
+          {openOptions && !messageObj.deleted && (
+            <ChatOptions
+              message={messageObj}
+              setOpenOptions={setOpenOptions}
+              setSelected={setSelected}
             />
           )}
-
-          <div
-            className={`${
-              messageObj?.deleted && 'text-sm text-gray-600 italic'
-            } pl-4`}
-          >
-            {largeMessage ? (
-              <div>
-                <div>{largeMessage}</div>
-                <button
-                  onClick={() => setLargeMessageCutoff((prev) => prev * 2)}
-                  className="text-blue-700 underline"
-                >
-                  more..
-                </button>
-              </div>
-            ) : (
-              messageObj.message
-            )}
-          </div>
-          <p className={`text-xs text-right text-gray-400 mt-1`}>
-            {new Date(messageObj?.time).toLocaleTimeString()}
-          </p>
         </div>
-      )}
+        {/* Replied message */}
+        {messageObj.messageToReply && (
+          <div
+            onClick={() => scrollIntoView(messageObj.messageToReply.time)}
+            className="p-1 border-l-8 border-yellow-700 rounded-lg cursor-pointer bg-dim"
+          >
+            {messageObj.messageToReply.mediaUrl && (
+              <div>
+                <span>Photo</span>
+                <img
+                  className="h-8 "
+                  src={messageObj.messageToReply.mediaUrl}
+                  alt=""
+                />
+              </div>
+            )}
+            {messageObj.messageToReply.message}
+          </div>
+        )}
+
+        {messageObj.mediaUrl && (
+          <img
+            onClick={() => setImageToPreview(messageObj.mediaUrl)}
+            className="rounded-md cursor-pointer"
+            src={messageObj.mediaUrl}
+            alt=""
+          />
+        )}
+
+        <div
+          className={`${
+            messageObj?.deleted && 'text-sm text-gray-600 italic'
+          } pl-4`}
+        >
+          {largeMessage ? (
+            <div>
+              <div>{largeMessage}</div>
+              <button
+                onClick={() => setLargeMessageCutoff((prev) => prev * 2)}
+                className="text-blue-700 underline"
+              >
+                more..
+              </button>
+            </div>
+          ) : (
+            messageObj.message
+          )}
+        </div>
+        <p className={`text-xs text-right text-gray-400 mt-1`}>
+          {new Date(messageObj?.time).toLocaleTimeString()}
+        </p>
+      </div>
     </div>
   );
 }

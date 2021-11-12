@@ -1,8 +1,8 @@
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { SIGN_IN_USER, SIGN_OUT_USER } from "../store/authSlice";
-import { CLEAR_STATE } from "../store/chatSlice";
+import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { SIGN_IN_USER, SIGN_OUT_USER } from '../store/authSlice';
+import { CLEAR_STATE } from '../store/chatSlice';
 
 export default function useAuth() {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export default function useAuth() {
             email,
             uid,
             photoURL,
-          })
+          }),
         );
       } else {
         dispatch(SIGN_OUT_USER());

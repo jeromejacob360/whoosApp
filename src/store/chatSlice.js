@@ -142,7 +142,8 @@ export const chatSlice = createSlice({
     },
 
     REPLY: (state, action) => {
-      const { message: messageObject, currentChatName } = action.payload;
+      const { message: messageObject } = action.payload;
+      const currentChatName = state.currentChatName;
       const messageText = messageObject.message;
 
       const trimmedMessage =

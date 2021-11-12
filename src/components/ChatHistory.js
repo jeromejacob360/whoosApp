@@ -10,6 +10,7 @@ import {
   FORWARD_MODE_OFF,
   MODIFY_MESSAGE,
 } from '../store/chatSlice';
+import { AnimatePresence } from 'framer-motion';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
@@ -30,6 +31,7 @@ export default function ChatHistory({ chatHistoryRef }) {
     (state) => state?.chatState?.currentChatterEmail,
   );
   const currentUserEmail = useSelector((state) => state?.authState.user?.email);
+  const currentUserName = useSelector((state) => state?.authState?.user?.email);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   function scrollToBottom(behavior = 'smooth') {
@@ -126,19 +128,21 @@ export default function ChatHistory({ chatHistoryRef }) {
         </div>
       )}
       <div className="flex flex-col justify-end">
-        {messages &&
-          messages.length > 0 &&
-          messages.map((message) => {
-            return (
-              message.time && (
-                <Chat
-                  chatHistoryRef={chatHistoryRef}
-                  key={message.time}
-                  message={message}
-                />
-              )
-            );
-          })}
+        <AnimatePresence>
+          {messages &&
+            messages.length > 0 &&
+            messages.map((message) => {
+              return !message?.deletedForMe.includes(currentUserName)
+                ? message.time && (
+                    <Chat
+                      chatHistoryRef={chatHistoryRef}
+                      key={message.time}
+                      message={message}
+                    />
+                  )
+                : null;
+            })}
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import { ADD_CHATNAMES } from '../store/chatSlice';
 
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
+import { motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Contacts() {
@@ -53,9 +54,13 @@ export default function Contacts() {
   }, [currentUserEmail, dispatch]);
 
   return (
-    userWAContacts &&
-    userWAContacts?.map((contact) => {
-      return contact.email && <Contact key={contact.email} contact={contact} />;
-    })
+    <motion.div layout>
+      {userWAContacts &&
+        userWAContacts?.map((contact) => {
+          return (
+            contact.email && <Contact key={contact.email} contact={contact} />
+          );
+        })}
+    </motion.div>
   );
 }

@@ -1,25 +1,18 @@
 import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ReactComponent as CloseIcon } from '../assets/icons/closeSVG.svg';
 import Picker from 'emoji-picker-react';
 import ContactsPicker from './ContactsPicker';
-import { CLEAR_REPLY_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
-import sendMessagetoDB from '../helpers/sendMessage';
+import { CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
-
+import sendMessagetoDB from '../helpers/sendMessage';
 import {
-  AiFillStar,
-  AiFillDelete,
-  AiOutlineClose,
-  AiFillCamera,
-  AiOutlineSend,
-  AiOutlineSmile,
-  AiOutlineCloseCircle,
-  AiOutlineLoading,
-  AiOutlineCamera,
-} from 'react-icons/ai';
-import { RiShareForwardFill } from 'react-icons/ri';
-import { BiUndo } from 'react-icons/bi';
+  FullScreenLoadingIndicator,
+  CameraPreview,
+  ForwardMenu,
+  MessageToReply,
+  CapturedImagePreview,
+} from './helpers/index';
+import { AiFillCamera, AiOutlineSend, AiOutlineSmile } from 'react-icons/ai';
 import {
   getStorage,
   ref,
@@ -58,9 +51,6 @@ export default function MessageInput({ chatHistoryRef }) {
 
   // forwarding messages
   const forwardMode = useSelector((state) => state?.chatState.forwardMode);
-  const totalSelectedMessages = useSelector(
-    (state) => state?.chatState.totalSelectedMessages,
-  );
 
   if (focusInput) {
     inputRef.current.focus();
@@ -70,10 +60,6 @@ export default function MessageInput({ chatHistoryRef }) {
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
   }, [currentChatName]);
-
-  function openContactsPickerForForwarding() {
-    setOpenContactsPicker(true);
-  }
 
   async function sendMessage(e) {
     e.preventDefault();
@@ -102,7 +88,7 @@ export default function MessageInput({ chatHistoryRef }) {
     );
   }
 
-  function onEmojiClick(event, emojiObject) {
+  function onEmojiClick(_, emojiObject) {
     setMessage((prev) => prev + emojiObject.emoji);
     inputRef.current.focus();
   }
@@ -124,25 +110,11 @@ export default function MessageInput({ chatHistoryRef }) {
       });
   }
 
-  function captureImage() {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    setCapturedImage(canvas.toDataURL());
-    terminateImageSending();
-  }
-
   function closeCamera() {
     if (videoRef.current) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
       setCameraPreviewOn(false);
     }
-  }
-
-  function terminateImageSending() {
-    closeCamera();
   }
 
   function retake() {
@@ -179,73 +151,26 @@ export default function MessageInput({ chatHistoryRef }) {
   }
 
   if (forwardMode) {
-    return (
-      <div className="px-4 bg-selected">
-        <div className="flex items-center justify-between h-10 px-10">
-          <button onClick={() => dispatch(FORWARD_MODE_OFF())}>
-            <AiOutlineClose className="w-6 h-6" />
-          </button>
-          <span>{totalSelectedMessages} selected</span>
-          <div className="space-x-6">
-            <button>
-              <AiFillStar className="w-6 h-6" />
-            </button>
-            <button>
-              <AiFillDelete className="w-6 h-6" />
-            </button>
-            <button onClick={openContactsPickerForForwarding}>
-              <RiShareForwardFill className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return <ForwardMenu setOpenContactsPicker={setOpenContactsPicker} />;
   }
 
   return (
     currentChatName && (
       <div className="relative">
         {/* loading indicator */}
-        {loading && (
-          <div className="fixed inset-0 grid w-screen h-screen bg-white place-items-center bg-opacity-80">
-            <AiOutlineLoading className="w-12 h-12 spin" />
-          </div>
-        )}
+
+        {loading && <FullScreenLoadingIndicator />}
 
         {cameraPreviewOn && (
-          <div className="fixed inset-0 grid w-screen h-screen bg-white place-items-center bg-opacity-80">
-            <ClickAway onClickAway={closeCamera}>
-              <div className="max-w-xl">
-                <div className="flex items-center justify-end h-10 bg-blue-400">
-                  <AiOutlineCloseCircle
-                    onClick={terminateImageSending}
-                    className="w-6 h-6 ml-8 mr-4 text-white"
-                  />
-                </div>
-                {/* Camera feed */}
-                <video ref={videoRef} src="" className="w-full h-auto"></video>
-
-                <div className="flex items-center h-10 bg-blue-400">
-                  <button className="z-10 ml-auto mr-2">
-                    <AiOutlineCamera
-                      onClick={captureImage}
-                      className="w-16 h-16 p-2 mb-10 text-yellow-500 rounded-full shadow-lg cursor-pointer bg-dim"
-                    />
-                  </button>
-                </div>
-              </div>
-            </ClickAway>
-
-            <canvas
-              className={`w-full h-auto ${
-                capturedImage
-                  ? 'opacity-100'
-                  : 'opacity-0 w-0 h-0 fixed -bottom-full -top-full'
-              }`}
-              ref={canvasRef}
-            ></canvas>
-          </div>
+          <CameraPreview
+            closeCamera={closeCamera}
+            capturedImage={capturedImage}
+            canvasRef={canvasRef}
+            videoRef={videoRef}
+            setCapturedImage={setCapturedImage}
+          />
         )}
+
         {/* Emoji picker */}
         {currentChatName && openEmojiPicker && (
           <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
@@ -255,55 +180,18 @@ export default function MessageInput({ chatHistoryRef }) {
             />
           </ClickAway>
         )}
-        {/* Message to reply */}
-        {messageToReply && (
-          <div className="relative w-full p-2 pt-6 rounded-md rounded-bl-none rounded-br-none cursor-pointer bg-main">
-            <CloseIcon
-              onClick={() => dispatch(CLEAR_REPLY_MESSAGE(currentChatName))}
-              className="absolute w-4 h-4 top-1 right-4"
-            />
-            <div className="py-1 pl-2 border-l-8 border-yellow-700 rounded-md bg-dim">
-              {messageToReply.mediaUrl ? (
-                <div>
-                  <span>Photo</span>
-                  <img className="h-8 " src={messageToReply.mediaUrl} alt="" />
-                </div>
-              ) : (
-                <span> {messageToReply.message}</span>
-              )}
-            </div>
-          </div>
-        )}
-        {/* Image preview before upload */}
+
+        {messageToReply && <MessageToReply />}
+
         {capturedImage && (
-          <div className="relative shadow-md bg-dim">
-            {imageUploading && (
-              <div className="absolute inset-0 grid bg-white bg-opacity-50 place-items-center">
-                <AiOutlineLoading className="absolute w-12 h-12 spin" />
-              </div>
-            )}
-            <div className="flex justify-between py-1 bg-dim px-28">
-              <button
-                onClick={retake}
-                className="flex items-center px-2 rounded-md mr-28"
-              >
-                <BiUndo className="w-6 h-6" />
-                <span>Retake</span>
-              </button>
-              <button
-                onClick={() => setCapturedImage('')}
-                className="flex items-center px-2 rounded-md"
-              >
-                <AiOutlineClose className="w-6 h-6" />
-              </button>
-            </div>
-            <img
-              className="mx-auto bg-dim md:w-full xl:w-1/2 lg:w-2/3"
-              src={capturedImage}
-              alt=""
-            />
-          </div>
+          <CapturedImagePreview
+            capturedImage={capturedImage}
+            setCapturedImage={setCapturedImage}
+            imageUploading={imageUploading}
+            retake={retake}
+          />
         )}
+
         {/* Input methods */}
         <form
           onSubmit={sendMessage}

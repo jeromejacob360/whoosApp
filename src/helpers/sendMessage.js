@@ -18,6 +18,7 @@ export default async function sendMessagetoDB(
       if (message || mediaUrl) {
         let messageToReplyTrimmed = '';
         if (messageToReply) {
+          //remove messageToReply contained in itself if there is
           const { time, from, message, mediaUrl } = messageToReply;
           messageToReplyTrimmed = { time, from, message, mediaUrl };
         }

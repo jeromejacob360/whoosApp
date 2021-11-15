@@ -44,6 +44,7 @@ export default function MessageInput({ chatHistoryRef }) {
     (state) => state?.chatState.currentChatterEmail,
   );
   const currentUserName = useSelector((state) => state?.authState.user.email);
+
   const messageToReply =
     useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
     '';
@@ -157,8 +158,6 @@ export default function MessageInput({ chatHistoryRef }) {
   return (
     currentChatName && (
       <div className="relative">
-        {/* loading indicator */}
-
         {loading && <FullScreenLoadingIndicator />}
 
         {cameraPreviewOn && (
@@ -172,7 +171,7 @@ export default function MessageInput({ chatHistoryRef }) {
         )}
 
         {/* Emoji picker */}
-        {currentChatName && openEmojiPicker && (
+        {openEmojiPicker && (
           <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
             <Picker
               pickerStyle={{ width: '100%' }}

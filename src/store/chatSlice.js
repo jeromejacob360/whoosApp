@@ -93,33 +93,41 @@ export const chatSlice = createSlice({
     ADD_MESSAGE: (state, action) => {
       const { chatName, message, currentUserEmail } = action.payload;
 
+      //push message to state
       state.chats[chatName]
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
 
-      const senderEmail = chatName.replace(currentUserEmail, '');
-      const userWAContacts = state.userWAContacts;
-
-      let indexOfContact;
-
-      userWAContacts.forEach((contact, index) => {
-        if (contact.email === senderEmail) {
-          indexOfContact = index;
-          return;
-        }
-      });
-      const firstContact = userWAContacts[indexOfContact];
-      userWAContacts.splice(indexOfContact, 1);
-      userWAContacts.unshift(firstContact);
-
       // add to unread messages count
       if (
         chatName !== state.currentChatName &&
-        message.from !== action.payload.currentUserEmail
+        message.from !== action.payload.currentUserEmail &&
+        !message.deletedForMe.includes(currentUserEmail)
       ) {
         state.unreadMessages[chatName]
           ? state.unreadMessages[chatName]++
           : (state.unreadMessages[chatName] = 1);
+      }
+
+      const userWAContacts = state.userWAContacts;
+
+      if (userWAContacts.length > 1) {
+        //sort contacts list
+
+        //find the chat in the contacts list
+        const senderEmail = chatName.replace(currentUserEmail, '');
+        let indexOfContact;
+        userWAContacts.forEach((contact, index) => {
+          if (contact.email === senderEmail) {
+            indexOfContact = index;
+            return;
+          }
+        });
+
+        //sort!
+        const firstContact = userWAContacts[indexOfContact];
+        userWAContacts.splice(indexOfContact, 1);
+        userWAContacts.unshift(firstContact);
       }
     },
 

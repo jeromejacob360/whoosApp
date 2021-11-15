@@ -76,14 +76,13 @@ export default function ChatHistory({ chatHistoryRef }) {
         const q = query(
           collection(db, 'whatsApp/chats', chatName),
           // prevent reading flag as that will add to unread messages count
-          where('from', '>=', ''),
+          where('from', '>=', ''), //TODO limit this to last say, 50
         );
 
         const unsub = onSnapshot(q, (snapshot) => {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
-
               dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
               scrollToBottom();
             }

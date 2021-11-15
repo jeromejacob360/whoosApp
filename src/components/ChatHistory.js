@@ -10,7 +10,7 @@ import {
   FORWARD_MODE_OFF,
   MODIFY_MESSAGE,
 } from '../store/chatSlice';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
@@ -127,23 +127,21 @@ export default function ChatHistory({ chatHistoryRef }) {
           </button>
         </div>
       )}
-      <div className="flex flex-col justify-end">
-        <AnimatePresence>
+      <AnimatePresence>
+        <motion.div initial="false" className="flex flex-col justify-end">
           {messages &&
             messages.length > 0 &&
             messages.map((message) => {
               return !message?.deletedForMe.includes(currentUserName)
                 ? message.time && (
-                    <Chat
-                      chatHistoryRef={chatHistoryRef}
-                      key={message.time}
-                      message={message}
-                    />
+                    <motion.div exit={{ opacity: 0 }} layout key={message.time}>
+                      <Chat chatHistoryRef={chatHistoryRef} message={message} />
+                    </motion.div>
                   )
                 : null;
             })}
-        </AnimatePresence>
-      </div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

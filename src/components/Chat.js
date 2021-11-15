@@ -3,11 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   ADD_MESSAGE_TO_FORWARDS,
   REMOVE_MESSAGE_TO_FORWARDS,
-  REPLY,
 } from '../store/chatSlice';
 import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
-import { motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj }) {
@@ -86,7 +84,6 @@ export default function Chat({ message: messageObj }) {
       )}
 
       <div
-        exit={{ opacity: 0, scale: 0 }}
         className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
           messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
         }`}

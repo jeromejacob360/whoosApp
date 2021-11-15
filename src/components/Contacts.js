@@ -8,7 +8,7 @@ import { ADD_CHATNAMES } from '../store/chatSlice';
 
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Contacts() {
@@ -53,14 +53,19 @@ export default function Contacts() {
     return unsub;
   }, [currentUserEmail, dispatch]);
 
-  return (
-    <motion.div layout>
-      {userWAContacts &&
-        userWAContacts?.map((contact) => {
+  if (userWAContacts.length > 0)
+    return (
+      <AnimatePresence>
+        {userWAContacts?.map((contact) => {
           return (
-            contact.email && <Contact key={contact.email} contact={contact} />
+            contact.email && (
+              <motion.div layout key={contact.email}>
+                <Contact contact={contact} />
+              </motion.div>
+            )
           );
         })}
-    </motion.div>
-  );
+      </AnimatePresence>
+    );
+  else return null;
 }

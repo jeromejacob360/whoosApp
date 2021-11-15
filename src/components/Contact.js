@@ -9,7 +9,6 @@ import noAvatar from '../images/no_avatar.png';
 import { useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
-import { motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Contact({ contact }) {
@@ -76,9 +75,7 @@ export default function Contact({ contact }) {
   }
 
   return (
-    <motion.div
-      layout
-      layoutId={`contact-${contact.email}`}
+    <div
       className={`relative flex items-center px-3 py-2 space-x-2 duration-100 border cursor-pointer hover:border-dodgerblue ${
         currentChatName === chatName ? 'bg-blue-200' : 'bg-main'
       }`}
@@ -104,6 +101,6 @@ export default function Contact({ contact }) {
           {unreadMessagecount}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

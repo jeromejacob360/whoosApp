@@ -12,7 +12,7 @@ export default function Options({ setOpenOptions }) {
   }
   return (
     <ClickAway
-      classNames="absolute top-0 -right-8"
+      className="absolute top-0 -right-8"
       onClickAway={() => setOpenOptions(false)}
     >
       <motion.div

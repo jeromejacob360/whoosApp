@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.3.0",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.1.0",
     "@reduxjs/toolkit": "^1.6.2",
     "emoji-picker-react": "^3.4.8",
     "firebase": "^9.1.2",

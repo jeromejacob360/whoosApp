@@ -1,10 +1,19 @@
+import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import Options from './optionMenus/Options';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { MdMessage } from 'react-icons/md';
+
 export default function Header() {
+  const imageUrl = useSelector((state) => state.authState.user.photoURL);
+  const [openOptions, setOpenOptions] = useState(false);
+
   return (
-    <header className="relative flex items-center justify-between px-4 border border-main bg-main h-14">
+    <header className="relative flex items-center justify-between px-4 border bg-titleBG h-14">
       <div>
         <img
           className="object-cover w-10 h-10 rounded-full cursor-pointer"
-          src="https://picsum.photos/200"
+          src={imageUrl}
           alt=""
         />
       </div>
@@ -21,19 +30,13 @@ export default function Header() {
             ></path>
           </svg>
         </div>
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path
-            fill="currentColor"
-            d="M19.005 3.175H4.674C3.642 3.175 3 3.789 3 4.821V21.02l3.544-3.514h12.461c1.033 0 2.064-1.06 2.064-2.093V4.821c-.001-1.032-1.032-1.646-2.064-1.646zm-4.989 9.869H7.041V11.1h6.975v1.944zm3-4H7.041V7.1h9.975v1.944z"
-          ></path>
-        </svg>
-        <svg viewBox="0 0 24 24" width="24" height="24">
-          <path
-            fill="currentColor"
-            d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 9zm0 6a2 2 0 1 0-.001 3.999A2 2 0 0 0 12 15z"
-          ></path>
-        </svg>
+        <MdMessage size={23} />
+        <BsThreeDotsVertical
+          size={20}
+          onClick={() => setOpenOptions(!openOptions)}
+        />
       </div>
+      {openOptions && <Options setOpenOptions={setOpenOptions} />}
     </header>
   );
 }

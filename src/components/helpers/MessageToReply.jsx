@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,10 +16,16 @@ export default function MessageToReply() {
     '';
 
   return (
-    <div className="relative w-full p-2 pt-6 rounded-md rounded-bl-none rounded-br-none cursor-pointer bg-main">
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: -50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ height: 0, opacity: 0 }}
+      className="w-full p-2 rounded-md rounded-bl-none rounded-br-none cursor-pointer bg-main"
+    >
       <AiOutlineClose
         onClick={() => dispatch(CLEAR_REPLY_MESSAGE(currentChatName))}
-        className="absolute w-4 h-4 top-1 right-4"
+        className="w-4 h-4 top-1 right-4"
       />
       <div className="py-1 pl-2 border-l-8 border-yellow-700 rounded-md bg-dim">
         {messageToReply.mediaUrl ? (
@@ -30,6 +37,6 @@ export default function MessageToReply() {
           <span> {messageToReply.message}</span>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ADD_MESSAGE_TO_FORWARDS,
@@ -15,6 +15,8 @@ export default function Chat({ message: messageObj }) {
   const [largeMessageCutoff, setLargeMessageCutoff] = useState(50);
   const [selected, setSelected] = useState(false);
   const [imageToPreview, setImageToPreview] = useState('');
+
+  const imageRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -66,6 +68,11 @@ export default function Chat({ message: messageObj }) {
     setSelected((prev) => !prev);
   }
 
+  useEffect(() => {
+    // prevent image drag to allow drag to reply
+    if (imageRef.current) imageRef.current.ondragstart = () => false;
+  }, []);
+
   return (
     <div
       onClick={forwardMode ? addOrRemove : null}
@@ -78,14 +85,16 @@ export default function Chat({ message: messageObj }) {
     >
       {/* Image modal */}
       {imageToPreview && (
-        <Modal onClickAway={() => setImageToPreview('')}>
-          <img src={imageToPreview} alt="preview" />
-        </Modal>
+        <div className="fixed z-50 w-screen h-screen bg-red-300">
+          <Modal onClickAway={() => setImageToPreview('')}>
+            <img src={imageToPreview} alt="preview" />
+          </Modal>
+        </div>
       )}
 
       <div
         className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
-          messageIsFromMe ? 'bg-blue-200' : 'bg-WaGreen'
+          messageIsFromMe ? 'bg-chatGreen' : 'bg-whiteBG'
         }`}
       >
         {/* Options button */}
@@ -125,6 +134,7 @@ export default function Chat({ message: messageObj }) {
               <div>
                 <span>Photo</span>
                 <img
+                  ref={imageRef}
                   className="h-8 "
                   src={messageObj.messageToReply.mediaUrl}
                   alt=""
@@ -137,6 +147,7 @@ export default function Chat({ message: messageObj }) {
 
         {messageObj.mediaUrl && (
           <img
+            ref={imageRef}
             onClick={() => setImageToPreview(messageObj.mediaUrl)}
             className="rounded-md cursor-pointer"
             src={messageObj.mediaUrl}

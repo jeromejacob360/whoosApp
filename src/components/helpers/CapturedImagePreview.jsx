@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { AiOutlineClose, AiOutlineLoading } from 'react-icons/ai';
 import { BiUndo } from 'react-icons/bi';
@@ -9,7 +10,12 @@ export default function CapturedImagePreview({
   capturedImage,
 }) {
   return (
-    <div className="relative shadow-md bg-dim">
+    <motion.div
+      className="relative shadow-md bg-dim"
+      initial={{ opacity: 0, scale: 0.8, y: -20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+    >
       {imageUploading && (
         <div className="absolute inset-0 grid bg-white bg-opacity-50 place-items-center">
           <AiOutlineLoading className="absolute w-12 h-12 spin" />
@@ -35,6 +41,6 @@ export default function CapturedImagePreview({
         src={capturedImage}
         alt=""
       />
-    </div>
+    </motion.div>
   );
 }

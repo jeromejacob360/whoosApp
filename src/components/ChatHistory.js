@@ -9,8 +9,11 @@ import {
   DELETE_MESSAGE,
   FORWARD_MODE_OFF,
   MODIFY_MESSAGE,
+  REPLY,
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
+import bgImage from '../assets/pattern.png';
+import Intro from '../pages/Intro';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
@@ -44,9 +47,9 @@ export default function ChatHistory({ chatHistoryRef }) {
   }
 
   //scroll to bottom on chat open
-  useEffect(() => {
-    scrollToBottom('auto');
-  }, [scrollToBottom]);
+  // useEffect(() => {
+  //   scrollToBottom('auto');
+  // }, [scrollToBottom]);
 
   //turn off forward mode when chat changes
   useEffect(() => {
@@ -105,10 +108,13 @@ export default function ChatHistory({ chatHistoryRef }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatHistoryRef, chatNames, dispatch]);
 
+  if (!messages) return <Intro />;
+
   return (
     <div
       ref={chatHistoryRef}
-      className="flex-1 overflow-x-hidden overflow-y-scroll"
+      className="flex-1 h-full overflow-x-hidden overflow-y-scroll"
+      style={{ backgroundImage: `url(${bgImage})` }}
     >
       {addOptionsToSaveContact && (
         <div className="flex p-4 space-x-4 shadow-sm bg-dim">
@@ -127,19 +133,27 @@ export default function ChatHistory({ chatHistoryRef }) {
         </div>
       )}
       <AnimatePresence>
-        <motion.div initial="false" className="flex flex-col justify-end">
+        <ul className="flex flex-col justify-end">
           {messages &&
             messages.length > 0 &&
             messages.map((message) => {
               return !message?.deletedForMe.includes(currentUserName)
                 ? message.time && (
-                    <motion.div exit={{ opacity: 0 }} layout key={message.time}>
+                    <motion.li
+                      drag="x"
+                      dragConstraints={{ left: 0, right: 0 }}
+                      whileDrag={{ scale: 0.9 }}
+                      onDragEnd={() => dispatch(REPLY({ message }))}
+                      exit={{ opacity: 0 }}
+                      layout
+                      key={message.time}
+                    >
                       <Chat chatHistoryRef={chatHistoryRef} message={message} />
-                    </motion.div>
+                    </motion.li>
                   )
                 : null;
             })}
-        </motion.div>
+        </ul>
       </AnimatePresence>
     </div>
   );

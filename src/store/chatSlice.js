@@ -6,6 +6,7 @@ const initialState = {
   currentChatName: '',
   userContacts: '',
   currentChatterEmail: '',
+  currentChatterName: '',
   chatNames: '',
   userWAContacts: '',
   messageToReply: '',
@@ -53,15 +54,17 @@ export const chatSlice = createSlice({
     },
 
     SET_CURRENT_CHAT: (state, action) => {
-      const { currentUserEmail, currentChatterEmail, contactName } =
+      const { currentUserEmail, currentChatterEmail, senderName, avatar } =
         action.payload;
+
       const currentChatName = chatNameGenerator(
         currentUserEmail,
         currentChatterEmail,
       );
       state.currentChatName = currentChatName;
       state.currentChatterEmail = currentChatterEmail;
-      state.currentChatterName = contactName;
+      state.currentChatterName = senderName;
+      state.currentUserAvatar = avatar;
     },
 
     CLEAR_CURRENT_CHAT: (state) => {

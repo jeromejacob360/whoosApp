@@ -5,13 +5,7 @@ import ContactsPicker from './ContactsPicker';
 import { CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 import sendMessagetoDB from '../helpers/sendMessage';
-import {
-  FullScreenLoadingIndicator,
-  CameraPreview,
-  ForwardMenu,
-  MessageToReply,
-  CapturedImagePreview,
-} from './helpers/index';
+import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
 import { AiFillCamera, AiOutlineSend, AiOutlineSmile } from 'react-icons/ai';
 import {
   getStorage,
@@ -19,6 +13,9 @@ import {
   uploadString,
   getDownloadURL,
 } from 'firebase/storage';
+import { AnimatePresence } from 'framer-motion';
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 //----------------------------------------------//
 export default function MessageInput({ chatHistoryRef }) {
@@ -30,6 +27,10 @@ export default function MessageInput({ chatHistoryRef }) {
   const [loading, setLoading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [capturedImage, setCapturedImage] = useState('');
+  const [chatHistoryDimensions, setChatHistoryDimensions] = useState({
+    height: 0,
+    width: 0,
+  });
 
   const inputRef = useRef();
   const videoRef = useRef();
@@ -54,10 +55,41 @@ export default function MessageInput({ chatHistoryRef }) {
   const forwardMode = useSelector((state) => state?.chatState.forwardMode);
 
   if (focusInput) {
-    inputRef.current.focus();
+    setTimeout(() => {
+      inputRef.current.focus();
+    }, 0);
   }
 
   //Side effects
+
+  useEffect(() => {
+    if (chatHistoryRef.current) {
+      const h = chatHistoryRef.current.getBoundingClientRect().height + 'px';
+      const tempW = chatHistoryRef.current.getBoundingClientRect().width6;
+      const w = tempW ? tempW + 'px' : '100%';
+
+      setChatHistoryDimensions({ height: h, width: w });
+    }
+  }, [chatHistoryRef]);
+
+  useEffect(() => {
+    let listener;
+    if (chatHistoryRef.current) {
+      listener = window.addEventListener('resize', () => {
+        const clientHeight =
+          chatHistoryRef.current.getBoundingClientRect().height + 'px';
+        const clientWidth =
+          chatHistoryRef.current.getBoundingClientRect().width + 'px';
+
+        setChatHistoryDimensions({
+          height: clientHeight,
+          width: clientWidth,
+        });
+      });
+    }
+    return listener;
+  }, [chatHistoryRef, currentChatName]);
+
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
   }, [currentChatName]);
@@ -99,11 +131,11 @@ export default function MessageInput({ chatHistoryRef }) {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(function (stream) {
-        setLoading(false);
         setCameraPreviewOn(true);
         const video = videoRef.current;
         video.srcObject = stream;
         video.onloadedmetadata = video.play;
+        setLoading(false);
       })
       .catch(function (err) {
         setLoading(false);
@@ -158,17 +190,25 @@ export default function MessageInput({ chatHistoryRef }) {
   return (
     currentChatName && (
       <div className="relative">
-        {loading && <FullScreenLoadingIndicator />}
-
-        {cameraPreviewOn && (
-          <CameraPreview
-            closeCamera={closeCamera}
-            capturedImage={capturedImage}
-            canvasRef={canvasRef}
-            videoRef={videoRef}
-            setCapturedImage={setCapturedImage}
-          />
+        {loading && (
+          <div className="absolute" style={{ left: '.75rem', top: '.6rem' }}>
+            <CircularProgress size={35} />
+          </div>
         )}
+        <AnimatePresence>
+          {(cameraPreviewOn || capturedImage) && (
+            <CameraPreview
+              chatHistoryDimensions={chatHistoryDimensions}
+              canvasRef={canvasRef}
+              videoRef={videoRef}
+              capturedImage={capturedImage}
+              setCapturedImage={setCapturedImage}
+              imageUploading={imageUploading}
+              retake={retake}
+              closeCamera={closeCamera}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Emoji picker */}
         {openEmojiPicker && (
@@ -179,50 +219,46 @@ export default function MessageInput({ chatHistoryRef }) {
             />
           </ClickAway>
         )}
-
-        {messageToReply && <MessageToReply />}
-
-        {capturedImage && (
-          <CapturedImagePreview
-            capturedImage={capturedImage}
-            setCapturedImage={setCapturedImage}
-            imageUploading={imageUploading}
-            retake={retake}
-          />
-        )}
+        <AnimatePresence>
+          {messageToReply && <MessageToReply />}
+        </AnimatePresence>
 
         {/* Input methods */}
-        <form
-          onSubmit={sendMessage}
-          className={`flex px-4 py-2 border shadow-md bg-main items-center ${
-            !currentChatName && 'no-cursor'
-          }`}
-        >
-          <AiFillCamera onClick={openCamera} className={`w-6 h-6 mr-4`} />
-          <input
-            ref={inputRef}
-            disabled={!currentChatName}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 px-4 py-1 border rounded-full"
-            placeholder="Type a message.."
-            type="text"
-          ></input>
-          <span
-            onClick={() => setOpenEmojiPicker((prev) => !prev)}
-            className={`px-2 py-1`}
+        {!cameraPreviewOn && (
+          <form
+            onSubmit={sendMessage}
+            className={`flex px-4 py-2 border shadow-md bg-main items-center ${
+              !currentChatName && 'no-cursor'
+            }`}
           >
-            <AiOutlineSmile className="w-6 h-6" />
-          </span>
+            <div tabIndex="0" onClick={openCamera}>
+              <AiFillCamera className={`w-6 h-6 mr-4`} />
+            </div>
+            <input
+              ref={inputRef}
+              disabled={!currentChatName}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="flex-1 px-4 py-1 border rounded-full"
+              placeholder="Type a message.."
+              type="text"
+            ></input>
+            <span
+              onClick={() => setOpenEmojiPicker((prev) => !prev)}
+              className={`px-2 py-1`}
+            >
+              <AiOutlineSmile className="w-6 h-6" />
+            </span>
 
-          <button
-            type="submit"
-            disabled={!currentChatName}
-            className="px-3 py-1"
-          >
-            <AiOutlineSend className="w-6 h-6" />
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={!currentChatName}
+              className="px-3 py-1"
+            >
+              <AiOutlineSend className="w-6 h-6" />
+            </button>
+          </form>
+        )}
       </div>
     )
   );

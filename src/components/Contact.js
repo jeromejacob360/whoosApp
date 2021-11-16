@@ -16,6 +16,7 @@ export default function Contact({ contact }) {
 
   const [contactHasName, setContactHasName] = useState(true);
   const [chatOpened, setChatOpened] = useState(false);
+  const [contactName, setContactName] = useState('');
 
   //Access the store
   const currentUserEmail = useSelector((state) => state?.authState.user.email);
@@ -59,9 +60,13 @@ export default function Contact({ contact }) {
     }
   }, [contactHasName, chatName, dispatch]);
 
-  const contactName = contactHasName
-    ? `${contact.firstName} ${contact.surname ? contact.surname : ''}`
-    : contact.email;
+  useEffect(() => {
+    const contactName = contactHasName
+      ? `${contact.firstName} ${contact.surname ? contact.surname : ''}`
+      : contact.email;
+
+    setContactName(contactName);
+  }, [contactHasName, contact]);
 
   function setChat() {
     setChatOpened(true);
@@ -70,34 +75,37 @@ export default function Contact({ contact }) {
         currentUserEmail,
         currentChatterEmail: contact.email,
         senderName: contactName,
+        avatar: contact.imageURL || noAvatar,
       }),
     );
   }
 
   return (
     <div
-      className={`relative flex items-center px-3 py-2 space-x-2 duration-100 border cursor-pointer hover:border-dodgerblue ${
-        currentChatName === chatName ? 'bg-blue-200' : 'bg-main'
+      className={`relative flex items-center px-3 duration-100 cursor-pointer ${
+        currentChatName === chatName
+          ? 'bg-darkBG'
+          : 'bg-whiteBG hover:bg-hoverBG'
       }`}
       onClick={setChat}
     >
-      <div>
+      <div className="mr-3 min-w-max">
         <img
-          className="object-cover rounded-full w-14 h-14"
+          className="object-cover w-12 h-12 rounded-full"
           src={contact.imageURL || noAvatar}
           alt=""
         />
       </div>
-      <div>
+      <div className="flex items-center w-full p-2 py-8 border-b h-14">
         {!contactHasName && !chatOpened && (
           <div className="absolute text-xs text-red-600 top-2">New!</div>
         )}
-        <h4 className={`${contactHasName ? 'text-black' : 'text-blue-800'}`}>
+        <h4 className={` ${contactHasName ? 'text-black' : 'text-blue-800'}`}>
           {contactName}
         </h4>
       </div>
       {unreadMessagecount > 0 && (
-        <div className="absolute grid w-6 h-6 text-xs text-white bg-blue-500 rounded-full place-items-center right-4">
+        <div className="absolute grid w-5 h-5 text-xs text-white rounded-full bg-flourescentGreen place-items-center right-4">
           {unreadMessagecount}
         </div>
       )}

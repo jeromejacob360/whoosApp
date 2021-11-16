@@ -15,7 +15,7 @@ function App() {
   useAuth();
 
   return (
-    <div className="w-screen h-screen mx-auto ">
+    <div className="w-screen h-screen mx-auto max-w-screen-2xl">
       <Router>
         <Switch>
           <Route exact path="/">

@@ -98,6 +98,13 @@ export const chatSlice = createSlice({
     ADD_MESSAGE: (state, action) => {
       const { chatName, message, currentUserEmail } = action.payload;
 
+      const chat = state.chats[chatName];
+      if (chat)
+        for (let i = chat.length - 1; i >= 0; i--) {
+          const existingMessage = chat[i];
+          if (existingMessage.time === message.time) return;
+        }
+
       //push message to state
       state.chats[chatName]
         ? state.chats[chatName].push(message)
@@ -193,7 +200,7 @@ export const chatSlice = createSlice({
 
     ADD_MESSAGE_TO_FORWARDS: (state, action) => {
       const { time } = action.payload;
-      state.selectedMessages[time] = action.payload.message;
+      state.selectedMessages[time] = action.payload;
       state.totalSelectedMessages = calculateForwardMessagesLength(state);
     },
 

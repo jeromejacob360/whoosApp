@@ -2,7 +2,7 @@ import Chat from './Chat';
 import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ADD_MESSAGE,
   CLEAR_UNREAD_MESSAGES,
@@ -33,23 +33,10 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
+
+  const forwardMode = useSelector((state) => state?.chatState?.forwardMode);
   const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  function scrollToBottom(behavior = 'smooth') {
-    chatHistoryRef.current &&
-      chatHistoryRef.current.scrollTo({
-        left: 0,
-        top: chatHistoryRef.current.scrollHeight,
-        behavior: behavior,
-      });
-  }
-
-  //scroll to bottom on chat open
-  // useEffect(() => {
-  //   scrollToBottom('auto');
-  // }, [scrollToBottom]);
 
   //turn off forward mode when chat changes
   useEffect(() => {
@@ -60,6 +47,17 @@ export default function ChatHistory({ chatHistoryRef }) {
   useEffect(() => {
     dispatch(CLEAR_UNREAD_MESSAGES());
   }, [dispatch, currentChatterEmail]);
+
+  //scroll to bottom when chat is opened
+
+  useEffect(() => {
+    if (chatHistoryRef.current)
+      setTimeout(() => {
+        chatHistoryRef.current.scrollTop =
+          chatHistoryRef.current.scrollHeight -
+          chatHistoryRef.current.clientHeight;
+      }, 0);
+  }, [chatHistoryRef]);
 
   useEffect(() => {
     if (namelessChats.includes(currentChatName)) {
@@ -87,7 +85,6 @@ export default function ChatHistory({ chatHistoryRef }) {
             if (change.type === 'added') {
               const message = change.doc.data();
               dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
-              scrollToBottom();
             }
             if (change.type === 'modified') {
               const message = change.doc.data();
@@ -102,19 +99,23 @@ export default function ChatHistory({ chatHistoryRef }) {
         unsubList.push(unsub);
       });
     }
-    scrollToBottom();
 
     return unsubList.forEach((unsub) => unsub);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatHistoryRef, chatNames, dispatch]);
+  }, [chatNames, currentUserEmail, dispatch]);
 
   if (!messages) return <Intro />;
 
   return (
     <div
       ref={chatHistoryRef}
-      className="flex-1 h-full overflow-x-hidden overflow-y-scroll"
-      style={{ backgroundImage: `url(${bgImage})` }}
+      className="flex-1 h-full overflow-x-hidden overflow-y-scroll duration-500"
+      style={{
+        backgroundImage: `${
+          forwardMode
+            ? 'linear-gradient(rgba(229, 221, 213, 1), rgba(229, 221, 213, 1)),'
+            : ''
+        } url(${bgImage})`,
+      }}
     >
       {addOptionsToSaveContact && (
         <div className="flex p-4 space-x-4 shadow-sm bg-dim">

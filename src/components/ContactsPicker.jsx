@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { chatNameGenerator } from '../helpers/formatters';
 import sendMessagetoDB from '../helpers/sendMessage';
-import { FORWARD_MODE_OFF } from '../store/chatSlice';
+import { ADD_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 
 export default function ContactsPicker({ setOpenContactsPicker }) {
@@ -13,15 +13,18 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
   const userWAContacts = useSelector(
     (state) => state?.chatState?.userWAContacts,
   );
-  const currentUserName = useSelector((state) => state?.authState.user.email);
+  const currentChatName = useSelector(
+    (state) => state?.chatState.currentChatName,
+  );
 
   const messagesToForward = useSelector(
     (state) => state?.chatState.selectedMessages,
   );
-
+  const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentChatterEmail = useSelector(
     (state) => state?.chatState.currentChatterEmail,
   );
+  const currentUserName = useSelector((state) => state?.authState.user.email);
 
   function addOrRemoveContact(e, contact) {
     e.target.checked
@@ -33,20 +36,32 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
 
   async function sendAway() {
     const argsList = [];
+    const messages = Object.values(messagesToForward);
     selectedContacts.forEach((contact) => {
       const currentChatName = chatNameGenerator(contact, currentUserName);
-      const messages = Object.values(messagesToForward);
       messages.forEach((message) => {
-        argsList.push([message, contact, currentUserName, currentChatName]);
+        argsList.push({ currentChatName, message });
       });
     });
 
     setOpenContactsPicker(false);
 
     // send messages to each contact one at a time
-    for (let i = 0; i < argsList.length; i++) {
-      await sendMessagetoDB(...argsList[i]);
-    }
+    // for (let i = 0; i < argsList.length; i++) {
+    //   const [message, currentChatName] = argsList[i];
+
+    argsList.forEach(async (obj) => {
+      const { currentChatName, message } = obj;
+      dispatch(
+        ADD_MESSAGE({
+          chatName: currentChatName,
+          message,
+          currentUserEmail,
+        }),
+      );
+
+      await sendMessagetoDB({ newMessage: message, currentChatName });
+    });
   }
 
   function endForwardMode() {

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Picker from 'emoji-picker-react';
 import ContactsPicker from './ContactsPicker';
-import { CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
+import { ADD_MESSAGE, CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 import sendMessagetoDB from '../helpers/sendMessage';
 import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
@@ -31,7 +31,7 @@ export default function MessageInput({ chatHistoryRef }) {
   const [photoMode, setPhotoMode] = useState(false);
 
   const [imageUploading, setImageUploading] = useState(false);
-  const [capturedImage, setCapturedImage] = useState(false);
+  const [capturedImage, setCapturedImage] = useState('');
   const [attachOptions, setAttachOptions] = useState(false);
   const [chatHistoryDimensions, setChatHistoryDimensions] = useState({
     height: 0,
@@ -44,11 +44,12 @@ export default function MessageInput({ chatHistoryRef }) {
   const dispatch = useDispatch();
 
   //Access the store
-  const currentChatName = useSelector(
-    (state) => state?.chatState.currentChatName,
-  );
+  const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentChatterEmail = useSelector(
     (state) => state?.chatState.currentChatterEmail,
+  );
+  const currentChatName = useSelector(
+    (state) => state?.chatState.currentChatName,
   );
   const currentUserName = useSelector((state) => state?.authState.user.email);
 
@@ -82,28 +83,56 @@ export default function MessageInput({ chatHistoryRef }) {
     e.preventDefault();
     setPhotoMode(false);
     setOpenEmojiPicker(false);
+
+    let mediaUrl = '';
+    let messageToReplyTrimmed = '';
+
     if (messageToReply) {
+      //remove messageToReply contained in itself if there is
+
+      messageToReplyTrimmed = { ...messageToReply };
+      messageToReplyTrimmed.messageToReply &&
+        delete messageToReplyTrimmed.messageToReply;
       dispatch(CLEAR_REPLY_MESSAGE());
     }
 
-    let mediaUrl = '';
+    const newMessage = {
+      time: Date.now(),
+      message,
+      mediaUrl: capturedImage,
+      from: currentUserName,
+      to: currentChatterEmail,
+      deletedForMe: [],
+      messageToReply: messageToReplyTrimmed,
+    };
+
+    dispatch(
+      ADD_MESSAGE({
+        chatName: currentChatName,
+        message: newMessage,
+        currentUserEmail,
+      }),
+    );
+    setTimeout(() => {
+      chatHistoryRef.current.scrollTop =
+        chatHistoryRef.current.scrollHeight -
+        chatHistoryRef.current.clientHeight;
+    }, 0);
+
+    setMessage('');
+
     if (capturedImage) {
       setImageUploading(true);
       mediaUrl = await uploadImage();
+      console.log(`mediaUrl`, mediaUrl);
       setCapturedImage('');
       setImageUploading(false);
     }
 
-    await sendMessagetoDB(
-      message,
-      currentChatterEmail,
-      currentUserName,
+    await sendMessagetoDB({
+      newMessage: { ...newMessage, mediaUrl },
       currentChatName,
-      setMessage,
-      chatHistoryRef,
-      messageToReply,
-      mediaUrl,
-    );
+    });
   }
 
   function onEmojiClick(_, emojiObject) {

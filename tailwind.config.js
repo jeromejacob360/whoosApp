@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         dim: '#f2f2f2',
         main: '#f7faf9',
-        selected: '#e4e6eb',
+        selected: '#00968814',
         icons: '#65676b',
         mutedText: '#ababab',
         dodgerblue: '#1877f2',

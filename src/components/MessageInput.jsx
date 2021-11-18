@@ -8,6 +8,7 @@ import sendMessagetoDB from '../helpers/sendMessage';
 import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
 import { IoMdHappy } from 'react-icons/io';
 import AttachIcon from '../assets/svgs/Attach.js';
+import Send from '../assets/svgs/Send.js';
 import Mic from '../assets/svgs/Mic';
 
 import {
@@ -76,12 +77,13 @@ export default function MessageInput({ chatHistoryRef }) {
     inputRef.current && inputRef.current.focus();
   }, [currentChatName]);
 
+  //send message
   async function sendMessage(e) {
     e.preventDefault();
     setPhotoMode(false);
     setOpenEmojiPicker(false);
     if (messageToReply) {
-      dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
+      dispatch(CLEAR_REPLY_MESSAGE());
     }
 
     let mediaUrl = '';
@@ -216,7 +218,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               className="px-3 py-1"
             >
-              <Mic />
+              {capturedImage ? <Send /> : <Mic />}
             </button>
           </form>
         )}

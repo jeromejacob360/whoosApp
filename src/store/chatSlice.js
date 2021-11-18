@@ -173,8 +173,8 @@ export const chatSlice = createSlice({
       state.focusInput = true;
     },
 
-    CLEAR_REPLY_MESSAGE: (state, action) => {
-      const currentChatName = action.payload;
+    CLEAR_REPLY_MESSAGE: (state) => {
+      const currentChatName = state.currentChatName;
       state.messageToReply[currentChatName] = '';
       state.focusInput = false;
     },

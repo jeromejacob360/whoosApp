@@ -24,7 +24,7 @@ export default function MessageToReply() {
       className="w-full p-2 rounded-md rounded-bl-none rounded-br-none cursor-pointer bg-main"
     >
       <AiOutlineClose
-        onClick={() => dispatch(CLEAR_REPLY_MESSAGE(currentChatName))}
+        onClick={() => dispatch(CLEAR_REPLY_MESSAGE())}
         className="w-4 h-4 top-1 right-4"
       />
       <div className="py-1 pl-2 border-l-8 border-yellow-700 rounded-md bg-dim">

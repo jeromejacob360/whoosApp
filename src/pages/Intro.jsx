@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import intro from '../assets/intro.jpg';
 import { IoMdLaptop } from 'react-icons/io';
 import { motion } from 'framer-motion';
 
 let isRendered = false;
-
 export default function Intro() {
   useEffect(() => {
     isRendered = true;
@@ -16,8 +15,12 @@ export default function Intro() {
       style={{ color: 'rgba(0,0,0,0.45)', minWidth: '400px' }}
     >
       <motion.img
-        initial={isRendered ? 'false' : { scale: 0.8 }}
-        animate={{ scale: 1, transition: { ease: 'linear', duration: 0.1 } }}
+        initial={isRendered ? 'false' : { scale: 0.8, opacity: 0.8 }}
+        animate={{
+          scale: 1,
+          opacity: 1,
+          transition: { ease: 'linear', duration: 0.2 },
+        }}
         src={intro}
         alt=""
         className="object-contain h-72 w-72"
@@ -27,7 +30,7 @@ export default function Intro() {
         animate={{
           y: 0,
           opacity: 1,
-          transition: { ease: 'linear', duration: 0.1 },
+          transition: { ease: 'linear', duration: 0.2 },
         }}
       >
         <h1 className="pt-8 text-4xl font-thin" style={{ color: '#525252' }}>
@@ -37,7 +40,7 @@ export default function Intro() {
           WhatsApp connects to your phone to sync messages. To reduce data
           usage, connect your phone to Wi-Fi.
         </p>
-        <footer className="flex items-center">
+        <footer className="flex items-center justify-center">
           <IoMdLaptop size={20} className="cursor-default" />
           <p>
             Make calls from desktop with WhatsApp for Windows.{' '}

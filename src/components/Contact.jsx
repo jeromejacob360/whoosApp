@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { chatNameGenerator } from '../helpers/formatters';
+import { chatNameGenerator, textTrimmer } from '../helpers/formatters';
 import {
   NAMELESS_CHAT,
   REMOVE_NAMELESS_CHAT,
   SET_CURRENT_CHAT,
 } from '../store/chatSlice';
-import noAvatar from '../images/no_avatar.png';
+import noAvatar from '../assets/images/no_avatar.png';
 import { useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
+import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Contact({ contact }) {
@@ -27,6 +28,10 @@ export default function Contact({ contact }) {
   const chatName = chatNameGenerator(contact.email, currentUserEmail);
   const unreadMessagecount = useSelector(
     (state) => state?.chatState?.unreadMessages[chatName],
+  );
+
+  const lastMessage = useSelector(
+    (state) => state?.chatState?.lastMessages[chatName],
   );
 
   //Check if the contact has a name
@@ -82,7 +87,7 @@ export default function Contact({ contact }) {
 
   return (
     <div
-      className={`relative flex items-center px-3 duration-100 cursor-pointer ${
+      className={`relative w-96 flex items-center px-3 duration-100 cursor-pointer ${
         currentChatName === chatName
           ? 'bg-darkBG'
           : 'bg-whiteBG hover:bg-hoverBG'
@@ -96,19 +101,44 @@ export default function Contact({ contact }) {
           alt=""
         />
       </div>
-      <div className="flex items-center w-full p-2 py-8 border-b h-14">
+      <div className="flex flex-col items-start justify-center w-full px-2 border-b border-darkBG h-18">
         {!contactHasName && !chatOpened && (
           <div className="absolute text-xs text-red-600 top-2">New!</div>
         )}
-        <h4 className={` ${contactHasName ? 'text-black' : 'text-blue-800'}`}>
-          {contactName}
-        </h4>
-      </div>
-      {unreadMessagecount > 0 && (
-        <div className="absolute grid w-5 h-5 text-xs text-white rounded-full bg-flourescentGreen place-items-center right-4">
-          {unreadMessagecount}
+        <div className="flex items-center justify-between w-full">
+          <h4
+            className={` ${contactHasName ? 'text-black' : 'text-blue-800'} ${
+              unreadMessagecount > 0 ? 'font-medium' : ''
+            }`}
+          >
+            {contactName}
+          </h4>
+          <p className="text-xs lowercase text-mutedText">
+            {lastMessage?.time &&
+              new Date(lastMessage?.time).toLocaleTimeString()}
+          </p>
         </div>
-      )}
+        <p
+          className={`text-sm text-mutedText ${
+            unreadMessagecount > 0 ? 'font-bold text-black' : ''
+          }`}
+        >
+          {lastMessage?.message && textTrimmer(lastMessage?.message)}
+        </p>
+      </div>
+
+      <AnimatePresence>
+        {unreadMessagecount > 0 && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ x: 20, opacity: 0, transition: { ease: 'linear' } }}
+            className="absolute grid w-5 h-5 text-xs text-white rounded-full bg-unreadBadgeGreen place-items-center right-6 top-10"
+          >
+            {unreadMessagecount}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

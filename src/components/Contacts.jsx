@@ -58,7 +58,7 @@ export default function Contacts() {
       <AnimatePresence>
         {userWAContacts?.map((contact) => {
           return (
-            contact.email && (
+            contact?.email && (
               <motion.div layout key={contact.email}>
                 <Contact contact={contact} />
               </motion.div>

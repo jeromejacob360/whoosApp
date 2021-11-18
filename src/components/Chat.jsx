@@ -12,7 +12,7 @@ export default function Chat({ message: messageObj }) {
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
-  const [largeMessageCutoff, setLargeMessageCutoff] = useState(50);
+  const [largeMessageCutoff, setLargeMessageCutoff] = useState(300);
   const [selected, setSelected] = useState(false);
   const [imageToPreview, setImageToPreview] = useState('');
 
@@ -77,8 +77,8 @@ export default function Chat({ message: messageObj }) {
     <div
       onClick={forwardMode ? addOrRemove : null}
       id={messageObj.time}
-      className={`flex duration-200 my-1 bg-opacity-30 ${
-        selected ? 'bg-selected' : 'bg-transparent'
+      className={`flex duration-200 my-1 bg-opacity-30  ${
+        selected ? 'bg-selected' : ''
       } ${messageIsFromMe ? 'justify-end' : 'justify-start'} ${
         forwardMode ? 'cursor-pointer' : ''
       }`}
@@ -93,7 +93,7 @@ export default function Chat({ message: messageObj }) {
       )}
 
       <div
-        className={`p-1 group m-2 break-words border-main rounded-lg shadow-sm w-52 relative ${
+        className={`p-1 group m-2 break-words max-w-sm border-main rounded-lg shadow-sm relative ${
           messageIsFromMe ? 'bg-chatGreen' : 'bg-whiteBG'
         }`}
       >
@@ -162,16 +162,17 @@ export default function Chat({ message: messageObj }) {
         >
           {largeMessage ? (
             <div>
-              <div>{largeMessage}</div>
-              <button
+              <span>{largeMessage}</span>
+              <span
                 onClick={() => setLargeMessageCutoff((prev) => prev * 2)}
-                className="text-blue-700 underline"
+                className="text-dodgerblue"
               >
-                more..
-              </button>
+                {' '}
+                more...
+              </span>
             </div>
           ) : (
-            messageObj.message
+            <div>{messageObj.message}</div>
           )}
         </div>
         <p className={`text-xs text-right text-gray-400 mt-1`}>

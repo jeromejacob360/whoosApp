@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
-import Options from './optionMenus/Options';
 
 export default function Title() {
   const currentChatterName = useSelector(
@@ -24,7 +23,6 @@ export default function Title() {
       </div>
       <div className="flex items-center space-x-4">
         <AiOutlineSearch size={22} />
-
         <BsThreeDotsVertical size={20} />
       </div>
     </div>

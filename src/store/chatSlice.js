@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { chatNameGenerator } from '../helpers/formatters';
+import { textTrimmer } from '../helpers/formatters';
 
 const initialState = {
   chats: {},
@@ -17,6 +18,7 @@ const initialState = {
   selectedMessages: {},
   totalSelectedMessages: 0,
   sortedWAContactNames: [],
+  lastMessages: {},
 };
 
 function calculateForwardMessagesLength(state) {
@@ -101,6 +103,9 @@ export const chatSlice = createSlice({
         ? state.chats[chatName].push(message)
         : (state.chats[chatName] = [message]);
 
+      //set last message of that chat
+      state.lastMessages[chatName] = message;
+
       // add to unread messages count
       if (
         chatName !== state.currentChatName &&
@@ -157,10 +162,7 @@ export const chatSlice = createSlice({
       const currentChatName = state.currentChatName;
       const messageText = messageObject.message;
 
-      const trimmedMessage =
-        messageText.length > 20
-          ? messageText.substring(0, 20) + '...'
-          : messageText;
+      const trimmedMessage = textTrimmer(messageText);
 
       const messageToReply = { ...messageObject, message: trimmedMessage };
 
@@ -173,7 +175,7 @@ export const chatSlice = createSlice({
 
     CLEAR_REPLY_MESSAGE: (state, action) => {
       const currentChatName = action.payload;
-      state.messageToReply[currentChatName] = ''; //TODO remote the key from the object
+      state.messageToReply[currentChatName] = '';
       state.focusInput = false;
     },
 
@@ -198,7 +200,7 @@ export const chatSlice = createSlice({
     REMOVE_MESSAGE_TO_FORWARDS: (state, action) => {
       const { time } = action.payload;
       delete state.selectedMessages[time];
-      state.totalSelectedMessages = calculateForwardMessagesLength(state);
+      state.totalSelectedMessages = 0;
     },
 
     CLEAR_STATE: () => {

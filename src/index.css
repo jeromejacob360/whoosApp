@@ -19,3 +19,11 @@ svg {
     transform: rotate(360deg);
   }
 }
+
+.descText {
+  @apply hidden px-4 py-1 text-sm text-white duration-75 bg-gray-500 rounded-full group-hover:block;
+}
+
+.shadow {
+  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.7));
+}

@@ -6,7 +6,10 @@ import { CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 import sendMessagetoDB from '../helpers/sendMessage';
 import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
-import { AiFillCamera, AiOutlineSend, AiOutlineSmile } from 'react-icons/ai';
+import { IoMdHappy } from 'react-icons/io';
+import AttachIcon from '../assets/svgs/Attach.js';
+import Mic from '../assets/svgs/Mic';
+
 import {
   getStorage,
   ref,
@@ -15,7 +18,8 @@ import {
 } from 'firebase/storage';
 import { AnimatePresence } from 'framer-motion';
 
-import CircularProgress from '@mui/material/CircularProgress';
+import AttachOptions from './helpers/AttachOptions';
+import useCameraPreviewDimensions from '../hooks/CameraPreviewDimensions';
 
 //----------------------------------------------//
 export default function MessageInput({ chatHistoryRef }) {
@@ -23,10 +27,11 @@ export default function MessageInput({ chatHistoryRef }) {
   const [message, setMessage] = useState('');
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [openContactsPicker, setOpenContactsPicker] = useState(false);
-  const [cameraPreviewOn, setCameraPreviewOn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [photoMode, setPhotoMode] = useState(false);
+
   const [imageUploading, setImageUploading] = useState(false);
-  const [capturedImage, setCapturedImage] = useState('');
+  const [capturedImage, setCapturedImage] = useState(false);
+  const [attachOptions, setAttachOptions] = useState(false);
   const [chatHistoryDimensions, setChatHistoryDimensions] = useState({
     height: 0,
     width: 0,
@@ -61,34 +66,11 @@ export default function MessageInput({ chatHistoryRef }) {
   }
 
   //Side effects
-
-  useEffect(() => {
-    if (chatHistoryRef.current) {
-      const h = chatHistoryRef.current.getBoundingClientRect().height + 'px';
-      const tempW = chatHistoryRef.current.getBoundingClientRect().width6;
-      const w = tempW ? tempW + 'px' : '100%';
-
-      setChatHistoryDimensions({ height: h, width: w });
-    }
-  }, [chatHistoryRef]);
-
-  useEffect(() => {
-    let listener;
-    if (chatHistoryRef.current) {
-      listener = window.addEventListener('resize', () => {
-        const clientHeight =
-          chatHistoryRef.current.getBoundingClientRect().height + 'px';
-        const clientWidth =
-          chatHistoryRef.current.getBoundingClientRect().width + 'px';
-
-        setChatHistoryDimensions({
-          height: clientHeight,
-          width: clientWidth,
-        });
-      });
-    }
-    return listener;
-  }, [chatHistoryRef, currentChatName]);
+  useCameraPreviewDimensions(
+    chatHistoryRef,
+    setChatHistoryDimensions,
+    currentChatName,
+  );
 
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
@@ -96,6 +78,7 @@ export default function MessageInput({ chatHistoryRef }) {
 
   async function sendMessage(e) {
     e.preventDefault();
+    setPhotoMode(false);
     setOpenEmojiPicker(false);
     if (messageToReply) {
       dispatch(CLEAR_REPLY_MESSAGE(currentChatName));
@@ -124,35 +107,6 @@ export default function MessageInput({ chatHistoryRef }) {
   function onEmojiClick(_, emojiObject) {
     setMessage((prev) => prev + emojiObject.emoji);
     inputRef.current.focus();
-  }
-
-  function openCamera() {
-    setLoading(true);
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(function (stream) {
-        setCameraPreviewOn(true);
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.onloadedmetadata = video.play;
-        setLoading(false);
-      })
-      .catch(function (err) {
-        setLoading(false);
-        console.log(err);
-      });
-  }
-
-  function closeCamera() {
-    if (videoRef.current) {
-      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      setCameraPreviewOn(false);
-    }
-  }
-
-  function retake() {
-    setCapturedImage('');
-    openCamera();
   }
 
   function uploadImage() {
@@ -190,27 +144,20 @@ export default function MessageInput({ chatHistoryRef }) {
   return (
     currentChatName && (
       <div className="relative">
-        {loading && (
-          <div className="absolute" style={{ left: '.75rem', top: '.6rem' }}>
-            <CircularProgress size={35} />
-          </div>
-        )}
         <AnimatePresence>
-          {(cameraPreviewOn || capturedImage) && (
+          {photoMode && (
             <CameraPreview
               chatHistoryDimensions={chatHistoryDimensions}
               canvasRef={canvasRef}
               videoRef={videoRef}
               capturedImage={capturedImage}
               setCapturedImage={setCapturedImage}
-              imageUploading={imageUploading}
-              retake={retake}
-              closeCamera={closeCamera}
+              setPhotoMode={setPhotoMode}
             />
           )}
         </AnimatePresence>
 
-        {/* Emoji picker */}
+        {/* EMOJI PICKER */}
         {openEmojiPicker && (
           <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
             <Picker
@@ -219,43 +166,57 @@ export default function MessageInput({ chatHistoryRef }) {
             />
           </ClickAway>
         )}
+
+        {/* MESSAGE TO REPLY */}
         <AnimatePresence>
           {messageToReply && <MessageToReply />}
         </AnimatePresence>
 
-        {/* Input methods */}
-        {!cameraPreviewOn && (
+        {/* INPUT METHODS */}
+        {(!photoMode || capturedImage) && (
           <form
             onSubmit={sendMessage}
-            className={`flex px-4 py-2 border shadow-md bg-main items-center ${
+            className={`flex px-4 h-16 border shadow-md bg-darkBG items-center ${
               !currentChatName && 'no-cursor'
             }`}
           >
-            <div tabIndex="0" onClick={openCamera}>
-              <AiFillCamera className={`w-6 h-6 mr-4`} />
+            <span
+              onClick={() => setOpenEmojiPicker((prev) => !prev)}
+              className={`px-2 py-1`}
+            >
+              <IoMdHappy className="w-6 h-6 mr-2" />
+            </span>
+
+            <div
+              className="relative mr-4"
+              onClick={() => setAttachOptions(true)}
+            >
+              {!capturedImage && <AttachIcon />}
+              <AnimatePresence>
+                {attachOptions && (
+                  <AttachOptions
+                    setPhotoMode={setPhotoMode}
+                    setAttachOptions={setAttachOptions}
+                  />
+                )}
+              </AnimatePresence>
             </div>
             <input
               ref={inputRef}
               disabled={!currentChatName}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="flex-1 px-4 py-1 border rounded-full"
+              className="flex-1 px-4 py-2 rounded-full bg-whiteBG"
               placeholder="Type a message.."
               type="text"
             ></input>
-            <span
-              onClick={() => setOpenEmojiPicker((prev) => !prev)}
-              className={`px-2 py-1`}
-            >
-              <AiOutlineSmile className="w-6 h-6" />
-            </span>
 
             <button
               type="submit"
               disabled={!currentChatName}
               className="px-3 py-1"
             >
-              <AiOutlineSend className="w-6 h-6" />
+              <Mic />
             </button>
           </form>
         )}

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 export default function Search() {
   return (
-    <div className="bg-main">
+    <div className="bg-dimBG">
       <label
         className="flex p-2 pl-4 border rounded-full border-main"
         htmlFor="input"

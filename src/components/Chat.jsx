@@ -1,3 +1,4 @@
+import { CircularProgress } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,6 +7,9 @@ import {
 } from '../store/chatSlice';
 import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
+import NotSent from '../assets/svgs/NotSent';
+import SingleTick from '../assets/svgs/SingleTick';
+import DblTick from '../assets/svgs/DblTick';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj }) {
@@ -15,6 +19,7 @@ export default function Chat({ message: messageObj }) {
   const [largeMessageCutoff, setLargeMessageCutoff] = useState(300);
   const [selected, setSelected] = useState(false);
   const [imageToPreview, setImageToPreview] = useState('');
+  const [progressIndicator, setProgressIndicator] = useState('');
 
   const imageRef = useRef(null);
 
@@ -23,6 +28,12 @@ export default function Chat({ message: messageObj }) {
   //Access the store
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
   const forwardMode = useSelector((state) => state?.chatState?.forwardMode);
+  const currentChatName = useSelector(
+    (state) => state?.chatState?.currentChatName,
+  );
+  const progress = useSelector(
+    (state) => state?.chatState?.progress[currentChatName],
+  );
 
   //logic
   const messageIsFromMe = messageObj?.from === currentUserName;
@@ -37,6 +48,25 @@ export default function Chat({ message: messageObj }) {
       element.style.borderRadius = '60px';
     }, 2000);
   }
+
+  useEffect(() => {
+    if (progress && progress[messageObj.time]) {
+      const currentProgress = progress[messageObj.time];
+      if (currentProgress === -1) {
+        setProgressIndicator(<NotSent />);
+      } else if (currentProgress > 0 && currentProgress < 100) {
+        setProgressIndicator(
+          <CircularProgress
+            size={10}
+            variant={'determinate'}
+            value={progress[messageObj.time]}
+          />,
+        );
+      } else if (currentProgress === 100) {
+        setProgressIndicator(<SingleTick />);
+      }
+    }
+  }, [messageObj.time, progress]);
 
   useEffect(() => {
     if (!forwardMode) {
@@ -175,9 +205,13 @@ export default function Chat({ message: messageObj }) {
             <div>{messageObj.message}</div>
           )}
         </div>
-        <p className={`text-xs text-right text-gray-400 mt-1`}>
-          {new Date(messageObj?.time).toLocaleTimeString()}
-        </p>
+
+        <div className="relative flex items-center justify-end mt-2 mr-2 space-x-2">
+          <span className={`text-xs text-right text-gray-400 mr-6`}>
+            {new Date(messageObj?.time).toLocaleTimeString()}
+          </span>
+          <span className="absolute bottom-0 right-0">{progressIndicator}</span>
+        </div>
       </div>
     </div>
   );

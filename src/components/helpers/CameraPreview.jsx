@@ -11,6 +11,7 @@ export default function CameraPreview({
   capturedImage,
   setCapturedImage,
   setPhotoMode,
+  setBlob,
 }) {
   const [cameraPreviewOn, setCameraPreviewOn] = useState(false);
 
@@ -45,7 +46,9 @@ export default function CameraPreview({
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     setCapturedImage(canvas.toDataURL());
-    console.log(`capturedImage`, capturedImage);
+    canvas.toBlob((blob) => {
+      setBlob(blob);
+    });
     closeCamera();
   }
 
@@ -111,11 +114,12 @@ export default function CameraPreview({
           <AnimatePresence>
             {capturedImage ? (
               <motion.img
-                initial={{ width: '100%' }}
-                animate={{ width: '75%' }}
-                exit={{ width: '100%' }}
+                initial={{ height: '100%', width: '100%' }}
+                animate={{ height: '75%', width: '75%' }}
+                exit={{ height: '100%', width: '100%' }}
                 src={capturedImage}
                 alt="captured pic"
+                className="object-contain w-full max-h-full overflow-hidden"
               />
             ) : (
               <motion.video
@@ -123,21 +127,21 @@ export default function CameraPreview({
                 animate={{ width: '100%', opacity: 1 }}
                 exit={{ width: '75%', opacity: 0 }}
                 ref={videoRef}
-                className="w-full max-h-full overflow-hidden object-conain"
+                className="object-contain w-full max-h-full overflow-hidden"
               ></motion.video>
             )}
           </AnimatePresence>
 
           <div
-            className={`relative w-full h-20 ${
-              cameraPreviewOn ? ' bg-darkBG' : 'bg-dim'
+            className={`relative w-full ${
+              cameraPreviewOn ? ' bg-darkBG h-20' : 'bg-dimBG h-0'
             }`}
           >
             {!capturedImage && (
               <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute bottom-full left-2/4"
+                className="absolute bottom-2/4 left-3/4"
               >
                 <AiFillCamera
                   onClick={captureImage}

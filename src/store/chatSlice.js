@@ -19,6 +19,7 @@ const initialState = {
   totalSelectedMessages: 0,
   sortedWAContactNames: [],
   lastMessages: {},
+  progress: {},
 };
 
 function calculateForwardMessagesLength(state) {
@@ -145,6 +146,33 @@ export const chatSlice = createSlice({
         userWAContacts.unshift(firstContact);
       }
     },
+    UPLOAD_STARTED: (state, action) => {
+      console.log('UPLOAD_STARTED');
+      const { chatName, id } = action.payload;
+
+      if (state.progress[chatName]) {
+        state.progress[chatName][id] = -1;
+      } else {
+        state.progress[chatName] = {};
+        state.progress[chatName][id] = -1;
+      }
+    },
+    SET_UPLOAD_PROGRESS: (state, action) => {
+      const { chatName, id, progress } = action.payload;
+      console.log(`progress`, progress + ' %');
+
+      state.progress[chatName][id] = progress;
+    },
+
+    REMOVE_UPLOAD_PROGRESS: (state, action) => {
+      console.log('REMOVE_UPLOAD_PROGRESS');
+      const { chatName, id } = action.payload;
+      if (state.progress[chatName]) {
+        if (state.progress[chatName][id]) {
+          delete state.progress[chatName][id];
+        }
+      }
+    },
 
     DELETE_MESSAGE: (state, action) => {
       const { chatName, message } = action.payload;
@@ -227,6 +255,9 @@ export const {
   CLEAR_STATE,
   SET_USERS_WA_CONTACTS,
   ADD_MESSAGE,
+  UPLOAD_STARTED,
+  SET_UPLOAD_PROGRESS,
+  REMOVE_UPLOAD_PROGRESS,
   MODIFY_MESSAGE,
   DELETE_MESSAGE,
   CHAT_HISTORY_REF,

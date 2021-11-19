@@ -57,7 +57,7 @@ export default function ChatHistory({ chatHistoryRef }) {
           chatHistoryRef.current.scrollHeight -
           chatHistoryRef.current.clientHeight;
       }, 0);
-  }, [chatHistoryRef]);
+  }, [chatHistoryRef, currentChatName]);
 
   useEffect(() => {
     if (namelessChats.includes(currentChatName)) {

@@ -2,7 +2,13 @@ import { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Picker from 'emoji-picker-react';
 import ContactsPicker from './ContactsPicker';
-import { ADD_MESSAGE, CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
+import {
+  ADD_MESSAGE,
+  CLEAR_REPLY_MESSAGE,
+  REMOVE_UPLOAD_PROGRESS,
+  SET_UPLOAD_PROGRESS,
+  UPLOAD_STARTED,
+} from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 import sendMessagetoDB from '../helpers/sendMessage';
 import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
@@ -16,11 +22,13 @@ import {
   ref,
   uploadString,
   getDownloadURL,
+  uploadBytesResumable,
 } from 'firebase/storage';
 import { AnimatePresence } from 'framer-motion';
 
 import AttachOptions from './helpers/AttachOptions';
 import useCameraPreviewDimensions from '../hooks/CameraPreviewDimensions';
+let newMessage;
 
 //----------------------------------------------//
 export default function MessageInput({ chatHistoryRef }) {
@@ -32,6 +40,7 @@ export default function MessageInput({ chatHistoryRef }) {
 
   const [imageUploading, setImageUploading] = useState(false);
   const [capturedImage, setCapturedImage] = useState('');
+  const [blob, setBlob] = useState('');
   const [attachOptions, setAttachOptions] = useState(false);
   const [chatHistoryDimensions, setChatHistoryDimensions] = useState({
     height: 0,
@@ -96,7 +105,7 @@ export default function MessageInput({ chatHistoryRef }) {
       dispatch(CLEAR_REPLY_MESSAGE());
     }
 
-    const newMessage = {
+    newMessage = {
       time: Date.now(),
       message,
       mediaUrl: capturedImage,
@@ -105,6 +114,15 @@ export default function MessageInput({ chatHistoryRef }) {
       deletedForMe: [],
       messageToReply: messageToReplyTrimmed,
     };
+
+    if (capturedImage) {
+      dispatch(
+        UPLOAD_STARTED({
+          chatName: currentChatName,
+          id: newMessage.time,
+        }),
+      );
+    }
 
     dispatch(
       ADD_MESSAGE({
@@ -123,7 +141,7 @@ export default function MessageInput({ chatHistoryRef }) {
 
     if (capturedImage) {
       setImageUploading(true);
-      mediaUrl = await uploadImage();
+      mediaUrl = await uploadToDb();
       console.log(`mediaUrl`, mediaUrl);
       setCapturedImage('');
       setImageUploading(false);
@@ -140,25 +158,75 @@ export default function MessageInput({ chatHistoryRef }) {
     inputRef.current.focus();
   }
 
-  function uploadImage() {
-    // send image to DB
+  function uploadToDb() {
+    const metadata = {
+      contentType: 'image/jpeg',
+    };
+    const storage = getStorage();
+    const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
+    const storageRef = ref(storage, location);
+    const uploadTask = uploadBytesResumable(storageRef, blob, metadata);
     return new Promise((resolve, reject) => {
-      try {
-        const storage = getStorage();
-        const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
-        const storageRef = ref(storage, location);
-        uploadString(storageRef, capturedImage.split(',')[1], 'base64', {
-          contentType: 'image/jpeg',
-        }).then(() => {
-          getDownloadURL(ref(storage, location)).then(async (url) => {
-            resolve(url);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          dispatch(
+            SET_UPLOAD_PROGRESS({
+              chatName: currentChatName,
+              id: newMessage.time,
+              progress,
+            }),
+          );
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          dispatch(
+            REMOVE_UPLOAD_PROGRESS({
+              chatName: currentChatName,
+              id: newMessage.time,
+            }),
+          );
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
           });
-        });
-      } catch (err) {
-        reject(err);
-      }
+        },
+      );
     });
   }
+
+  // function uploadImage() {
+  //   // send image to DB
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       const storage = getStorage();
+  //       const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
+  //       const storageRef = ref(storage, location);
+  //       uploadString(storageRef, capturedImage.split(',')[1], 'base64', {
+  //         contentType: 'image/jpeg',
+  //       }).then(() => {
+  //         getDownloadURL(ref(storage, location)).then(async (url) => {
+  //           resolve(url);
+  //         });
+  //       });
+  //     } catch (err) {
+  //       reject(err);
+  //     }
+  //   });
+  // }
 
   if (openContactsPicker) {
     return (
@@ -183,6 +251,7 @@ export default function MessageInput({ chatHistoryRef }) {
               videoRef={videoRef}
               capturedImage={capturedImage}
               setCapturedImage={setCapturedImage}
+              setBlob={setBlob}
               setPhotoMode={setPhotoMode}
             />
           )}
@@ -222,7 +291,7 @@ export default function MessageInput({ chatHistoryRef }) {
               className="relative mr-4"
               onClick={() => setAttachOptions(true)}
             >
-              {!capturedImage && <AttachIcon />}
+              {!photoMode && <AttachIcon />}
               <AnimatePresence>
                 {attachOptions && (
                   <AttachOptions

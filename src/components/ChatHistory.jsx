@@ -2,7 +2,7 @@ import Chat from './Chat';
 import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ADD_MESSAGE,
   CLEAR_UNREAD_MESSAGES,

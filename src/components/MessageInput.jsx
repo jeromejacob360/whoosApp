@@ -20,7 +20,6 @@ import Mic from '../assets/svgs/Mic';
 import {
   getStorage,
   ref,
-  uploadString,
   getDownloadURL,
   uploadBytesResumable,
 } from 'firebase/storage';
@@ -38,7 +37,6 @@ export default function MessageInput({ chatHistoryRef }) {
   const [openContactsPicker, setOpenContactsPicker] = useState(false);
   const [photoMode, setPhotoMode] = useState(false);
 
-  const [imageUploading, setImageUploading] = useState(false);
   const [capturedImage, setCapturedImage] = useState('');
   const [blob, setBlob] = useState('');
   const [attachOptions, setAttachOptions] = useState(false);
@@ -140,11 +138,9 @@ export default function MessageInput({ chatHistoryRef }) {
     setMessage('');
 
     if (capturedImage) {
-      setImageUploading(true);
       mediaUrl = await uploadToDb();
       console.log(`mediaUrl`, mediaUrl);
       setCapturedImage('');
-      setImageUploading(false);
     }
 
     await sendMessagetoDB({
@@ -207,26 +203,6 @@ export default function MessageInput({ chatHistoryRef }) {
       );
     });
   }
-
-  // function uploadImage() {
-  //   // send image to DB
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       const storage = getStorage();
-  //       const location = `whatsApp/media/images/${currentChatName}/${Date.now().toString()}`;
-  //       const storageRef = ref(storage, location);
-  //       uploadString(storageRef, capturedImage.split(',')[1], 'base64', {
-  //         contentType: 'image/jpeg',
-  //       }).then(() => {
-  //         getDownloadURL(ref(storage, location)).then(async (url) => {
-  //           resolve(url);
-  //         });
-  //       });
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // }
 
   if (openContactsPicker) {
     return (
@@ -316,7 +292,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               className="px-3 py-1"
             >
-              {capturedImage ? <Send /> : <Mic />}
+              {capturedImage || openEmojiPicker ? <Send /> : <Mic />}
             </button>
           </form>
         )}

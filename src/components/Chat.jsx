@@ -9,7 +9,6 @@ import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
 import SingleTick from '../assets/svgs/SingleTick';
-import DblTick from '../assets/svgs/DblTick';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj }) {

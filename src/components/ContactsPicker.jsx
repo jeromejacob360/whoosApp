@@ -13,9 +13,6 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
   const userWAContacts = useSelector(
     (state) => state?.chatState?.userWAContacts,
   );
-  const currentChatName = useSelector(
-    (state) => state?.chatState.currentChatName,
-  );
 
   const messagesToForward = useSelector(
     (state) => state?.chatState.selectedMessages,

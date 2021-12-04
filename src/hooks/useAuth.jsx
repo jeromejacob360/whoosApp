@@ -8,6 +8,14 @@ export default function useAuth() {
   const dispatch = useDispatch();
   useEffect(() => {
     onAuthStateChanged(getAuth(), (user) => {
+      if (user === '') {
+        console.log('USER IS EMPTY STRING');
+      } else if (user === null) {
+        console.log('USER IS NULL');
+      } else if (user) {
+        console.log('USER LOGGED IN');
+      }
+
       if (user) {
         const { displayName, email, uid, photoURL } = user;
         dispatch(

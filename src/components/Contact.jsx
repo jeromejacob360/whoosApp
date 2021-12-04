@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { chatNameGenerator, textTrimmer } from '../helpers/formatters';
 import {
   NAMELESS_CHAT,
+  PAGE_RENDERED,
   REMOVE_NAMELESS_CHAT,
   SET_CURRENT_CHAT,
 } from '../store/chatSlice';
@@ -14,6 +15,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 //----------------------------------------------//
 export default function Contact({ contact }) {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(PAGE_RENDERED());
+  }, [dispatch]);
 
   const [contactHasName, setContactHasName] = useState(true);
   const [chatOpened, setChatOpened] = useState(false);

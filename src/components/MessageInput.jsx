@@ -23,7 +23,7 @@ import {
   getDownloadURL,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import AttachOptions from './helpers/AttachOptions';
 import useCameraPreviewDimensions from '../hooks/CameraPreviewDimensions';
@@ -88,6 +88,8 @@ export default function MessageInput({ chatHistoryRef }) {
   //send message
   async function sendMessage(e) {
     e.preventDefault();
+    if (message.trim() === '' && !capturedImage) return;
+
     setPhotoMode(false);
     setOpenEmojiPicker(false);
 
@@ -231,20 +233,25 @@ export default function MessageInput({ chatHistoryRef }) {
               setPhotoMode={setPhotoMode}
             />
           )}
-        </AnimatePresence>
 
-        {/* EMOJI PICKER */}
-        {openEmojiPicker && (
-          <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
-            <Picker
-              pickerStyle={{ width: '100%' }}
-              onEmojiClick={onEmojiClick}
-            />
-          </ClickAway>
-        )}
+          {/* EMOJI PICKER */}
+          {openEmojiPicker && (
+            <motion.div
+              initial={{ height: 0, display: 'none', opacity: 0 }}
+              animate={{ height: 'auto', display: 'block', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.1 }}
+            >
+              <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
+                <Picker
+                  pickerStyle={{ width: '100%' }}
+                  onEmojiClick={onEmojiClick}
+                />
+              </ClickAway>
+            </motion.div>
+          )}
 
-        {/* MESSAGE TO REPLY */}
-        <AnimatePresence>
+          {/* MESSAGE TO REPLY */}
           {messageToReply && <MessageToReply />}
         </AnimatePresence>
 
@@ -252,7 +259,7 @@ export default function MessageInput({ chatHistoryRef }) {
         {(!photoMode || capturedImage) && (
           <form
             onSubmit={sendMessage}
-            className={`flex px-4 h-16 border shadow-md bg-darkBG items-center ${
+            className={`flex px-4 z-50 h-16 border shadow-md bg-darkBG items-center ${
               !currentChatName && 'no-cursor'
             }`}
           >
@@ -292,7 +299,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               className="px-3 py-1"
             >
-              {capturedImage || openEmojiPicker ? <Send /> : <Mic />}
+              <Send />
             </button>
           </form>
         )}

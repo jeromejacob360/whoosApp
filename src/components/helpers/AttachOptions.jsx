@@ -40,7 +40,7 @@ export default function AttachOptions({ setAttachOptions, setPhotoMode }) {
         initial="hidden"
         animate="show"
         exit="close"
-        className="absolute -left-3 bottom-12"
+        className="absolute -left-3 bottom-14"
       >
         <ul className="space-y-4">
           <li className="flex items-center group">

@@ -9,6 +9,7 @@ import Modal from './Modal';
 import ChatOptions from './optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
 import SingleTick from '../assets/svgs/SingleTick';
+import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj }) {
@@ -113,13 +114,13 @@ export default function Chat({ message: messageObj }) {
       }`}
     >
       {/* Image modal */}
-      {imageToPreview && (
-        <div className="fixed z-50 w-screen h-screen bg-red-300">
-          <Modal onClickAway={() => setImageToPreview('')}>
+      <AnimatePresence>
+        {imageToPreview && (
+          <Modal id={messageObj.time} onClickAway={() => setImageToPreview('')}>
             <img src={imageToPreview} alt="preview" />
           </Modal>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       <div
         className={`p-1 group m-2 break-words max-w-sm border-main rounded-lg shadow-sm relative ${
@@ -175,7 +176,9 @@ export default function Chat({ message: messageObj }) {
         )}
 
         {messageObj.mediaUrl && (
-          <img
+          <motion.img
+            layout
+            layoutId={'messageObj.time'}
             ref={imageRef}
             onClick={() => setImageToPreview(messageObj.mediaUrl)}
             className="rounded-md cursor-pointer"

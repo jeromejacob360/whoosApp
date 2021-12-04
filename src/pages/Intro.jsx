@@ -37,17 +37,17 @@ export default function Intro() {
           Keep your phone connected
         </h1>
         <p className="py-8 mb-8 border-b">
-          WhatsApp connects to your phone to sync messages. To reduce data
+          WhoosApp connects to your phone to sync messages. To reduce data
           usage, connect your phone to Wi-Fi.
         </p>
         <footer className="flex items-center justify-center">
-          <IoMdLaptop size={20} className="cursor-default" />
           <p>
-            Make calls from desktop with WhatsApp for Windows.{' '}
+            Make calls from desktop with WhoosApp for Windows.
             <a
               className="text-WaGreen"
-              href="https://www.whatsapp.com/download"
+              href="https://www.WhoosApp.com/download"
             >
+              {' '}
               Get it here.
             </a>
           </p>

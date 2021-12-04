@@ -20,6 +20,7 @@ const initialState = {
   sortedWAContactNames: [],
   lastMessages: {},
   progress: {},
+  pageRendered: false,
 };
 
 function calculateForwardMessagesLength(state) {
@@ -30,6 +31,14 @@ export const chatSlice = createSlice({
   name: 'CHATSLICE',
   initialState,
   reducers: {
+    PAGE_RENDERED: (state) => {
+      state.pageRendered = true;
+    },
+
+    PAGE_LOADING: (state) => {
+      state.pageRendered = false;
+    },
+
     SET_USER_CONTACTS: (state, action) => {
       state.userContacts = action.payload;
     },
@@ -238,8 +247,8 @@ export const chatSlice = createSlice({
       state.totalSelectedMessages = 0;
     },
 
-    CLEAR_STATE: () => {
-      return initialState;
+    CLEAR_STATE: (state) => {
+      return { ...initialState, pageRendered: state.pageRendered };
     },
   },
 });
@@ -247,6 +256,8 @@ export const chatSlice = createSlice({
 // Action creators are generated for each case reducer function
 
 export const {
+  PAGE_RENDERED,
+  PAGE_LOADING,
   SET_USER_CONTACTS,
   SET_CURRENT_CHAT,
   CLEAR_CURRENT_CHAT,

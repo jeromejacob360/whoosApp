@@ -5,12 +5,19 @@ import ClickAway from '../hooks/ClickAway';
 export default function Modal({ onClickAway, children, props }) {
   return (
     <motion.div
-      layout
-      layoutId={'messageObj.time'}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="fixed inset-0 z-10 flex items-center justify-center w-screen h-screen bg-white bg-opacity-95"
     >
       <ClickAway onClickAway={onClickAway} {...props}>
-        {children}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+        >
+          {children}
+        </motion.div>
       </ClickAway>
     </motion.div>
   );

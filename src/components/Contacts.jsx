@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { db } from '../firebase/firebase';
 import { useSubscribeToUserContactsFromContactsApp } from '../hooks/useSubscribeToUserContactsFromContactsApp';
-import { chatNameGenerator } from '../helpers/formatters';
+import { chatNameGenerator } from '../helper-functions/formatters';
 import { ADD_CHATNAMES } from '../store/chatSlice';
 
 import Contact from './Contact';

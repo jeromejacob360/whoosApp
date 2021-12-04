@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { chatNameGenerator, textTrimmer } from '../helpers/formatters';
+import { chatNameGenerator, textTrimmer } from '../helper-functions/formatters';
 import {
   NAMELESS_CHAT,
   PAGE_RENDERED,

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { chatNameGenerator } from '../helpers/formatters';
-import { textTrimmer } from '../helpers/formatters';
+import { chatNameGenerator } from '../helper-functions/formatters';
+import { textTrimmer } from '../helper-functions/formatters';
 
 const initialState = {
   chats: {},

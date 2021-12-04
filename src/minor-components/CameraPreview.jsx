@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
 import { AiFillCamera, AiOutlineClose } from 'react-icons/ai';
 import { BiUndo } from 'react-icons/bi';
-import ClickAway from '../../hooks/ClickAway';
+import ClickAway from '../hooks/ClickAway';
 
 export default function CameraPreview({
   chatHistoryDimensions,

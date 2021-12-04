@@ -2,7 +2,7 @@ import React from 'react';
 import { AiFillDelete, AiFillStar, AiOutlineClose } from 'react-icons/ai';
 import { RiShareForwardFill } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
-import { FORWARD_MODE_OFF } from '../../store/chatSlice';
+import { FORWARD_MODE_OFF } from '../store/chatSlice';
 
 export default function ForwardMenu({ setOpenContactsPicker }) {
   const dispatch = useDispatch();

@@ -8,13 +8,13 @@ import {
   setDoc,
   updateDoc,
 } from '@firebase/firestore';
-import { db } from '../../firebase/firebase';
-import ClickAway from '../../hooks/ClickAway';
+import { db } from '../firebase/firebase';
+import ClickAway from '../hooks/ClickAway';
 import {
   ADD_MESSAGE_TO_FORWARDS,
   FORWARD_MODE_ON,
   REPLY,
-} from '../../store/chatSlice';
+} from '../store/chatSlice';
 
 export default function ChatOptions({ message, setOpenOptions, setSelected }) {
   const currentChatName = useSelector(

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import intro from '../assets/intro.jpg';
-import { IoMdLaptop } from 'react-icons/io';
+import intro from '../assets/images/intro.jpg';
 import { motion } from 'framer-motion';
 
 let isRendered = false;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { addUserToContactsMaster } from '../helpers/contactsHelper';
+import { addUserToContactsMaster } from '../helper-functions/contactsHelper';
 import { ImSpinner2 } from 'react-icons/im';
 import { useDispatch } from 'react-redux';
 import { PAGE_LOADING } from '../store/chatSlice';

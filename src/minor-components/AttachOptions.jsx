@@ -1,10 +1,10 @@
 import React from 'react';
-import Document from '../../assets/svgs/Document';
-import Contact from '../../assets/svgs/Contact';
-import Camera from '../../assets/svgs/Camera';
-import Gallery from '../../assets/svgs/Gallery';
+import Document from '../assets/svgs/Document';
+import Contact from '../assets/svgs/Contact';
+import Camera from '../assets/svgs/Camera';
+import Gallery from '../assets/svgs/Gallery';
 import { motion } from 'framer-motion';
-import ClickAway from '../../hooks/ClickAway';
+import ClickAway from '../hooks/ClickAway';
 
 const container = {
   hidden: { opacity: 0, y: 20 },

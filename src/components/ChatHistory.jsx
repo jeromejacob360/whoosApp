@@ -12,7 +12,7 @@ import {
   REPLY,
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
-import bgImage from '../assets/pattern.png';
+import bgImage from '../assets/images/pattern.png';
 import Intro from '../pages/Intro';
 
 //----------------------------------------------//

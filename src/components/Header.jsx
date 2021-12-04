@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
-import Options from './optionMenus/Options';
+import Options from '../optionMenus/Options';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdMessage } from 'react-icons/md';
 

@@ -6,7 +6,7 @@ import {
   REMOVE_MESSAGE_TO_FORWARDS,
 } from '../store/chatSlice';
 import Modal from './Modal';
-import ChatOptions from './optionMenus/chatOptions';
+import ChatOptions from '../optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
 import SingleTick from '../assets/svgs/SingleTick';
 import { AnimatePresence } from 'framer-motion';

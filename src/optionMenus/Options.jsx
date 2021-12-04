@@ -1,7 +1,7 @@
 import { getAuth, signOut } from '@firebase/auth';
 import React from 'react';
 import { motion } from 'framer-motion';
-import ClickAway from '../../hooks/ClickAway';
+import ClickAway from '../hooks/ClickAway';
 
 export default function Options({ setOpenOptions }) {
   async function signout() {

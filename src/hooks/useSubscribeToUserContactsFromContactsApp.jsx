@@ -11,7 +11,7 @@ import {
 } from '@firebase/firestore';
 import { SET_USER_CONTACTS, UPDATE_USER_CONTACTS } from '../store/chatSlice';
 import { db } from '../firebase/firebase';
-import { chatNameGenerator, encodeEmail } from '../helpers/formatters';
+import { chatNameGenerator, encodeEmail } from '../helper-functions/formatters';
 
 export function useSubscribeToUserContactsFromContactsApp(currentUserEmail) {
   const dispatch = useDispatch();

@@ -11,7 +11,7 @@ import {
   where,
 } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
-import { encodeEmail } from '../helpers/formatters';
+import { encodeEmail } from '../helper-functions/formatters';
 
 export default async function useGetUserContactsAndPopulateChats(
   currentUserEmail,

@@ -10,12 +10,15 @@ import {
   UPLOAD_STARTED,
 } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
-import sendMessagetoDB from '../helpers/sendMessage';
-import { CameraPreview, ForwardMenu, MessageToReply } from './helpers/index';
+import sendMessagetoDB from '../helper-functions/sendMessage';
+import {
+  CameraPreview,
+  ForwardMenu,
+  MessageToReply,
+} from '../minor-components/index';
 import { IoMdHappy } from 'react-icons/io';
 import AttachIcon from '../assets/svgs/Attach.js';
 import Send from '../assets/svgs/Send.js';
-import Mic from '../assets/svgs/Mic';
 
 import {
   getStorage,
@@ -25,7 +28,7 @@ import {
 } from 'firebase/storage';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import AttachOptions from './helpers/AttachOptions';
+import AttachOptions from '../minor-components/AttachOptions';
 import useCameraPreviewDimensions from '../hooks/CameraPreviewDimensions';
 let newMessage;
 

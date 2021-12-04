@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { CLEAR_REPLY_MESSAGE } from '../../store/chatSlice';
+import { CLEAR_REPLY_MESSAGE } from '../store/chatSlice';
 
 export default function MessageToReply() {
   const dispatch = useDispatch();

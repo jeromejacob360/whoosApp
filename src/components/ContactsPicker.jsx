@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { chatNameGenerator } from '../helpers/formatters';
-import sendMessagetoDB from '../helpers/sendMessage';
+import { chatNameGenerator } from '../helper-functions/formatters';
+import sendMessagetoDB from '../helper-functions/sendMessage';
 import { ADD_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 

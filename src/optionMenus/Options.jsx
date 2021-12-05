@@ -6,9 +6,7 @@ import ClickAway from '../hooks/ClickAway';
 export default function Options({ setOpenOptions }) {
   async function signout() {
     const auth = getAuth();
-    signOut(auth)
-      .then(() => console.log('Signed Out'))
-      .catch((error) => console.log(`error`, error));
+    signOut(auth).catch((error) => console.log(`error`, error));
   }
   return (
     <ClickAway

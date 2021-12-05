@@ -44,7 +44,6 @@ export default function Contacts() {
             chats.push(chatName);
           }
           if (change.type === 'removed') {
-            console.log('CONTACT DELETED');
           }
         });
         dispatch(ADD_CHATNAMES(chats));

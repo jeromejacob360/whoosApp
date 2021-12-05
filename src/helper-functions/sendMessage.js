@@ -38,7 +38,6 @@ export default async function sendMessagetoDB({ newMessage, currentChatName }) {
             newMessage,
           );
 
-          console.log(`${newMessage.message} set in DB`);
           resolve(`${newMessage.message} set in DB`);
         } catch (error) {
           console.log(`error`, error);

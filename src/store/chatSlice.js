@@ -50,7 +50,6 @@ export const chatSlice = createSlice({
     },
 
     REMOVE_USER_CONTACT: (state, action) => {
-      console.log('REMOVE USER CONTACT');
       const { deletedContact } = action.payload;
 
       state.userContacts = state.userContacts.filter(
@@ -156,7 +155,6 @@ export const chatSlice = createSlice({
       }
     },
     UPLOAD_STARTED: (state, action) => {
-      console.log('UPLOAD_STARTED');
       const { chatName, id } = action.payload;
 
       if (state.progress[chatName]) {
@@ -168,13 +166,11 @@ export const chatSlice = createSlice({
     },
     SET_UPLOAD_PROGRESS: (state, action) => {
       const { chatName, id, progress } = action.payload;
-      console.log(`progress`, progress + ' %');
 
       state.progress[chatName][id] = progress;
     },
 
     REMOVE_UPLOAD_PROGRESS: (state, action) => {
-      console.log('REMOVE_UPLOAD_PROGRESS');
       const { chatName, id } = action.payload;
       if (state.progress[chatName]) {
         if (state.progress[chatName][id]) {
@@ -219,7 +215,7 @@ export const chatSlice = createSlice({
 
     CLEAR_REPLY_MESSAGE: (state) => {
       const currentChatName = state.currentChatName;
-      state.messageToReply[currentChatName] = '';
+      if (state.messageToReply) state.messageToReply[currentChatName] = '';
       state.focusInput = false;
     },
 

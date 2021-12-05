@@ -10,9 +10,10 @@ import ChatOptions from '../optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
 import SingleTick from '../assets/svgs/SingleTick';
 import { AnimatePresence } from 'framer-motion';
+import { AiOutlineDown } from 'react-icons/ai';
 
 //----------------------------------------------//
-export default function Chat({ message: messageObj }) {
+export default function Chat({ message: messageObj, chatHistoryRef }) {
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
@@ -20,6 +21,8 @@ export default function Chat({ message: messageObj }) {
   const [selected, setSelected] = useState(false);
   const [imageToPreview, setImageToPreview] = useState('');
   const [progressIndicator, setProgressIndicator] = useState('');
+  const [menuVertical, setMenuVertical] = useState('down');
+  const [menuHorizontal, setMenuHorizontal] = useState('left');
 
   const imageRef = useRef(null);
 
@@ -52,6 +55,7 @@ export default function Chat({ message: messageObj }) {
   useEffect(() => {
     if (progress && progress[messageObj.time]) {
       const currentProgress = progress[messageObj.time];
+      console.log(`currentProgress`, currentProgress);
       if (currentProgress === -1) {
         setProgressIndicator(<NotSent />);
       } else if (currentProgress > 0 && currentProgress < 100) {
@@ -103,6 +107,30 @@ export default function Chat({ message: messageObj }) {
     if (imageRef.current) imageRef.current.ondragstart = () => false;
   }, []);
 
+  function openChatOptions(e) {
+    const menuWidth = 160;
+    const menuHeight = 250;
+    setOpenOptions((prev) => !prev);
+    const rect = chatHistoryRef.current.getBoundingClientRect();
+
+    if (rect.bottom - e.clientY < menuHeight) {
+      // console.log('MENU UPWARDS');
+      setMenuVertical('up');
+    }
+    if (rect.bottom - e.clientY >= menuHeight) {
+      // console.log('MENU DOWNWARDS');
+      setMenuVertical('down');
+    }
+    if (e.clientX - rect.left < menuWidth) {
+      // console.log('MENU TO THE RIGHT');
+      setMenuHorizontal('right');
+    }
+    if (e.clientX - rect.left >= menuWidth) {
+      // console.log('MENU TO THE LEFT');
+      setMenuHorizontal('left');
+    }
+  }
+
   return (
     <div
       onClick={forwardMode ? addOrRemove : null}
@@ -129,30 +157,26 @@ export default function Chat({ message: messageObj }) {
         {/* Options button */}
         {!messageObj.deleted && !forwardMode && (
           <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
-            <svg
-              onClick={() => setOpenOptions((prev) => !prev)}
-              className="h-5 w-5h-5 text-icons"
-              viewBox="0 0 20 20"
-              fill="blue"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <AiOutlineDown
+              className="p-1"
+              size={20}
+              onClick={openChatOptions}
+            />
           </div>
         )}
         {/* Options menu */}
-        <div onClick={() => setOpenOptions(false)}>
+        <AnimatePresence>
           {openOptions && !messageObj.deleted && (
             <ChatOptions
+              menuVertical={menuVertical}
+              menuHorizontal={menuHorizontal}
               message={messageObj}
               setOpenOptions={setOpenOptions}
               setSelected={setSelected}
             />
           )}
-        </div>
+        </AnimatePresence>
+
         {/* Replied message */}
         {messageObj.messageToReply && (
           <div

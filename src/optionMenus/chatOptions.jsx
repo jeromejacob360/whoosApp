@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,7 +15,13 @@ import {
   REPLY,
 } from '../store/chatSlice';
 
-export default function ChatOptions({ message, setOpenOptions, setSelected }) {
+export default function ChatOptions({
+  message,
+  setOpenOptions,
+  setSelected,
+  menuVertical,
+  menuHorizontal,
+}) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
@@ -83,16 +88,30 @@ export default function ChatOptions({ message, setOpenOptions, setSelected }) {
   return (
     <ClickAway onClickAway={() => setOpenOptions(false)}>
       <motion.div
-        initial={{ width: 0, height: 0 }}
-        animate={{ width: 'auto', height: 'auto' }}
-        exit={{ width: 0, height: 0 }}
-        className={`absolute bg-white rounded-md shadow-md right-4 top-5 overflow-hidden z-50`}
+        transition={{ duration: 0.2 }}
+        initial={{ width: 0, height: 0, top: 0, right: 0, paddingBottom: 0 }}
+        animate={{
+          width: 'auto',
+          height: 'auto',
+          top: menuVertical === 'up' ? -205 : 20,
+          right: menuHorizontal === 'right' ? -155 : 20,
+        }}
+        exit={{ width: 0, height: 0, top: 0, right: 0 }}
+        className={`group absolute bg-white rounded-md shadow-md overflow-hidden z-50`}
       >
         <ul className="w-40 py-3 space-y-3 text-sm text-icons">
-          <li className="w-full cursor-pointer hover:bg-dim">
-            <div className="py-1 pl-6">Message info</div>
-          </li>
-          <li onClick={reply} className="w-full cursor-pointer hover:bg-dim">
+          {!messageIsFromMe && (
+            <li className="w-full cursor-pointer hover:bg-dim">
+              <div className="py-1 pl-6">Message info</div>
+            </li>
+          )}
+          <li
+            onClick={() => {
+              reply();
+              setOpenOptions(false);
+            }}
+            className="w-full cursor-pointer hover:bg-dim"
+          >
             <div className="py-1 pl-6">Reply</div>
           </li>
           <li

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
   ADD_MESSAGE,
+  CLEAR_REPLY_MESSAGE,
   CLEAR_UNREAD_MESSAGES,
   DELETE_MESSAGE,
   FORWARD_MODE_OFF,
@@ -53,11 +54,14 @@ export default function ChatHistory({ chatHistoryRef }) {
   useEffect(() => {
     if (chatHistoryRef.current)
       setTimeout(() => {
-        chatHistoryRef.current.scrollTop =
-          chatHistoryRef.current.scrollHeight -
-          chatHistoryRef.current.clientHeight;
+        chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
       }, 0);
   }, [chatHistoryRef, currentChatName]);
+
+  //clear reply message when chat is changed
+  useEffect(() => {
+    dispatch(CLEAR_REPLY_MESSAGE());
+  }, [dispatch, currentChatName]);
 
   useEffect(() => {
     if (namelessChats.includes(currentChatName)) {
@@ -142,11 +146,12 @@ export default function ChatHistory({ chatHistoryRef }) {
                 ? message.time && (
                     <motion.li
                       drag="x"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       dragConstraints={{ left: 0, right: 0 }}
                       whileDrag={{ scale: 0.9 }}
                       onDragEnd={() => dispatch(REPLY({ message }))}
-                      exit={{ opacity: 0 }}
-                      layout
                       key={message.time}
                     >
                       <Chat chatHistoryRef={chatHistoryRef} message={message} />

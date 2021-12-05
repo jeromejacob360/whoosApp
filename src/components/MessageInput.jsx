@@ -144,7 +144,6 @@ export default function MessageInput({ chatHistoryRef }) {
 
     if (capturedImage) {
       mediaUrl = await uploadToDb();
-      console.log(`mediaUrl`, mediaUrl);
       setCapturedImage('');
     }
 
@@ -182,10 +181,8 @@ export default function MessageInput({ chatHistoryRef }) {
           );
           switch (snapshot.state) {
             case 'paused':
-              console.log('Upload is paused');
               break;
             case 'running':
-              console.log('Upload is running');
               break;
             default:
               break;

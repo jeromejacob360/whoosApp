@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { addUserToContactsMaster } from '../helper-functions/contactsHelper';
-import { ImSpinner2 } from 'react-icons/im';
 import { useDispatch } from 'react-redux';
 import { PAGE_LOADING } from '../store/chatSlice';
 
 //----------------------------------------------//
 export default function Login() {
   //State variables
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('jerome@gmail.com');
+  const [password, setPassword] = useState('123123');
 
   const dispatch = useDispatch();
 
@@ -20,20 +18,18 @@ export default function Login() {
     if (email && password)
       try {
         dispatch(PAGE_LOADING());
-        setLoading(true);
         await signInWithEmailAndPassword(getAuth(), email, password);
         await addUserToContactsMaster(email);
       } catch (error) {
-        setLoading(false);
         console.log(`error.message`, error.message);
       }
   }
 
   return (
-    <div className="flex items-center w-screen h-screen -mt-24">
+    <div className="flex items-center h-screen">
       <form
         onSubmit={loginUser}
-        className="flex flex-col px-6 py-4 mx-auto space-y-4 bg-white rounded-md shadow-lg"
+        className="flex flex-col px-6 py-4 mx-auto space-y-4 bg-white border rounded-md shadow-2xl"
       >
         <input
           value={email}
@@ -53,11 +49,6 @@ export default function Login() {
         />
         <button className="flex items-center justify-center py-1 space-x-2 bg-white border border-gray-400 rounded-md shadow-sm cursor-pointer text-icons">
           <span> Login</span>
-          {loading && (
-            <span>
-              <ImSpinner2 className="animate-spin" />
-            </span>
-          )}
         </button>
         <a
           target="_blank"

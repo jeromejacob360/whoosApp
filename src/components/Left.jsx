@@ -1,7 +1,6 @@
 import React from 'react';
 import Contacts from './Contacts';
 import Header from './Header';
-import Search from './Search';
 
 export default function Left() {
   return (
@@ -10,7 +9,7 @@ export default function Left() {
       style={{ minWidth: '350px' }}
     >
       <Header />
-      <Search />
+      {/* <Search /> */}
       <Contacts />
     </div>
   );

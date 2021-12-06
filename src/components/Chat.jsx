@@ -12,6 +12,8 @@ import SingleTick from '../assets/svgs/SingleTick';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
 import { TiTick } from 'react-icons/ti';
+import { ImSpinner2 } from 'react-icons/im';
+import { RiCheckDoubleFill } from 'react-icons/ri';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj, chatHistoryRef }) {
@@ -217,11 +219,15 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>
-          {messageObj.status === 'sent' && messageIsFromMe && (
-            <div className="absolute bottom-0 right-0">
-              <TiTick />
-            </div>
-          )}
+          <div className="absolute bottom-0 right-0">
+            {messageObj.status === 'sent' && messageIsFromMe && <TiTick />}
+            {messageObj.status === 'delivered' && messageIsFromMe && (
+              <RiCheckDoubleFill />
+            )}
+            {!messageObj.status && (
+              <ImSpinner2 size={15} className="animate-spin" />
+            )}
+          </div>
         </div>
       </div>
     </div>

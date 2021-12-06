@@ -1,4 +1,6 @@
+import { doc, setDoc } from '@firebase/firestore';
 import { createSlice } from '@reduxjs/toolkit';
+import { db } from '../firebase/firebase';
 import { chatNameGenerator } from '../helper-functions/formatters';
 import { textTrimmer } from '../helper-functions/formatters';
 
@@ -105,13 +107,26 @@ export const chatSlice = createSlice({
     //manage messaging
 
     ADD_MESSAGE: (state, action) => {
-      const { chatName, message, currentUserEmail } = action.payload;
+      const { chatName, message, currentUserEmail, from } = action.payload;
 
+      if (from === 'server' && message.from !== currentUserEmail) {
+        const q = doc(
+          db,
+          `whatsApp/chats/${chatName}/${message.time.toString()}`,
+        );
+        setDoc(q, { status: 'delivered' }, { merge: true }).catch((error) => {
+          console.log(error);
+        });
+      }
+
+      console.log(`from`, from);
       const chat = state.chats[chatName];
       if (chat)
         for (let i = chat.length - 1; i >= 0; i--) {
           const existingMessage = chat[i];
-          if (existingMessage.time === message.time) return;
+          if (existingMessage.time === message.time) {
+            return;
+          }
         }
 
       //set last message of that chat

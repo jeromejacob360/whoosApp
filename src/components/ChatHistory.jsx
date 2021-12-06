@@ -1,7 +1,6 @@
 import Chat from './Chat';
 import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
-import { doc, setDoc } from '@firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
@@ -77,18 +76,6 @@ export default function ChatHistory({ chatHistoryRef }) {
   useEffect(() => {
     const unsubList = [];
 
-    const sendDeliveredMessageNotification = async (chatName, message) => {
-      if (message.from !== currentUserEmail) {
-        return;
-      }
-      const docRef = doc(
-        db,
-        `whatsApp/chats/${chatName}/${message.time.toString()}`,
-      );
-
-      await setDoc(docRef, { delivered: true }, { merge: true });
-    };
-
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {
         const q = query(
@@ -105,8 +92,19 @@ export default function ChatHistory({ chatHistoryRef }) {
                 chatHistoryRef.current.scrollTop =
                   chatHistoryRef.current.scrollHeight;
               }
-              dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
-              // sendDeliveredMessageNotification(chatName, message);
+              dispatch(
+                ADD_MESSAGE({
+                  chatName,
+                  message,
+                  currentUserEmail,
+                  from: 'server',
+                }),
+              );
+              if (
+                message.from === currentUserEmail &&
+                (!message.status || message.status === 'sent')
+              ) {
+              }
             }
             if (change.type === 'modified') {
               const message = change.doc.data();
@@ -123,7 +121,8 @@ export default function ChatHistory({ chatHistoryRef }) {
     }
 
     return unsubList.forEach((unsub) => unsub);
-  }, [chatHistoryRef, chatNames, currentChatName, currentUserEmail, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatNames, currentUserEmail, dispatch]);
 
   if (!messages) return <Intro />;
 

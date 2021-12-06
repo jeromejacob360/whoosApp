@@ -133,8 +133,10 @@ export default function MessageInput({ chatHistoryRef }) {
         chatName: currentChatName,
         message: newMessage,
         currentUserEmail,
+        from: 'local',
       }),
     );
+
     setTimeout(() => {
       chatHistoryRef.current.scrollTop =
         chatHistoryRef.current.scrollHeight -
@@ -294,7 +296,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-full bg-whiteBG"
+              className="flex-1 px-4 py-2 rounded-xl bg-whiteBG"
               placeholder="Type a message.."
               type="text"
             ></input>

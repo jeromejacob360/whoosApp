@@ -92,7 +92,7 @@ export default function Contact({ contact }) {
 
   return (
     <div
-      className={`relative w-96 flex items-center px-3 duration-100 cursor-pointer ${
+      className={`relative w-90 flex items-center px-3 duration-100 cursor-pointer ${
         currentChatName === chatName
           ? 'bg-darkBG'
           : 'bg-whiteBG hover:bg-hoverBG'
@@ -112,8 +112,8 @@ export default function Contact({ contact }) {
         )}
         <div className="flex items-center justify-between w-full">
           <h4
-            className={` ${contactHasName ? 'text-black' : 'text-blue-800'} ${
-              unreadMessagecount > 0 ? 'font-medium' : ''
+            className={` ${contactHasName ? '' : 'text-blue-800'} ${
+              unreadMessagecount > 0 ? 'text-gray-900' : 'text-gray-600'
             }`}
           >
             {contactName}
@@ -138,9 +138,9 @@ export default function Contact({ contact }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ x: 20, opacity: 0, transition: { ease: 'linear' } }}
-            className="absolute grid w-5 h-5 text-xs text-white rounded-full bg-unreadBadgeGreen place-items-center right-6 top-10"
+            className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-md bg-unreadBadgeGreen right-4 top-10"
           >
-            {unreadMessagecount}
+            {unreadMessagecount > 99 ? '99+' : unreadMessagecount}
           </motion.div>
         )}
       </AnimatePresence>

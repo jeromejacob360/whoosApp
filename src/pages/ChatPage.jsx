@@ -4,7 +4,7 @@ import Right from '../components/Right';
 
 export default function ChatPage() {
   return (
-    <div className="relative flex h-screen overflow-y-hidden">
+    <div className="relative flex h-screen">
       <Left />
       <Right />
     </div>

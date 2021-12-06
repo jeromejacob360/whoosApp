@@ -1,4 +1,4 @@
-import { doc, setDoc } from '@firebase/firestore';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { createSlice } from '@reduxjs/toolkit';
 import { db } from '../firebase/firebase';
 import { chatNameGenerator } from '../helper-functions/formatters';
@@ -114,12 +114,15 @@ export const chatSlice = createSlice({
           db,
           `whatsApp/chats/${chatName}/${message.time.toString()}`,
         );
-        setDoc(q, { status: 'delivered' }, { merge: true }).catch((error) => {
-          console.log(error);
+        getDoc(q).then((document) => {
+          if (document.exists) {
+            if (!document.data().status) {
+              setDoc(document.ref, { status: 'delivered' }, { merge: true });
+            }
+          }
         });
       }
 
-      console.log(`from`, from);
       const chat = state.chats[chatName];
       if (chat)
         for (let i = chat.length - 1; i >= 0; i--) {
@@ -136,7 +139,8 @@ export const chatSlice = createSlice({
       if (
         chatName !== state.currentChatName &&
         message.from !== action.payload.currentUserEmail &&
-        !message.deletedForMe.includes(currentUserEmail)
+        !message.deletedForMe.includes(currentUserEmail) &&
+        message.status !== 'read'
       ) {
         state.unreadMessages[chatName]
           ? state.unreadMessages[chatName]++

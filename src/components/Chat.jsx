@@ -14,6 +14,8 @@ import { AiOutlineDown } from 'react-icons/ai';
 import { TiTick } from 'react-icons/ti';
 import { ImSpinner2 } from 'react-icons/im';
 import { RiCheckDoubleFill } from 'react-icons/ri';
+import { doc, getDoc, setDoc } from '@firebase/firestore';
+import { db } from '../firebase/firebase';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj, chatHistoryRef }) {
@@ -101,6 +103,22 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         : dispatch(REMOVE_MESSAGE_TO_FORWARDS(messageObj));
     }
   }, [dispatch, forwardMode, messageObj, selected]);
+
+  //read receipt
+  useEffect(() => {
+    getDoc(
+      doc(db, `whatsApp/chats/${currentChatName}/${messageObj.time}`),
+    ).then((document) => {
+      if (document.data()) {
+        const status = document.data().status;
+        if (status === 'delivered') {
+          if (messageObj.from !== currentUserName) {
+            setDoc(document.ref, { status: 'read' }, { merge: true });
+          }
+        }
+      }
+    });
+  }, [currentChatName, currentUserName, messageObj]);
 
   // add or remove selected message to forward
   function addOrRemove() {
@@ -219,15 +237,18 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>
-          <div className="absolute bottom-0 right-0">
-            {messageObj.status === 'sent' && messageIsFromMe && <TiTick />}
-            {messageObj.status === 'delivered' && messageIsFromMe && (
-              <RiCheckDoubleFill />
-            )}
-            {!messageObj.status && (
-              <ImSpinner2 size={15} className="animate-spin" />
-            )}
-          </div>
+          {messageIsFromMe && (
+            <div className="absolute bottom-0 right-0">
+              {messageObj.status === 'sent' && <TiTick />}
+              {messageObj.status === 'delivered' && <RiCheckDoubleFill />}
+              {messageObj.status === 'read' && (
+                <RiCheckDoubleFill className="text-dodgerblue" />
+              )}
+              {!messageObj.status && (
+                <ImSpinner2 size={15} className="animate-spin" />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

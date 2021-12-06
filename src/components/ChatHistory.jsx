@@ -51,10 +51,10 @@ export default function ChatHistory({ chatHistoryRef }) {
   //scroll to bottom when chat is opened
 
   useEffect(() => {
-    if (chatHistoryRef.current)
-      setTimeout(() => {
+    setTimeout(() => {
+      if (chatHistoryRef.current)
         chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
-      }, 0);
+    }, 0);
   }, [chatHistoryRef, currentChatName]);
 
   //clear reply message when chat is changed

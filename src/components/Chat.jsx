@@ -11,6 +11,7 @@ import NotSent from '../assets/svgs/NotSent';
 import SingleTick from '../assets/svgs/SingleTick';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
+import { TiTick } from 'react-icons/ti';
 
 //----------------------------------------------//
 export default function Chat({ message: messageObj, chatHistoryRef }) {
@@ -92,43 +93,26 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
   }, [largeMessageCutoff, messageObj]);
 
   useEffect(() => {
-    selected
-      ? dispatch(ADD_MESSAGE_TO_FORWARDS(messageObj))
-      : dispatch(REMOVE_MESSAGE_TO_FORWARDS(messageObj));
-  }, [dispatch, messageObj, selected]);
+    if (forwardMode) {
+      selected
+        ? dispatch(ADD_MESSAGE_TO_FORWARDS(messageObj))
+        : dispatch(REMOVE_MESSAGE_TO_FORWARDS(messageObj));
+    }
+  }, [dispatch, forwardMode, messageObj, selected]);
 
   // add or remove selected message to forward
   function addOrRemove() {
     setSelected((prev) => !prev);
   }
 
-  useEffect(() => {
-    // prevent image drag to allow drag to reply
-    if (imageRef.current) imageRef.current.ondragstart = () => false;
-  }, []);
-
   function openChatOptions(e) {
     const menuWidth = 160;
     const menuHeight = 250;
     setOpenOptions((prev) => !prev);
-    const rect = chatHistoryRef.current.getBoundingClientRect();
 
-    if (rect.bottom - e.clientY < menuHeight) {
-      // console.log('MENU UPWARDS');
-      setMenuVertical('up');
-    }
-    if (rect.bottom - e.clientY >= menuHeight) {
-      // console.log('MENU DOWNWARDS');
-      setMenuVertical('down');
-    }
-    if (e.clientX - rect.left < menuWidth) {
-      // console.log('MENU TO THE RIGHT');
-      setMenuHorizontal('right');
-    }
-    if (e.clientX - rect.left >= menuWidth) {
-      // console.log('MENU TO THE LEFT');
-      setMenuHorizontal('left');
-    }
+    const rect = chatHistoryRef.current.getBoundingClientRect();
+    setMenuVertical(rect.bottom - e.clientY < menuHeight ? 'up' : 'down');
+    setMenuHorizontal(e.clientX - rect.left < menuWidth ? 'right' : 'left');
   }
 
   return (
@@ -187,8 +171,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
               <div>
                 <span>Photo</span>
                 <img
-                  ref={imageRef}
-                  className="h-8 "
+                  className="h-8"
                   src={messageObj.messageToReply.mediaUrl}
                   alt=""
                 />
@@ -202,7 +185,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
           <img
             ref={imageRef}
             onClick={() => setImageToPreview(messageObj.mediaUrl)}
-            className="rounded-md cursor-pointer"
+            className="rounded-md cursor-pointer w-96 h-72"
             src={messageObj.mediaUrl}
             alt=""
           />
@@ -229,11 +212,16 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
           )}
         </div>
 
-        <div className="relative flex items-center justify-end mt-2 mr-2 space-x-2">
+        <div className="relative flex items-center justify-end mt-2 space-x-0">
           <span className={`text-xs text-right text-gray-400 mr-6`}>
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>
+          {messageObj.status === 'sent' && messageIsFromMe && (
+            <div className="absolute bottom-0 right-0">
+              <TiTick />
+            </div>
+          )}
         </div>
       </div>
     </div>

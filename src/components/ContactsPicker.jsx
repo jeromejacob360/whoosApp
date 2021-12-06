@@ -43,10 +43,6 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
 
     setOpenContactsPicker(false);
 
-    // send messages to each contact one at a time
-    // for (let i = 0; i < argsList.length; i++) {
-    //   const [message, currentChatName] = argsList[i];
-
     argsList.forEach(async (obj) => {
       const { currentChatName, message } = obj;
       dispatch(

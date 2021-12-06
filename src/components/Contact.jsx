@@ -101,7 +101,7 @@ export default function Contact({ contact }) {
     >
       <div className="mr-3 min-w-max">
         <img
-          className="object-cover w-12 h-12 rounded-full"
+          className="object-cover w-12 h-12 rounded-xl"
           src={contact.imageURL || noAvatar}
           alt=""
         />

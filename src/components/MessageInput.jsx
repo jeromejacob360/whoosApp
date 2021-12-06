@@ -5,6 +5,7 @@ import ContactsPicker from './ContactsPicker';
 import {
   ADD_MESSAGE,
   CLEAR_REPLY_MESSAGE,
+  MESSAGE_SENT,
   REMOVE_UPLOAD_PROGRESS,
   SET_UPLOAD_PROGRESS,
   UPLOAD_STARTED,
@@ -73,7 +74,7 @@ export default function MessageInput({ chatHistoryRef }) {
 
   if (focusInput) {
     setTimeout(() => {
-      inputRef.current.focus();
+      inputRef.current && inputRef.current.focus();
     }, 0);
   }
 
@@ -147,9 +148,13 @@ export default function MessageInput({ chatHistoryRef }) {
       setCapturedImage('');
     }
 
-    await sendMessagetoDB({
+    sendMessagetoDB({
       newMessage: { ...newMessage, mediaUrl },
       currentChatName,
+    }).then((sentMessage) => {
+      dispatch(
+        MESSAGE_SENT({ chatName: currentChatName, message: sentMessage }),
+      );
     });
   }
 

@@ -1,6 +1,7 @@
 import Chat from './Chat';
 import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { doc, setDoc } from '@firebase/firestore';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
@@ -10,7 +11,6 @@ import {
   DELETE_MESSAGE,
   FORWARD_MODE_OFF,
   MODIFY_MESSAGE,
-  REPLY,
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import bgImage from '../assets/images/pattern.png';
@@ -72,9 +72,22 @@ export default function ChatHistory({ chatHistoryRef }) {
   }, [currentChatName, namelessChats]);
 
   //Side effects
+
   // loop through each of these chatNames and get all the chats. (No pagination yet)
   useEffect(() => {
     const unsubList = [];
+
+    const sendDeliveredMessageNotification = async (chatName, message) => {
+      if (message.from !== currentUserEmail) {
+        return;
+      }
+      const docRef = doc(
+        db,
+        `whatsApp/chats/${chatName}/${message.time.toString()}`,
+      );
+
+      await setDoc(docRef, { delivered: true }, { merge: true });
+    };
 
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {
@@ -88,7 +101,12 @@ export default function ChatHistory({ chatHistoryRef }) {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
+              if (chatHistoryRef.current) {
+                chatHistoryRef.current.scrollTop =
+                  chatHistoryRef.current.scrollHeight;
+              }
               dispatch(ADD_MESSAGE({ chatName, message, currentUserEmail }));
+              // sendDeliveredMessageNotification(chatName, message);
             }
             if (change.type === 'modified') {
               const message = change.doc.data();
@@ -105,7 +123,7 @@ export default function ChatHistory({ chatHistoryRef }) {
     }
 
     return unsubList.forEach((unsub) => unsub);
-  }, [chatNames, currentUserEmail, dispatch]);
+  }, [chatHistoryRef, chatNames, currentChatName, currentUserEmail, dispatch]);
 
   if (!messages) return <Intro />;
 
@@ -137,30 +155,30 @@ export default function ChatHistory({ chatHistoryRef }) {
           </button>
         </div>
       )}
-      <AnimatePresence>
-        <ul className="flex flex-col justify-end">
-          {messages &&
-            messages.length > 0 &&
-            messages.map((message) => {
-              return !message?.deletedForMe.includes(currentUserName)
-                ? message.time && (
-                    <motion.li
-                      drag="x"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      dragConstraints={{ left: 0, right: 0 }}
-                      whileDrag={{ scale: 0.9 }}
-                      onDragEnd={() => dispatch(REPLY({ message }))}
-                      key={message.time}
-                    >
-                      <Chat chatHistoryRef={chatHistoryRef} message={message} />
-                    </motion.li>
-                  )
-                : null;
-            })}
-        </ul>
-      </AnimatePresence>
+      <ul className="flex flex-col justify-end">
+        {messages &&
+          messages.length > 0 &&
+          messages.map((message) => {
+            return (
+              <AnimatePresence key={message.time}>
+                {!message?.deletedForMe.includes(currentUserName)
+                  ? message.time && (
+                      <motion.li
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <Chat
+                          chatHistoryRef={chatHistoryRef}
+                          message={message}
+                        />
+                      </motion.li>
+                    )
+                  : null}
+              </AnimatePresence>
+            );
+          })}
+      </ul>
     </div>
   );
 }

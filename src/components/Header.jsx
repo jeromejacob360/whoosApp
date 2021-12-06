@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import Options from '../optionMenus/Options';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { MdMessage } from 'react-icons/md';
 
 export default function Header() {
   const imageUrl = useSelector((state) => state.authState.user.photoURL);
@@ -12,13 +11,13 @@ export default function Header() {
     <header className="relative flex items-center justify-between px-4 border bg-titleBG h-14">
       <div>
         <img
-          className="object-cover w-10 h-10 rounded-full cursor-pointer"
+          className="object-cover w-10 h-10 cursor-pointer rounded-xl"
           src={imageUrl}
           alt=""
         />
       </div>
       <div className="flex space-x-4">
-        <div>
+        {/* <div>
           <svg viewBox="0 0 24 24" width="24" height="24">
             <path
               fill="currentColor"
@@ -29,8 +28,8 @@ export default function Header() {
               d="M19 1.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"
             ></path>
           </svg>
-        </div>
-        <MdMessage size={23} />
+        </div> */}
+        {/* <MdMessage size={23} /> */}
         <BsThreeDotsVertical
           size={20}
           onClick={() => setOpenOptions(!openOptions)}

@@ -114,11 +114,6 @@ export const chatSlice = createSlice({
           if (existingMessage.time === message.time) return;
         }
 
-      //push message to state
-      state.chats[chatName]
-        ? state.chats[chatName].push(message)
-        : (state.chats[chatName] = [message]);
-
       //set last message of that chat
       state.lastMessages[chatName] = message;
 
@@ -153,7 +148,31 @@ export const chatSlice = createSlice({
         userWAContacts.splice(indexOfContact, 1);
         userWAContacts.unshift(firstContact);
       }
+
+      //push message to state
+      state.chats[chatName]
+        ? state.chats[chatName].push(message)
+        : (state.chats[chatName] = [message]);
+
+      state.chats[chatName] = state.chats[chatName].sort((a, b) => {
+        return a.time - b.time;
+      });
     },
+
+    MESSAGE_SENT: (state, action) => {
+      const { chatName, message } = action.payload;
+
+      const chat = state.chats[chatName];
+      if (chat)
+        for (let i = chat.length - 1; i >= 0; i--) {
+          const existingMessage = chat[i];
+          if (existingMessage.time === message.time) {
+            existingMessage.status = 'sent';
+            return;
+          }
+        }
+    },
+
     UPLOAD_STARTED: (state, action) => {
       const { chatName, id } = action.payload;
 
@@ -249,8 +268,6 @@ export const chatSlice = createSlice({
   },
 });
 
-// Action creators are generated for each case reducer function
-
 export const {
   PAGE_RENDERED,
   PAGE_LOADING,
@@ -262,6 +279,7 @@ export const {
   CLEAR_STATE,
   SET_USERS_WA_CONTACTS,
   ADD_MESSAGE,
+  MESSAGE_SENT,
   UPLOAD_STARTED,
   SET_UPLOAD_PROGRESS,
   REMOVE_UPLOAD_PROGRESS,

@@ -20,6 +20,12 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (user) {
+      document.title = user.displayName;
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (user === null) {
       dispatch(PAGE_RENDERED());
     }

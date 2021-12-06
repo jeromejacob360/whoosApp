@@ -85,26 +85,27 @@ export default function ChatOptions({
     }
   }
 
+  const translateLeft = menuHorizontal === 'right' ? '100%' : '-10px';
+  const translateUp = menuVertical === 'up' ? 'calc(-100% + 10px)' : '10px';
+
   return (
     <ClickAway onClickAway={() => setOpenOptions(false)}>
       <motion.div
+        onClick={() => setOpenOptions(false)}
         transition={{ duration: 0.2 }}
-        initial={{ width: 0, height: 0, top: 0, right: 0, paddingBottom: 0 }}
+        initial={{ width: 0, height: 0, top: 0, right: 0 }}
         animate={{
           width: 'auto',
           height: 'auto',
-          top: menuVertical === 'up' ? -205 : 20,
-          right: menuHorizontal === 'right' ? -155 : 20,
+          transform: `translate(${translateLeft}, ${translateUp})`,
         }}
         exit={{ width: 0, height: 0, top: 0, right: 0 }}
         className={`group absolute bg-white rounded-md shadow-md overflow-hidden z-50`}
       >
         <ul className="w-40 py-3 space-y-3 text-sm text-icons">
-          {!messageIsFromMe && (
-            <li className="w-full cursor-pointer hover:bg-dim">
-              <div className="py-1 pl-6">Message info</div>
-            </li>
-          )}
+          <li className="w-full cursor-pointer hover:bg-dim">
+            <div className="py-1 pl-6">Message info</div>
+          </li>
           <li
             onClick={() => {
               reply();

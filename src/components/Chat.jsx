@@ -105,6 +105,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
   }, [dispatch, forwardMode, messageObj, selected]);
 
   //read receipt
+  const now = Date.now();
   useEffect(() => {
     getDoc(
       doc(db, `whatsApp/chats/${currentChatName}/${messageObj.time}`),
@@ -113,12 +114,16 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         const status = document.data().status;
         if (status === 'delivered') {
           if (messageObj.from !== currentUserName) {
-            setDoc(document.ref, { status: 'read' }, { merge: true });
+            setDoc(
+              document.ref,
+              { status: 'read', readTime: now },
+              { merge: true },
+            );
           }
         }
       }
     });
-  }, [currentChatName, currentUserName, messageObj]);
+  }, [currentChatName, currentUserName, messageObj, now]);
 
   // add or remove selected message to forward
   function addOrRemove() {

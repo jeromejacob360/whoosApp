@@ -117,7 +117,11 @@ export const chatSlice = createSlice({
         getDoc(q).then((document) => {
           if (document.exists) {
             if (!document.data().status) {
-              setDoc(document.ref, { status: 'delivered' }, { merge: true });
+              setDoc(
+                document.ref,
+                { status: 'delivered', deliveredTime: Date.now() },
+                { merge: true },
+              );
             }
           }
         });

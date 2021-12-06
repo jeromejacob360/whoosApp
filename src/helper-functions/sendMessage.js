@@ -35,7 +35,7 @@ export default async function sendMessagetoDB({ newMessage, currentChatName }) {
               currentChatName,
               newMessage.time.toString(),
             ),
-            newMessage,
+            { ...newMessage, status: 'sent' },
           );
           resolve(newMessage);
         } catch (error) {

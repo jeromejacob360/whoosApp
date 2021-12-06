@@ -4,11 +4,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        appBg: 'white',
+        titleBg: 'white',
+        contactBg: 'white',
+        contactsEmptySpaceBg: 'white',
+        contactSelectedBg: 'white',
+        contactHoverBg: 'white',
+        chatHistoryBg: 'white',
+        sentChatBg: 'white',
+        receivedChatBg: 'white',
+
         dim: '#f2f2f2',
         main: '#f7faf9',
         selected: '#00968814',
         icons: '#65676b',
-        mutedText: '#ababab',
+        mutedText: 'black',
         dodgerblue: '#1877f2',
         flourescentGreen: '#09e85e',
         WaGreen: '#00bfa5',
@@ -20,7 +30,6 @@ module.exports = {
         dimBG: '#f6f6f6',
         hoverBG: '#f5f5f5',
         darkBG: '#ebebeb',
-        introBG: '#f8f9fa',
         chatBlue: '#e1f3fb',
         unreadBadgeGreen: '#06D755',
       },

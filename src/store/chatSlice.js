@@ -23,6 +23,7 @@ const initialState = {
   lastMessages: {},
   progress: {},
   pageRendered: false,
+  messageInfo: '',
 };
 
 function calculateForwardMessagesLength(state) {
@@ -116,7 +117,7 @@ export const chatSlice = createSlice({
         );
         getDoc(q).then((document) => {
           if (document.exists) {
-            if (!document.data().status) {
+            if (document.data().status === 'sent') {
               setDoc(
                 document.ref,
                 { status: 'delivered', deliveredTime: Date.now() },
@@ -261,6 +262,14 @@ export const chatSlice = createSlice({
       state.focusInput = false;
     },
 
+    MESSAGE_INFO: (state, action) => {
+      state.messageInfo = action.payload;
+    },
+
+    CLEAR_MESSAGE_INFO: (state) => {
+      state.messageInfo = '';
+    },
+
     //forwarding messages
 
     FORWARD_MODE_ON: (state) => {
@@ -310,6 +319,8 @@ export const {
   DELETE_MESSAGE,
   CHAT_HISTORY_REF,
   REPLY,
+  MESSAGE_INFO,
+  CLEAR_MESSAGE_INFO,
   CLEAR_REPLY_MESSAGE,
   NAMELESS_CHAT,
   REMOVE_NAMELESS_CHAT,

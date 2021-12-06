@@ -5,7 +5,7 @@ import Header from './Header';
 export default function Left() {
   return (
     <div
-      className="border-l border-r border-main bg-whiteBG"
+      className="z-10 border-r shadow-lg rounded-bl-md rounded-tl-md bg-blue-50"
       style={{ minWidth: '350px' }}
     >
       <Header />

@@ -227,7 +227,7 @@ export default function MessageInput({ chatHistoryRef }) {
 
   return (
     currentChatName && (
-      <div className="relative">
+      <>
         <AnimatePresence>
           {photoMode && (
             <CameraPreview
@@ -266,7 +266,7 @@ export default function MessageInput({ chatHistoryRef }) {
         {(!photoMode || capturedImage) && (
           <form
             onSubmit={sendMessage}
-            className={`flex px-4 z-50 h-16 border shadow-md bg-darkBG items-center ${
+            className={`flex px-4 z-50 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
               !currentChatName && 'no-cursor'
             }`}
           >
@@ -310,7 +310,7 @@ export default function MessageInput({ chatHistoryRef }) {
             </button>
           </form>
         )}
-      </div>
+      </>
     )
   );
 }

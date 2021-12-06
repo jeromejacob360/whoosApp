@@ -92,10 +92,10 @@ export default function Contact({ contact }) {
 
   return (
     <div
-      className={`relative w-90 flex items-center px-3 duration-100 cursor-pointer ${
+      className={`relative w-90 flex rounded-xl items-center px-3 duration-100 cursor-pointer ${
         currentChatName === chatName
-          ? 'bg-darkBG'
-          : 'bg-whiteBG hover:bg-hoverBG'
+          ? 'bg-blue-300 transform scale-x-105 shadow-md z-10'
+          : 'bg-blue-50 hover:bg-blue-100'
       }`}
       onClick={setChat}
     >
@@ -106,7 +106,7 @@ export default function Contact({ contact }) {
           alt=""
         />
       </div>
-      <div className="flex flex-col items-start justify-center w-full px-2 border-b border-darkBG h-18">
+      <div className="flex flex-col items-start justify-center w-full px-2 border-b h-18">
         {!contactHasName && !chatOpened && (
           <div className="absolute text-xs text-red-600 top-2">New!</div>
         )}
@@ -138,7 +138,7 @@ export default function Contact({ contact }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ x: 20, opacity: 0, transition: { ease: 'linear' } }}
-            className="absolute flex items-center justify-center w-5 h-5 text-xs text-white rounded-md bg-unreadBadgeGreen right-4 top-10"
+            className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-600 rounded-md right-4 top-10"
           >
             {unreadMessagecount > 99 ? '99+' : unreadMessagecount}
           </motion.div>

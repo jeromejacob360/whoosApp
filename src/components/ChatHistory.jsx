@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
   ADD_MESSAGE,
+  CLEAR_MESSAGE_INFO,
   CLEAR_REPLY_MESSAGE,
   CLEAR_UNREAD_MESSAGES,
   DELETE_MESSAGE,
@@ -12,7 +13,6 @@ import {
   MODIFY_MESSAGE,
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
-import bgImage from '../assets/images/pattern.png';
 import Intro from '../pages/Intro';
 
 //----------------------------------------------//
@@ -26,6 +26,7 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
+
   const messages = useSelector(
     (state) => state?.chatState?.chats[currentChatName],
   );
@@ -34,7 +35,6 @@ export default function ChatHistory({ chatHistoryRef }) {
     (state) => state?.chatState?.currentChatterEmail,
   );
 
-  const forwardMode = useSelector((state) => state?.chatState?.forwardMode);
   const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
 
@@ -42,6 +42,11 @@ export default function ChatHistory({ chatHistoryRef }) {
   useEffect(() => {
     dispatch(FORWARD_MODE_OFF());
   }, [currentChatName, dispatch]);
+
+  //clear message info tab when chat changes
+  useEffect(() => {
+    dispatch(CLEAR_MESSAGE_INFO());
+  }, [dispatch, currentChatName]);
 
   // clear unread messages when chat is opened
   useEffect(() => {
@@ -129,17 +134,10 @@ export default function ChatHistory({ chatHistoryRef }) {
   return (
     <div
       ref={chatHistoryRef}
-      className="flex-1 h-full overflow-x-hidden overflow-y-scroll duration-500"
-      style={{
-        backgroundImage: `${
-          forwardMode
-            ? 'linear-gradient(rgba(229, 221, 213, 1), rgba(229, 221, 213, 1)),'
-            : ''
-        } url(${bgImage})`,
-      }}
+      className="flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 bg-blue-50"
     >
       {addOptionsToSaveContact && (
-        <div className="flex p-4 space-x-4 shadow-sm bg-dim">
+        <div className="flex p-4 space-x-4 bg-white shadow-sm">
           <button className="px-4 py-1 text-white bg-blue-500 rounded-md">
             <a
               target="_blank"

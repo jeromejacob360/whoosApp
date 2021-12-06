@@ -12,6 +12,7 @@ import ClickAway from '../hooks/ClickAway';
 import {
   ADD_MESSAGE_TO_FORWARDS,
   FORWARD_MODE_ON,
+  MESSAGE_INFO,
   REPLY,
 } from '../store/chatSlice';
 
@@ -103,9 +104,16 @@ export default function ChatOptions({
         className={`group absolute bg-white rounded-md shadow-md overflow-hidden z-50`}
       >
         <ul className="w-40 py-3 space-y-3 text-sm text-icons">
-          <li className="w-full cursor-pointer hover:bg-dim">
-            <div className="py-1 pl-6">Message info</div>
-          </li>
+          {messageIsFromMe && (
+            <li
+              onClick={() => {
+                dispatch(MESSAGE_INFO(message));
+              }}
+              className="w-full cursor-pointer hover:bg-dim"
+            >
+              <div className="py-1 pl-6">Message info</div>
+            </li>
+          )}
           <li
             onClick={() => {
               reply();

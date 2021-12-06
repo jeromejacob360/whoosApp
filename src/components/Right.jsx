@@ -7,7 +7,7 @@ export default function Right() {
   const chatHistoryRef = useRef();
 
   return (
-    <div className="relative flex flex-col justify-between flex-1 w-full h-screen">
+    <div className="relative flex flex-col justify-between flex-1 w-full h-full">
       <Title />
       <ChatHistory chatHistoryRef={chatHistoryRef} />
       <MessageInput chatHistoryRef={chatHistoryRef} />

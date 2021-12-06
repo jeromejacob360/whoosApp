@@ -8,10 +8,10 @@ export default function Header() {
   const [openOptions, setOpenOptions] = useState(false);
 
   return (
-    <header className="relative flex items-center justify-between px-4 border bg-titleBG h-14">
+    <header className="relative z-10 flex items-center justify-between h-20 pl-20 pr-4 shadow-md rounded-tl-md bg-blue-50">
       <div>
         <img
-          className="object-cover w-10 h-10 cursor-pointer rounded-xl"
+          className="object-cover cursor-pointer w-14 h-14 rounded-xl"
           src={imageUrl}
           alt=""
         />

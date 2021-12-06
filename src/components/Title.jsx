@@ -12,7 +12,7 @@ export default function Title() {
   );
 
   return currentChatterName ? (
-    <div className="relative flex items-center justify-between px-4 py-2 bg-titleBG">
+    <div className="relative z-10 flex items-center justify-between h-20 px-4 shadow-md rounded-tr-md bg-blue-50">
       <div className="flex items-center space-x-2">
         <img
           className="object-cover w-10 h-10 rounded-xl"

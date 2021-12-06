@@ -42,6 +42,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
   const progress = useSelector(
     (state) => state?.chatState?.progress[currentChatName],
   );
+  const messageInfo = useSelector((state) => state.chatState.messageInfo);
 
   //logic
   const messageIsFromMe = messageObj?.from === currentUserName;
@@ -49,7 +50,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
   function scrollIntoView(id) {
     const element = document.getElementById(id);
     element.scrollIntoView({ behavior: 'smooth' });
-    element.style.backgroundColor = '#f5f5f5';
+    element.style.backgroundColor = '#abcced';
     element.style.borderRadius = '0px';
     setTimeout(() => {
       element.style.backgroundColor = 'transparent';
@@ -91,7 +92,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
       );
       setLargeMessage(trimmedMessage + '...');
     }
-    if (messageObj.message.length > largeMessageCutoff) {
+    if (messageObj?.message?.length > largeMessageCutoff) {
       trimLargeMessage();
     } else setLargeMessage('');
   }, [largeMessageCutoff, messageObj]);
@@ -144,7 +145,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
     <div
       onClick={forwardMode ? addOrRemove : null}
       id={messageObj.time}
-      className={`flex duration-200 my-1 bg-opacity-30  ${
+      className={`flex duration-500 my-1 bg-opacity-30  ${
         selected ? 'bg-selected' : ''
       } ${messageIsFromMe ? 'justify-end' : 'justify-start'} ${
         forwardMode ? 'cursor-pointer' : ''
@@ -160,19 +161,21 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
       </AnimatePresence>
       <div
         className={`p-1 group m-2 break-words max-w-sm border-main rounded-lg shadow-sm relative ${
-          messageIsFromMe ? 'bg-chatGreen' : 'bg-whiteBG'
+          messageIsFromMe ? 'bg-indigo-400' : 'bg-blue-300'
         }`}
       >
         {/* Options button */}
-        {!messageObj.deleted && !forwardMode && (
-          <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
-            <AiOutlineDown
-              className="p-1"
-              size={20}
-              onClick={openChatOptions}
-            />
-          </div>
-        )}
+        {!messageObj.deleted &&
+          !forwardMode &&
+          messageInfo.time !== messageObj.time && (
+            <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
+              <AiOutlineDown
+                className="p-1"
+                size={20}
+                onClick={openChatOptions}
+              />
+            </div>
+          )}
         {/* Options menu */}
         <AnimatePresence>
           {openOptions && !messageObj.deleted && (

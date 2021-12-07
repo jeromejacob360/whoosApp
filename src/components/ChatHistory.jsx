@@ -150,20 +150,27 @@ export default function ChatHistory({ chatHistoryRef }) {
           </button>
         </div>
       )}
-      <ul className="flex flex-col justify-end">
+      <ul className="flex flex-col justify-end pt-2">
         {messages &&
           messages.length > 0 &&
-          messages.map((message) => {
+          messages.map((message, index) => {
             return (
               <AnimatePresence key={message.time}>
                 {!message?.deletedForMe.includes(currentUserName)
                   ? message.time && (
                       <motion.li
+                        layout
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, height: 0 }}
                       >
                         <Chat
+                          nextSender={
+                            messages[index + 1] && messages[index + 1].from
+                          }
+                          prevSender={
+                            messages[index - 1] && messages[index - 1].from
+                          }
                           chatHistoryRef={chatHistoryRef}
                           message={message}
                         />

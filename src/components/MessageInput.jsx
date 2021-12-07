@@ -30,7 +30,6 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 
 import AttachOptions from '../minor-components/AttachOptions';
-import useCameraPreviewDimensions from '../hooks/CameraPreviewDimensions';
 let newMessage;
 
 //----------------------------------------------//
@@ -44,10 +43,6 @@ export default function MessageInput({ chatHistoryRef }) {
   const [capturedImage, setCapturedImage] = useState('');
   const [blob, setBlob] = useState('');
   const [attachOptions, setAttachOptions] = useState(false);
-  const [chatHistoryDimensions, setChatHistoryDimensions] = useState({
-    height: 0,
-    width: 0,
-  });
 
   const inputRef = useRef();
   const videoRef = useRef();
@@ -79,11 +74,6 @@ export default function MessageInput({ chatHistoryRef }) {
   }
 
   //Side effects
-  useCameraPreviewDimensions(
-    chatHistoryRef,
-    setChatHistoryDimensions,
-    currentChatName,
-  );
 
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
@@ -138,9 +128,7 @@ export default function MessageInput({ chatHistoryRef }) {
     );
 
     setTimeout(() => {
-      chatHistoryRef.current.scrollTop =
-        chatHistoryRef.current.scrollHeight -
-        chatHistoryRef.current.clientHeight;
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }, 0);
 
     setMessage('');
@@ -231,7 +219,6 @@ export default function MessageInput({ chatHistoryRef }) {
         <AnimatePresence>
           {photoMode && (
             <CameraPreview
-              chatHistoryDimensions={chatHistoryDimensions}
               canvasRef={canvasRef}
               videoRef={videoRef}
               capturedImage={capturedImage}
@@ -266,7 +253,7 @@ export default function MessageInput({ chatHistoryRef }) {
         {(!photoMode || capturedImage) && (
           <form
             onSubmit={sendMessage}
-            className={`flex px-4 z-50 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
+            className={`flex px-4 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
               !currentChatName && 'no-cursor'
             }`}
           >

@@ -1,11 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
-import { AiFillCamera, AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineCamera, AiOutlineClose } from 'react-icons/ai';
 import { BiUndo } from 'react-icons/bi';
 import ClickAway from '../hooks/ClickAway';
 
 export default function CameraPreview({
-  chatHistoryDimensions,
   canvasRef,
   videoRef,
   capturedImage,
@@ -76,29 +75,21 @@ export default function CameraPreview({
         y: '100%',
         transition: { duration: 0.3 },
       }}
-      className={`absolute bottom-0 flex items-center justify-center ${
+      className={`absolute top-20 flex items-center justify-center w-full bottom-0 ${
         capturedImage ? 'mb-16' : ''
       }`}
-      style={{
-        width:
-          chatHistoryDimensions.width === '100%'
-            ? chatHistoryDimensions.width
-            : chatHistoryDimensions.width + 'px',
-        height: capturedImage
-          ? chatHistoryDimensions.height - 65 + 'px'
-          : chatHistoryDimensions.height + 'px',
-      }}
     >
       <ClickAway
         className="flex w-full h-full"
         onClickAway={() => !capturedImage && endPhotoMode()}
       >
-        <div className="flex flex-col items-center justify-between w-full h-full bg-dimBG">
-          <div className="flex items-center justify-between w-full px-10 py-3 text-white bg-WaGreen">
+        <div className="flex flex-col items-center justify-between w-full h-full bg-blue-100 ">
+          <div className="flex items-center justify-between w-full px-10 py-3 text-white bg-blue-400 shadow-md">
             <div className="flex items-center">
               <AiOutlineClose
+                size={25}
                 onClick={endPhotoMode}
-                className="w-5 h-5 mr-4 text-white"
+                className="p-1 mr-4 text-white border rounded-md shadow-sm"
               />
               <span className="text-xl font-semibold">Take photo</span>
             </div>
@@ -133,8 +124,8 @@ export default function CameraPreview({
           </AnimatePresence>
 
           <div
-            className={`relative w-full ${
-              cameraPreviewOn ? ' bg-darkBG h-20' : 'bg-dimBG h-0'
+            className={`relative w-full  ${
+              cameraPreviewOn ? ' bg-blue-400 h-20' : 'h-0'
             }`}
           >
             {!capturedImage && (
@@ -143,9 +134,9 @@ export default function CameraPreview({
                 animate={{ scale: 1 }}
                 className="absolute bottom-2/4 left-3/4"
               >
-                <AiFillCamera
+                <AiOutlineCamera
                   onClick={captureImage}
-                  className={`h-16 w-16 p-4 text-white rounded-full shadow-md cursor-pointer bg-flourescentGreen`}
+                  className={`h-16 w-16 p-4 text-white rounded-full shadow-md cursor-pointer bg-indigo-400`}
                 />
               </motion.button>
             )}

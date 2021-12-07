@@ -11,13 +11,17 @@ import NotSent from '../assets/svgs/NotSent';
 import { TiTick } from 'react-icons/ti';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
-import { ImSpinner2 } from 'react-icons/im';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
 
 //----------------------------------------------//
-export default function Chat({ message: messageObj, chatHistoryRef }) {
+export default function Chat({
+  message: messageObj,
+  chatHistoryRef,
+  nextSender,
+  prevSender,
+}) {
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
@@ -27,6 +31,13 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
   const [progressIndicator, setProgressIndicator] = useState('');
   const [menuVertical, setMenuVertical] = useState('down');
   const [menuHorizontal, setMenuHorizontal] = useState('left');
+
+  const firstChat =
+    nextSender === messageObj.from && prevSender !== messageObj.from;
+  const lastChat =
+    nextSender !== messageObj.from && prevSender === messageObj.from;
+  const intermediateChat =
+    nextSender === messageObj.from && prevSender === messageObj.from;
 
   const imageRef = useRef(null);
 
@@ -144,7 +155,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
     <div
       onClick={forwardMode ? addOrRemove : null}
       id={messageObj.time}
-      className={`flex duration-500 my-1 bg-opacity-30  ${
+      className={`flex duration-500 bg-opacity-30 ${
         selected ? 'bg-selected' : ''
       } ${messageIsFromMe ? 'justify-end' : 'justify-start'} ${
         forwardMode ? 'cursor-pointer' : ''
@@ -159,9 +170,30 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         )}
       </AnimatePresence>
       <div
-        className={`p-1 group m-2 break-words max-w-sm border-main rounded-lg shadow-sm relative ${
-          messageIsFromMe ? 'bg-gray-300' : 'bg-blue-300'
-        }`}
+        className={`p-2 group break-words max-w-sm border-main relative 
+        ${firstChat && 'mt-4'}
+        ${firstChat && messageIsFromMe && 'rounded-tl-2xl'}
+        ${firstChat && !messageIsFromMe && 'rounded-tr-2xl'}
+        ${lastChat && 'rounded-bl-2xl rounded-br-2xl'}
+        ${(firstChat || intermediateChat) && 'border-b'}
+        ${
+          !firstChat &&
+          !lastChat &&
+          !intermediateChat &&
+          messageIsFromMe &&
+          'rounded-2xl rounded-tr-none'
+        }
+        ${
+          !firstChat &&
+          !lastChat &&
+          !intermediateChat &&
+          !messageIsFromMe &&
+          'rounded-2xl rounded-tl-none'
+        }
+      ${messageIsFromMe ? 'bg-indigo-300' : 'bg-blue-300'}`}
+        style={{
+          minWidth: '100px',
+        }}
       >
         {/* Options button */}
         {!messageObj.deleted && !forwardMode && (
@@ -213,7 +245,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
               messageInfo.time !== messageObj.time &&
               setImageToPreview(messageObj.mediaUrl)
             }
-            className="rounded-md cursor-pointer w-96 h-72"
+            className="object-contain rounded-md cursor-pointer w-96 h-72"
             src={messageObj.mediaUrl}
             alt=""
           />
@@ -222,7 +254,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         <div
           className={`${
             messageObj?.deleted && 'text-sm text-gray-600 italic'
-          } pl-4`}
+          } pl-2`}
         >
           {largeMessage ? (
             <div>
@@ -236,12 +268,16 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
               </span>
             </div>
           ) : (
-            <div>{messageObj.message}</div>
+            <div className="pb-1">{messageObj.message}</div>
           )}
         </div>
 
-        <div className="relative flex items-center justify-end mt-2 space-x-0">
-          <span className={`text-xxs text-right text-gray-600 mr-6`}>
+        <div className="relative flex items-center justify-end mt-1">
+          <span
+            className={`text-xxs text-right text-gray-600 ${
+              messageIsFromMe && 'mr-6'
+            }`}
+          >
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>
@@ -252,13 +288,15 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
               {messageObj.status === 'read' && (
                 <RiCheckDoubleFill className="text-dodgerblue" />
               )}
-              {!messageObj.status && (
-                <ImSpinner2 size={15} className="animate-spin" />
-              )}
             </div>
           )}
         </div>
       </div>
+      {/* <div>
+        {firstChat && <p className="px-2 py-1 bg-red-500">first</p>}
+        {lastChat && <p className="px-2 py-1 bg-red-500">last</p>}
+        {intermediateChat && <p className="px-2 py-1 bg-red-500">inter</p>}
+      </div> */}
     </div>
   );
 }

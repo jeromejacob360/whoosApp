@@ -8,7 +8,7 @@ import MessageInfo from '../minor-components/MessageInfo';
 export default function ChatPage() {
   const showMessageInfo = useSelector((state) => state?.chatState?.messageInfo);
   return (
-    <div className="relative flex h-full shadow-2xl rounded-3xl">
+    <div className="relative flex h-full bg-blue-200 shadow-2xl rounded-3xl">
       <Left />
       <Right />
       <AnimatePresence>
@@ -18,7 +18,7 @@ export default function ChatPage() {
             animate={{ opacity: 1, width: '400px' }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ ease: 'linear', duration: 0.15 }}
-            className="h-full overflow-y-hidden"
+            className="h-full overflow-hidden"
           >
             <MessageInfo />
           </motion.div>

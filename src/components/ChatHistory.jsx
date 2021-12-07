@@ -129,12 +129,10 @@ export default function ChatHistory({ chatHistoryRef }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatNames, currentUserEmail, dispatch]);
 
-  if (!messages) return <Intro />;
-
-  return (
+  return currentChatName ? (
     <div
       ref={chatHistoryRef}
-      className="flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 bg-blue-50"
+      className="flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 scrollbar hover:scrollbar-thumb-blue-400 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent bg-blue-50"
     >
       {addOptionsToSaveContact && (
         <div className="flex p-4 space-x-4 bg-white shadow-sm">
@@ -177,5 +175,7 @@ export default function ChatHistory({ chatHistoryRef }) {
           })}
       </ul>
     </div>
+  ) : (
+    <Intro />
   );
 }

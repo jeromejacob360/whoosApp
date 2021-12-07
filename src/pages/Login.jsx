@@ -26,17 +26,17 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center h-screen">
+    <div className="flex items-center justify-center w-full h-full">
       <form
         onSubmit={loginUser}
-        className="flex flex-col px-6 py-4 mx-auto space-y-4 bg-white border rounded-md shadow-2xl"
+        className="flex flex-col px-3 py-4 space-y-4 rounded-md shadow-2xl bg-gradient-to-tl from-blue-300 to-blue-100 w-80 bg-opacity-60"
       >
         <input
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Username"
-          className="px-4 py-2 border border-gray-400 rounded-md outline-none"
+          className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="text"
         />
         <input
@@ -44,15 +44,15 @@ export default function Login() {
           required
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
-          className="px-4 py-2 border border-gray-400 rounded-md outline-none"
+          className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="password"
         />
-        <button className="flex items-center justify-center py-1 space-x-2 bg-white border border-gray-400 rounded-md shadow-sm cursor-pointer text-icons">
+        <button className="flex items-center justify-center py-1 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90 text-icons">
           <span> Login</span>
         </button>
         <a
           target="_blank"
-          className="pt-4 text-sm text-center text-blue-600 underline"
+          className="pt-4 text-sm text-center text-blue-800 underline"
           href={process.env.REACT_APP_contactsRedirectUrl}
           rel="noreferrer"
         >

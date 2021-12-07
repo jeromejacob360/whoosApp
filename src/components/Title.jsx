@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -19,7 +20,9 @@ export default function Title() {
           src={currentUserAvatar}
           alt=""
         />
-        <h4 className="capitalize">{currentChatterName}</h4>
+        <motion.h4 layout transition={{ duration: 0.1 }}>
+          {currentChatterName}
+        </motion.h4>
       </div>
       <div className="flex items-center space-x-4">
         <AiOutlineSearch size={22} />

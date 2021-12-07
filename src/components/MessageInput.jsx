@@ -18,8 +18,8 @@ import {
   MessageToReply,
 } from '../minor-components/index';
 import { IoMdHappy } from 'react-icons/io';
-import AttachIcon from '../assets/svgs/Attach.js';
-import Send from '../assets/svgs/Send.js';
+import { BiSend } from 'react-icons/bi';
+import { MdOutlineAttachFile } from 'react-icons/md';
 
 import {
   getStorage,
@@ -281,7 +281,7 @@ export default function MessageInput({ chatHistoryRef }) {
               className="relative mr-4"
               onClick={() => setAttachOptions(true)}
             >
-              {!photoMode && <AttachIcon />}
+              {!photoMode && <MdOutlineAttachFile size={25} />}
               <AnimatePresence>
                 {attachOptions && (
                   <AttachOptions
@@ -296,7 +296,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-xl bg-whiteBG"
+              className="flex-1 px-4 py-2 outline-none rounded-xl bg-whiteBG"
               placeholder="Type a message.."
               type="text"
             ></input>
@@ -306,7 +306,7 @@ export default function MessageInput({ chatHistoryRef }) {
               disabled={!currentChatName}
               className="px-3 py-1"
             >
-              <Send />
+              <BiSend size={25} className="text-gray-600" />
             </button>
           </form>
         )}

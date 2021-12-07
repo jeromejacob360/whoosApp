@@ -2,21 +2,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import useAuth from './hooks/useAuth';
 import ChatPage from './pages/ChatPage';
 import Login from './pages/Login';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ImSpinner2 } from 'react-icons/im';
 import { PAGE_RENDERED } from './store/chatSlice';
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 function App() {
   const user = useSelector((state) => state?.authState.user);
   const pageRendered = useSelector((state) => state.chatState.pageRendered);
 
+  const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,8 +35,10 @@ function App() {
       <AnimatePresence exitBeforeEnter>
         {!pageRendered && (
           <motion.div
-            exit={{ scale: 0, borderRadius: '50%', opacity: 0 }}
-            transition={{ duration: 0.7 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ height: 0, overflow: 'hidden' }}
+            transition={{ duration: 0.6 }}
             className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-blue-200"
           >
             <div className="flex flex-col items-center">
@@ -49,24 +48,34 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="w-screen h-screen bg-gradient-to-br from-blue-100 to-blue-500">
-        <div className="w-screen h-screen pt-4 pb-10 rounded-3xl">
+      <motion.div className="w-screen h-screen overflow-x-auto bg-gradient-to-b from-blue-100 to-indigo-300">
+        <div className="w-screen h-screen px-6 pt-4 pb-10 rounded-3xl">
           <AnimatePresence exitBeforeEnter>
-            <motion.div className="w-full h-full mx-auto bg-blue-100 rounded-md max-w-screen-2xl">
-              <Router>
-                <Switch>
-                  <Route exact path="/">
-                    {user ? <ChatPage /> : <Redirect to="/login" />}
-                  </Route>
-                  <Route exact path="/login">
-                    {user ? <Redirect to="/" /> : <Login />}
-                  </Route>
-                </Switch>
-              </Router>
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0, y: 200 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.5, opacity: 0, y: 200 }}
+              transition={{ duration: 0.1, delay: 0.1 }}
+              className={`mx-auto overflow-x-auto ${
+                location.pathname === '/' && 'bg-blue-100'
+              } rounded-3xl max-w-screen-2xl transition duration-1000 ${
+                pageRendered
+                  ? 'h-full w-full overflow-x-visible'
+                  : 'overflow-hidden w-0 h-0'
+              } `}
+            >
+              <Switch>
+                <Route exact path="/">
+                  {user ? <ChatPage /> : <Redirect to="/login" />}
+                </Route>
+                <Route exact path="/login">
+                  {user ? <Redirect to="/" /> : <Login />}
+                </Route>
+              </Switch>
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

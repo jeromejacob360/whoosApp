@@ -8,10 +8,9 @@ import {
 import Modal from './Modal';
 import ChatOptions from '../optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
-import SingleTick from '../assets/svgs/SingleTick';
+import { TiTick } from 'react-icons/ti';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
-import { TiTick } from 'react-icons/ti';
 import { ImSpinner2 } from 'react-icons/im';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
@@ -73,7 +72,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
           />,
         );
       } else if (currentProgress === 100) {
-        setProgressIndicator(<SingleTick />);
+        setProgressIndicator(<TiTick />);
       }
     }
   }, [messageObj.time, progress]);
@@ -161,21 +160,19 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
       </AnimatePresence>
       <div
         className={`p-1 group m-2 break-words max-w-sm border-main rounded-lg shadow-sm relative ${
-          messageIsFromMe ? 'bg-indigo-400' : 'bg-blue-300'
+          messageIsFromMe ? 'bg-gray-300' : 'bg-blue-300'
         }`}
       >
         {/* Options button */}
-        {!messageObj.deleted &&
-          !forwardMode &&
-          messageInfo.time !== messageObj.time && (
-            <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
-              <AiOutlineDown
-                className="p-1"
-                size={20}
-                onClick={openChatOptions}
-              />
-            </div>
-          )}
+        {!messageObj.deleted && !forwardMode && (
+          <div className="absolute duration-200 rounded-full opacity-0 top-1 right-1 group-hover:opacity-100 group-hover:bg-white">
+            <AiOutlineDown
+              className="p-1"
+              size={20}
+              onClick={openChatOptions}
+            />
+          </div>
+        )}
         {/* Options menu */}
         <AnimatePresence>
           {openOptions && !messageObj.deleted && (
@@ -212,7 +209,10 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         {messageObj.mediaUrl && (
           <img
             ref={imageRef}
-            onClick={() => setImageToPreview(messageObj.mediaUrl)}
+            onClick={() =>
+              messageInfo.time !== messageObj.time &&
+              setImageToPreview(messageObj.mediaUrl)
+            }
             className="rounded-md cursor-pointer w-96 h-72"
             src={messageObj.mediaUrl}
             alt=""
@@ -241,7 +241,7 @@ export default function Chat({ message: messageObj, chatHistoryRef }) {
         </div>
 
         <div className="relative flex items-center justify-end mt-2 space-x-0">
-          <span className={`text-xs text-right text-gray-400 mr-6`}>
+          <span className={`text-xxs text-right text-gray-600 mr-6`}>
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>

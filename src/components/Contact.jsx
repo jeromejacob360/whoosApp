@@ -92,10 +92,10 @@ export default function Contact({ contact }) {
 
   return (
     <div
-      className={`relative w-90 flex rounded-xl items-center px-3 duration-100 cursor-pointer ${
+      className={`relative flex items-center px-3 duration-100 w-full cursor-pointer ${
         currentChatName === chatName
-          ? 'bg-blue-300 transform scale-x-105 shadow-md z-10'
-          : 'bg-blue-50 hover:bg-blue-100'
+          ? 'bg-blue-300 transform scale-x-105 shadow-md rounded-xl'
+          : 'bg-blue-50 hover:bg-blue-100 border-b'
       }`}
       onClick={setChat}
     >
@@ -106,25 +106,25 @@ export default function Contact({ contact }) {
           alt=""
         />
       </div>
-      <div className="flex flex-col items-start justify-center w-full px-2 border-b h-18">
+      <div className="flex flex-col items-start justify-center w-full px-2 h-18">
         {!contactHasName && !chatOpened && (
           <div className="absolute text-xs text-red-600 top-2">New!</div>
         )}
         <div className="flex items-center justify-between w-full">
           <h4
-            className={` ${contactHasName ? '' : 'text-blue-800'} ${
-              unreadMessagecount > 0 ? 'text-gray-900' : 'text-gray-600'
-            }`}
+            className={`whitespace-nowrap ${
+              contactHasName ? '' : 'text-blue-800'
+            } ${unreadMessagecount > 0 ? 'text-gray-900' : 'text-gray-600'}`}
           >
             {contactName}
           </h4>
-          <p className="text-xs lowercase text-mutedText">
+          <p className="text-xs text-black lowercase">
             {lastMessage?.time &&
               new Date(lastMessage?.time).toLocaleTimeString()}
           </p>
         </div>
         <p
-          className={`text-sm text-mutedText ${
+          className={`text-sm text-black ${
             unreadMessagecount > 0 ? 'font-bold text-black' : ''
           }`}
         >

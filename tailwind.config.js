@@ -48,5 +48,5 @@ module.exports = {
       display: ['hover', 'group-hover'],
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')],
 };

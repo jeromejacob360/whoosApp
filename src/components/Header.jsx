@@ -16,12 +16,11 @@ export default function Header() {
           alt=""
         />
       </div>
-      <div className="flex space-x-4">
-        <BsThreeDotsVertical
-          size={20}
-          onClick={() => setOpenOptions(!openOptions)}
-        />
-      </div>
+      <BsThreeDotsVertical
+        className="hidden sm:block"
+        size={20}
+        onClick={() => setOpenOptions(!openOptions)}
+      />
       {openOptions && <Options setOpenOptions={setOpenOptions} />}
     </header>
   );

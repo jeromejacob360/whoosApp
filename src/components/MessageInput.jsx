@@ -30,6 +30,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 
 import AttachOptions from '../minor-components/AttachOptions';
+import MessageInfo from '../minor-components/MessageInfo';
 let newMessage;
 
 //----------------------------------------------//
@@ -58,6 +59,8 @@ export default function MessageInput({ chatHistoryRef }) {
     (state) => state?.chatState.currentChatName,
   );
   const currentUserName = useSelector((state) => state?.authState.user.email);
+
+  const messageInfo = useSelector((state) => state.chatState.messageInfo);
 
   const messageToReply =
     useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
@@ -253,52 +256,67 @@ export default function MessageInput({ chatHistoryRef }) {
 
         {/* INPUT METHODS */}
         {(!photoMode || capturedImage) && (
-          <form
-            onSubmit={sendMessage}
-            className={`flex rounded-bl-xl sm:rounded-bl-none px-4 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
-              !currentChatName && 'no-cursor'
-            }`}
-          >
-            <span
-              onClick={() => setOpenEmojiPicker((prev) => !prev)}
-              className={`px-2 py-1`}
+          <div className="relative">
+            <form
+              onSubmit={sendMessage}
+              className={`flex rounded-bl-xl sm:rounded-bl-none px-4 h-16 shadow-2xl ${
+                !messageInfo && 'rounded-br-md'
+              } bg-blue-100 items-center ${!currentChatName && 'no-cursor'}`}
             >
-              <IoMdHappy className="w-6 h-6 mr-2" />
-            </span>
+              <span
+                onClick={() => setOpenEmojiPicker((prev) => !prev)}
+                className={`px-2 py-1`}
+              >
+                <IoMdHappy className="w-6 h-6 mr-2" />
+              </span>
 
-            <div
-              className="relative mr-4"
-              onClick={() => setAttachOptions(true)}
-            >
-              {!photoMode && <MdOutlineAttachFile size={25} />}
-              <AnimatePresence>
-                {attachOptions && (
-                  <AttachOptions
-                    setPhotoMode={setPhotoMode}
-                    setAttachOptions={setAttachOptions}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-            <input
-              ref={inputRef}
-              disabled={!currentChatName}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-1 px-4 py-2 outline-none rounded-xl bg-whiteBG"
-              placeholder="Message"
-              type="text"
-              style={{ minWidth: '20px' }}
-            />
+              <div
+                className="relative mr-4"
+                onClick={() => setAttachOptions(true)}
+              >
+                {!photoMode && <MdOutlineAttachFile size={25} />}
+                <AnimatePresence>
+                  {attachOptions && (
+                    <AttachOptions
+                      setPhotoMode={setPhotoMode}
+                      setAttachOptions={setAttachOptions}
+                    />
+                  )}
+                </AnimatePresence>
+              </div>
+              <input
+                ref={inputRef}
+                disabled={!currentChatName}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-1 px-4 py-2 outline-none rounded-xl bg-whiteBG"
+                placeholder="Message"
+                type="text"
+                style={{ minWidth: '20px' }}
+              />
 
-            <button
-              type="submit"
-              disabled={!currentChatName}
-              className="px-3 py-1"
-            >
-              <BiSend size={25} className="text-gray-600" />
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={!currentChatName}
+                className="px-3 py-1"
+              >
+                <BiSend size={25} className="text-gray-600" />
+              </button>
+            </form>
+            <AnimatePresence>
+              {messageInfo && windowWidth < 1028 && (
+                <motion.div
+                  className="absolute block w-full overflow-hidden shadow-lg bottom-18 lg:hidden"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ ease: 'linear', duration: 0.2 }}
+                >
+                  <MessageInfo />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         )}
       </>
     )

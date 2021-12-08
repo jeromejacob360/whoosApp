@@ -7,7 +7,7 @@ export default function MessageStats({ messageIsFromMe, messageObj }) {
     messageIsFromMe && (
       <div>
         {messageObj.status === 'sent' && (
-          <SingleTick className="transform rotate-6" />
+          <SingleTick className="transform rotate-12" />
         )}
         {messageObj.status === 'delivered' && <RiCheckDoubleFill />}
         {messageObj.status === 'read' && (

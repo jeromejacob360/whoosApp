@@ -45,7 +45,7 @@ function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ height: 0, overflow: 'hidden' }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
             className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-blue-200"
           >
             <div className="flex flex-col items-center">
@@ -56,7 +56,7 @@ function App() {
         )}
       </AnimatePresence>
       <motion.div className="w-screen h-screen overflow-x-auto bg-gradient-to-b from-blue-100 to-indigo-300">
-        <div className="w-screen h-screen px-6 pt-4 pb-10 rounded-3xl">
+        <div className="w-screen h-screen px-0 py-0 sm:py-4 sm:pb-10 sm:px-6 rounded-3xl">
           <AnimatePresence exitBeforeEnter>
             <motion.div
               initial={{ scale: 0.5, opacity: 0, y: 200 }}

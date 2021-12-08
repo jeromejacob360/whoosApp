@@ -14,15 +14,12 @@ import {
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import Intro from '../pages/Intro';
-import { useHistory, useLocation } from 'react-router';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
-  const history = useHistory();
-  const location = useLocation();
 
   //Access the store
   const chatNames = useSelector((state) => state?.chatState?.chatNames);
@@ -37,16 +34,8 @@ export default function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
-
   const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
-
-  useEffect(() => {
-    if (location.pathname === '/') {
-      history.push(`/${currentUserEmail}`);
-    } else history.replace(`/${currentChatterEmail}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentChatterEmail, currentUserEmail, history]);
 
   //turn off forward mode when chat changes
   useEffect(() => {
@@ -103,10 +92,6 @@ export default function ChatHistory({ chatHistoryRef }) {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
-              // if (chatHistoryRef.current) {
-              //   chatHistoryRef.current.scrollTop =
-              //     chatHistoryRef.current.scrollHeight;
-              // }
               dispatch(
                 ADD_MESSAGE({
                   chatName,
@@ -142,7 +127,7 @@ export default function ChatHistory({ chatHistoryRef }) {
   return currentChatName ? (
     <div
       ref={chatHistoryRef}
-      className="flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 scrollbar hover:scrollbar-thumb-blue-400 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent bg-blue-50"
+      className="relative flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 scrollbar hover:scrollbar-thumb-blue-400 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent bg-blue-50"
     >
       {addOptionsToSaveContact && (
         <div className="flex p-4 space-x-4 bg-white shadow-sm">

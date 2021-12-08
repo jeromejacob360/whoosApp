@@ -18,7 +18,7 @@ export default function ChatPage() {
             animate={{ opacity: 1, width: '400px' }}
             exit={{ opacity: 0, width: 0 }}
             transition={{ ease: 'linear', duration: 0.15 }}
-            className="h-full overflow-hidden"
+            className="relative hidden bg-blue-300 lg:block"
           >
             <MessageInfo />
           </motion.div>

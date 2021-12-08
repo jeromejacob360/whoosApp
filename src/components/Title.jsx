@@ -1,13 +1,14 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { BiMenu } from 'react-icons/bi';
-import Contacts from '../components/Contacts';
-import ClickAway from '../hooks/ClickAway';
-import { SET_CURRENT_CHAT } from '../store/chatSlice';
-
+import { useSelector } from 'react-redux';
+import ContactsListMobile from '../minor-components/ContactsListMobile';
+import logo from '../assets/images/logo.jpg';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import Options from '../optionMenus/Options';
 export default function Title() {
   const [openContacts, setOpenContacts] = useState(false);
+  const [openOptions, setOpenOptions] = useState(false);
 
   const currentChatterName = useSelector(
     (state) => state?.chatState.currentChatterName,
@@ -15,29 +16,17 @@ export default function Title() {
   const currentUserAvatar = useSelector(
     (state) => state?.chatState.currentUserAvatar,
   );
-  const currentUserEmail = useSelector((state) => state?.authState.user.email);
-
-  const windowWidth = useSelector((state) => state.chatState.windowWidth);
-
-  const dispatch = useDispatch();
+  const messageInfo = useSelector((state) => state.chatState.messageInfo);
 
   useEffect(() => {
-    if (windowWidth <= 640) {
-      dispatch(
-        SET_CURRENT_CHAT({
-          currentUserEmail,
-          currentChatterEmail: 'd',
-          senderName: 's',
-          avatar: 's',
-        }),
-      );
-      setOpenContacts(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setOpenContacts(true);
   }, []);
 
   return currentChatterName ? (
-    <div className="z-10 flex items-center justify-between h-20 px-4 shadow-md rounded-tl-md sm:rounded-tl-none rounded-tr-md bg-blue-50">
+    <div
+      className={`z-10 flex items-center justify-between h-20 px-4 shadow-md rounded-tl-md sm:rounded-tl-none  bg-blue-50
+    ${!messageInfo && 'rounded-tr-md'}`}
+    >
       <div className="flex items-center space-x-2">
         <BiMenu
           size={45}
@@ -53,20 +42,32 @@ export default function Title() {
           {currentChatterName}
         </motion.h4>
       </div>
-      <AnimatePresence>
-        {openContacts && (
-          <motion.div
-            initial={{ opacity: 0, scale: 1.02 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            className="absolute bottom-0 left-0 right-0 bg-white md:hidden top-20 rounded-2xl"
-          >
-            <ClickAway onClickAway={setOpenContacts}>
-              <Contacts setOpenContacts={setOpenContacts} />
-            </ClickAway>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+      <BsThreeDotsVertical
+        size={20}
+        onClick={() => setOpenOptions(!openOptions)}
+      />
+      {openOptions && <Options setOpenOptions={setOpenOptions} />}
+
+      <ContactsListMobile
+        openContacts={openContacts}
+        setOpenContacts={setOpenContacts}
+      />
     </div>
-  ) : null;
+  ) : (
+    <div className="z-10">
+      <div className="flex items-center justify-between px-10 py-5 bg-blue-200 sm:hidden">
+        <img className="object-center w-10 h-10" src={logo} alt="" />
+        <BsThreeDotsVertical
+          size={20}
+          onClick={() => setOpenOptions(!openOptions)}
+        />
+        {openOptions && <Options setOpenOptions={setOpenOptions} />}
+      </div>
+      <ContactsListMobile
+        openContacts={openContacts}
+        setOpenContacts={setOpenContacts}
+      />
+    </div>
+  );
 }

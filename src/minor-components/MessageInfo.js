@@ -1,8 +1,8 @@
 import React from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { RiCheckDoubleFill } from 'react-icons/ri';
-import { TiTick } from 'react-icons/ti';
 import { useDispatch, useSelector } from 'react-redux';
+import SingleTick from '../assets/svgs/SingleTick';
 import Chat from '../components/Chat';
 import { CLEAR_MESSAGE_INFO } from '../store/chatSlice';
 
@@ -15,7 +15,7 @@ export default function MessageInfo() {
   }
 
   return (
-    <div className="h-full bg-blue-50">
+    <div className="bg-blue-50">
       <div className="flex items-center justify-between w-full h-20 pl-8 pr-6 shadow-md bg-blue-50">
         <h4 className="text-xl text-gray-700">Message info</h4>
         <AiOutlineClose
@@ -36,7 +36,10 @@ export default function MessageInfo() {
           <div className="absolute inset-0 w-full h-full bg-transparent"></div>
         </div>
 
-        <div className="h-full px-10 text-gray-500 bg-blue-100">
+        <div
+          className="h-full px-10 text-gray-500 bg-blue-100"
+          style={{ minHeight: '300px' }}
+        >
           {message.status === 'read' && (
             <div className="py-4 pl-4 border-b">
               <div className="flex items-center space-x-2 text-dodgerblue">
@@ -60,7 +63,7 @@ export default function MessageInfo() {
             message.status === 'sent') && (
             <div className="py-4 pl-4 border-b">
               <div className="flex items-center space-x-2">
-                <TiTick />
+                <SingleTick className="transform rotate-12" />
                 <span>Sent</span>
               </div>
               <div>{new Date(message.time).toLocaleString()}</div>
@@ -68,7 +71,6 @@ export default function MessageInfo() {
           )}
         </div>
       </div>
-      {JSON.stringify(message)}
     </div>
   );
 }

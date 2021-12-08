@@ -123,11 +123,7 @@ export default function CameraPreview({
             )}
           </AnimatePresence>
 
-          <div
-            className={`relative w-full  ${
-              cameraPreviewOn ? ' bg-blue-400 h-20' : 'h-0'
-            }`}
-          >
+          <div className={`relative w-full bg-blue-400 h-20`}>
             {!capturedImage && (
               <motion.button
                 initial={{ scale: 0 }}

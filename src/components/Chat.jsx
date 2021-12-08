@@ -11,9 +11,9 @@ import NotSent from '../assets/svgs/NotSent';
 import { TiTick } from 'react-icons/ti';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
-import { RiCheckDoubleFill } from 'react-icons/ri';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
+import MessageStats from '../minor-components/MessageStats';
 
 //----------------------------------------------//
 export default function Chat({
@@ -31,6 +31,8 @@ export default function Chat({
   const [progressIndicator, setProgressIndicator] = useState('');
   const [menuVertical, setMenuVertical] = useState('down');
   const [menuHorizontal, setMenuHorizontal] = useState('left');
+
+  const chatRef = useRef();
 
   const firstChat =
     nextSender === messageObj.from && prevSender !== messageObj.from;
@@ -67,6 +69,13 @@ export default function Chat({
       element.style.borderRadius = '60px';
     }, 2000);
   }
+
+  //scroll the new message into view
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messageObj]);
 
   useEffect(() => {
     if (progress && progress[messageObj.time]) {
@@ -153,6 +162,7 @@ export default function Chat({
 
   return (
     <div
+      ref={chatRef}
       onClick={forwardMode ? addOrRemove : null}
       id={messageObj.time}
       className={`flex duration-500 bg-opacity-30 ${
@@ -281,22 +291,12 @@ export default function Chat({
             {new Date(messageObj?.time).toLocaleTimeString()}
           </span>
           <span className="absolute bottom-0 right-0">{progressIndicator}</span>
-          {messageIsFromMe && (
-            <div className="absolute bottom-0 right-0">
-              {messageObj.status === 'sent' && <TiTick />}
-              {messageObj.status === 'delivered' && <RiCheckDoubleFill />}
-              {messageObj.status === 'read' && (
-                <RiCheckDoubleFill className="text-dodgerblue" />
-              )}
-            </div>
-          )}
+          <MessageStats
+            messageObj={messageObj}
+            messageIsFromMe={messageIsFromMe}
+          />
         </div>
       </div>
-      {/* <div>
-        {firstChat && <p className="px-2 py-1 bg-red-500">first</p>}
-        {lastChat && <p className="px-2 py-1 bg-red-500">last</p>}
-        {intermediateChat && <p className="px-2 py-1 bg-red-500">inter</p>}
-      </div> */}
     </div>
   );
 }

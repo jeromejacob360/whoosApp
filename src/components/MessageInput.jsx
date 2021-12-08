@@ -64,6 +64,8 @@ export default function MessageInput({ chatHistoryRef }) {
     '';
   const focusInput = useSelector((state) => state?.chatState.focusInput);
 
+  const windowWidth = useSelector((state) => state?.chatState.windowWidth);
+
   // forwarding messages
   const forwardMode = useSelector((state) => state?.chatState.forwardMode);
 
@@ -76,8 +78,8 @@ export default function MessageInput({ chatHistoryRef }) {
   //Side effects
 
   useEffect(() => {
-    inputRef.current && inputRef.current.focus();
-  }, [currentChatName]);
+    if (windowWidth > 640) inputRef.current && inputRef.current.focus();
+  }, [currentChatName, windowWidth]);
 
   //send message
   async function sendMessage(e) {
@@ -128,7 +130,7 @@ export default function MessageInput({ chatHistoryRef }) {
     );
 
     setTimeout(() => {
-      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+      // chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }, 0);
 
     setMessage('');
@@ -253,7 +255,7 @@ export default function MessageInput({ chatHistoryRef }) {
         {(!photoMode || capturedImage) && (
           <form
             onSubmit={sendMessage}
-            className={`flex px-4 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
+            className={`flex rounded-bl-xl sm:rounded-bl-none px-4 h-16 shadow-2xl rounded-br-xl bg-blue-100 items-center ${
               !currentChatName && 'no-cursor'
             }`}
           >

@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ImSpinner2 } from 'react-icons/im';
-import { PAGE_RENDERED } from './store/chatSlice';
+import { PAGE_RENDERED, WINDOW_RESIZE } from './store/chatSlice';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -27,6 +27,13 @@ function App() {
       dispatch(PAGE_RENDERED());
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    dispatch(WINDOW_RESIZE({ width: window.innerWidth }));
+    window.addEventListener('resize', () => {
+      dispatch(WINDOW_RESIZE({ width: window.innerWidth }));
+    });
+  }, [dispatch]);
 
   useAuth();
 
@@ -65,11 +72,11 @@ function App() {
               } `}
             >
               <Switch>
-                <Route exact path="/">
-                  {user ? <ChatPage /> : <Redirect to="/login" />}
-                </Route>
                 <Route exact path="/login">
                   {user ? <Redirect to="/" /> : <Login />}
+                </Route>
+                <Route path="/">
+                  {user ? <ChatPage /> : <Redirect to="/login" />}
                 </Route>
               </Switch>
             </motion.div>

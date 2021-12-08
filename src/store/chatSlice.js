@@ -24,6 +24,8 @@ const initialState = {
   progress: {},
   pageRendered: false,
   messageInfo: '',
+  windowWidth: 0,
+  chatHistoryRef: '',
 };
 
 function calculateForwardMessagesLength(state) {
@@ -222,6 +224,15 @@ export const chatSlice = createSlice({
       }
     },
 
+    WINDOW_RESIZE: (state, action) => {
+      const { width } = action.payload;
+      state.windowWidth = width;
+    },
+
+    CHAT_HISTORY_REF: (state, action) => {
+      state.chatHistoryRef = action.payload;
+    },
+
     DELETE_MESSAGE: (state, action) => {
       const { chatName, message } = action.payload;
       state.chats[chatName] = state.chats[chatName].filter(
@@ -231,7 +242,7 @@ export const chatSlice = createSlice({
 
     MODIFY_MESSAGE: (state, action) => {
       const { chatName, message } = action.payload;
-      state.chats[chatName] = state.chats[chatName].map((chat) =>
+      state.chats[chatName] = state.chats[chatName]?.map((chat) =>
         chat.time === message.time ? message : chat,
       );
     },
@@ -319,6 +330,7 @@ export const {
   DELETE_MESSAGE,
   CHAT_HISTORY_REF,
   REPLY,
+  WINDOW_RESIZE,
   MESSAGE_INFO,
   CLEAR_MESSAGE_INFO,
   CLEAR_REPLY_MESSAGE,

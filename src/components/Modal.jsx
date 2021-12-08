@@ -8,7 +8,7 @@ export default function Modal({ onClickAway, children, props }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-white bg-opacity-95"
+      className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-black bg-opacity-80"
     >
       <ClickAway onClickAway={onClickAway} {...props}>
         <motion.div

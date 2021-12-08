@@ -11,9 +11,10 @@ import { useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
 import { AnimatePresence, motion } from 'framer-motion';
+import MessageStats from '../minor-components/MessageStats';
 
 //----------------------------------------------//
-export default function Contact({ contact }) {
+export default function Contact({ contact, setOpenContacts }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -97,7 +98,10 @@ export default function Contact({ contact }) {
           ? 'bg-blue-300 transform scale-x-105 shadow-md rounded-xl'
           : 'bg-blue-50 hover:bg-blue-100 border-b'
       }`}
-      onClick={setChat}
+      onClick={() => {
+        setChat();
+        setOpenContacts && setOpenContacts(false);
+      }}
     >
       <div className="mr-3 min-w-max">
         <img
@@ -118,17 +122,22 @@ export default function Contact({ contact }) {
           >
             {contactName}
           </h4>
-          <p className="text-xs text-black lowercase">
+          <p className="hidden text-xs text-black lowercase md:block whitespace-nowrap">
             {lastMessage?.time &&
               new Date(lastMessage?.time).toLocaleTimeString()}
           </p>
         </div>
         <p
-          className={`text-sm text-black ${
+          className={`text-sm text-black flex items-center justify-start space-x-2 ${
             unreadMessagecount > 0 ? 'font-bold text-black' : ''
           }`}
         >
-          {lastMessage?.message && textTrimmer(lastMessage?.message)}
+          {lastMessage && (
+            <MessageStats messageObj={lastMessage} messageIsFromMe={true} />
+          )}
+          <span>
+            {lastMessage?.message && textTrimmer(lastMessage?.message)}
+          </span>
         </p>
       </div>
 

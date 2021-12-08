@@ -14,12 +14,15 @@ import {
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import Intro from '../pages/Intro';
+import { useHistory, useLocation } from 'react-router';
 
 //----------------------------------------------//
 export default function ChatHistory({ chatHistoryRef }) {
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
 
   //Access the store
   const chatNames = useSelector((state) => state?.chatState?.chatNames);
@@ -37,6 +40,13 @@ export default function ChatHistory({ chatHistoryRef }) {
 
   const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      history.push(`/${currentUserEmail}`);
+    } else history.replace(`/${currentChatterEmail}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChatterEmail, currentUserEmail, history]);
 
   //turn off forward mode when chat changes
   useEffect(() => {
@@ -93,10 +103,10 @@ export default function ChatHistory({ chatHistoryRef }) {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
-              if (chatHistoryRef.current) {
-                chatHistoryRef.current.scrollTop =
-                  chatHistoryRef.current.scrollHeight;
-              }
+              // if (chatHistoryRef.current) {
+              //   chatHistoryRef.current.scrollTop =
+              //     chatHistoryRef.current.scrollHeight;
+              // }
               dispatch(
                 ADD_MESSAGE({
                   chatName,
@@ -150,7 +160,7 @@ export default function ChatHistory({ chatHistoryRef }) {
           </button>
         </div>
       )}
-      <ul className="flex flex-col justify-end pt-2">
+      <ul className="flex flex-col justify-end py-2">
         {messages &&
           messages.length > 0 &&
           messages.map((message, index) => {
@@ -159,7 +169,6 @@ export default function ChatHistory({ chatHistoryRef }) {
                 {!message?.deletedForMe.includes(currentUserName)
                   ? message.time && (
                       <motion.li
-                        layout
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, height: 0 }}

@@ -11,7 +11,7 @@ import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPo
 import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
-export default function Contacts() {
+export default function Contacts({ setOpenContacts }) {
   const dispatch = useDispatch();
 
   //Access the store
@@ -59,7 +59,7 @@ export default function Contacts() {
           return (
             contact?.email && (
               <motion.div layout key={contact.email}>
-                <Contact contact={contact} />
+                <Contact setOpenContacts={setOpenContacts} contact={contact} />
               </motion.div>
             )
           );

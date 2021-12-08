@@ -1,11 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useState } from 'react';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { BiMenu } from 'react-icons/bi';
 import Contacts from '../components/Contacts';
 import ClickAway from '../hooks/ClickAway';
+import { SET_CURRENT_CHAT } from '../store/chatSlice';
 
 export default function Title() {
   const [openContacts, setOpenContacts] = useState(false);
@@ -16,6 +15,26 @@ export default function Title() {
   const currentUserAvatar = useSelector(
     (state) => state?.chatState.currentUserAvatar,
   );
+  const currentUserEmail = useSelector((state) => state?.authState.user.email);
+
+  const windowWidth = useSelector((state) => state.chatState.windowWidth);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (windowWidth <= 640) {
+      dispatch(
+        SET_CURRENT_CHAT({
+          currentUserEmail,
+          currentChatterEmail: 'd',
+          senderName: 's',
+          avatar: 's',
+        }),
+      );
+      setOpenContacts(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return currentChatterName ? (
     <div className="z-10 flex items-center justify-between h-20 px-4 shadow-md rounded-tl-md sm:rounded-tl-none rounded-tr-md bg-blue-50">
@@ -33,10 +52,6 @@ export default function Title() {
         <motion.h4 layout transition={{ duration: 0.1 }}>
           {currentChatterName}
         </motion.h4>
-      </div>
-      <div className="flex items-center space-x-4">
-        <AiOutlineSearch size={22} />
-        <BsThreeDotsVertical size={20} />
       </div>
       <AnimatePresence>
         {openContacts && (

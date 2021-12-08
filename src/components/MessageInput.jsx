@@ -286,9 +286,10 @@ export default function MessageInput({ chatHistoryRef }) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="flex-1 px-4 py-2 outline-none rounded-xl bg-whiteBG"
-              placeholder="Type a message.."
+              placeholder="Message"
               type="text"
-            ></input>
+              style={{ minWidth: '20px' }}
+            />
 
             <button
               type="submit"

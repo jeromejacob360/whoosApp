@@ -1,8 +1,5 @@
 import React from 'react';
-import Document from '../assets/svgs/Document';
-import Contact from '../assets/svgs/Contact';
 import Camera from '../assets/svgs/Camera';
-import Gallery from '../assets/svgs/Gallery';
 import { motion } from 'framer-motion';
 import ClickAway from '../hooks/ClickAway';
 
@@ -43,7 +40,7 @@ export default function AttachOptions({ setAttachOptions, setPhotoMode }) {
         className="absolute -left-3 bottom-14"
       >
         <ul className="space-y-4">
-          <li className="flex items-center group">
+          {/* <li className="flex items-center group">
             <motion.div variants={item} className="mr-8 rounded-full">
               <Contact />
             </motion.div>
@@ -55,7 +52,7 @@ export default function AttachOptions({ setAttachOptions, setPhotoMode }) {
               <Document />
             </motion.div>
             <p className="descText">Document</p>
-          </li>
+          </li> */}
 
           <li className="flex items-center group">
             <motion.div
@@ -70,13 +67,13 @@ export default function AttachOptions({ setAttachOptions, setPhotoMode }) {
             </motion.div>
             <p className="descText">Camera</p>
           </li>
-
+          {/* 
           <li className="flex items-center group">
             <motion.div variants={item} className="mr-8 rounded-full">
               <Gallery />
             </motion.div>
             <p className="descText">Gallery</p>
-          </li>
+          </li> */}
         </ul>
       </motion.div>
     </ClickAway>

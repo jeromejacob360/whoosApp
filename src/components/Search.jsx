@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function Search() {
+  console.count('Search');
   return (
     <div className="bg-dimBG">
       <label

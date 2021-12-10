@@ -37,7 +37,7 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Username"
           className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
-          type="text"
+          type="email"
         />
         <input
           value={password}

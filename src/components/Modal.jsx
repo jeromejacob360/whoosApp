@@ -3,6 +3,7 @@ import React from 'react';
 import ClickAway from '../hooks/ClickAway';
 
 export default function Modal({ onClickAway, children, props }) {
+  console.count('Modal');
   return (
     <motion.div
       initial={{ opacity: 0 }}

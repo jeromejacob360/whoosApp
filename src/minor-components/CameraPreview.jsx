@@ -13,19 +13,22 @@ export default function CameraPreview({
   setBlob,
 }) {
   const [cameraPreviewOn, setCameraPreviewOn] = useState(false);
+  const [cameraGranted, setCameraGranted] = useState(false);
 
   const openCamera = useCallback(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(function (stream) {
-        setCameraPreviewOn(true);
-        const video = videoRef.current;
-        video.srcObject = stream;
-        video.onloadedmetadata = video.play;
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    navigator.mediaDevices &&
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(function (stream) {
+          setCameraGranted(true);
+          setCameraPreviewOn(true);
+          const video = videoRef.current;
+          video.srcObject = stream;
+          video.onloadedmetadata = video.play;
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
   }, [videoRef]);
 
   useEffect(() => {
@@ -112,7 +115,7 @@ export default function CameraPreview({
                 alt="captured pic"
                 className="object-contain w-full max-h-full overflow-hidden"
               />
-            ) : (
+            ) : cameraGranted ? (
               <motion.video
                 initial={{ width: '75%', opacity: 0 }}
                 animate={{ width: '100%', opacity: 1 }}
@@ -120,6 +123,16 @@ export default function CameraPreview({
                 ref={videoRef}
                 className="object-contain w-full max-h-full overflow-hidden"
               ></motion.video>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 2 }}
+                className="px-4 py-2 text-center text-gray-600 bg-blue-200 rounded-md shadow-md"
+              >
+                Device camera inaccessible <br /> Please enable it in your
+                browser settings
+              </motion.div>
             )}
           </AnimatePresence>
 

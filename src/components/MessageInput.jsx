@@ -34,7 +34,8 @@ import MessageInfo from '../minor-components/MessageInfo';
 let newMessage;
 
 //----------------------------------------------//
-export default function MessageInput({ chatHistoryRef }) {
+export default function MessageInput() {
+  console.count('MessageInput');
   //State variables
   const [message, setMessage] = useState('');
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
@@ -112,6 +113,7 @@ export default function MessageInput({ chatHistoryRef }) {
       to: currentChatterEmail,
       deletedForMe: [],
       messageToReply: messageToReplyTrimmed,
+      status: '',
     };
 
     if (capturedImage) {
@@ -306,7 +308,7 @@ export default function MessageInput({ chatHistoryRef }) {
             <AnimatePresence>
               {messageInfo && windowWidth < 1028 && (
                 <motion.div
-                  className="absolute block w-full overflow-hidden shadow-lg bottom-18 lg:hidden"
+                  className="absolute block w-full p-1 overflow-hidden bg-blue-400 shadow-lg bottom-16 lg:hidden"
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}

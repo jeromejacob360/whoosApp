@@ -1,5 +1,5 @@
 import { CircularProgress } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   ADD_MESSAGE_TO_FORWARDS,
@@ -16,12 +16,8 @@ import { db } from '../firebase/firebase';
 import MessageStats from '../minor-components/MessageStats';
 
 //----------------------------------------------//
-export default function Chat({
-  message: messageObj,
-  chatHistoryRef,
-  nextSender,
-  prevSender,
-}) {
+function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
+  console.count('Chat');
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
@@ -33,6 +29,7 @@ export default function Chat({
   const [menuHorizontal, setMenuHorizontal] = useState('left');
 
   const chatRef = useRef();
+  const rendered = useRef(false);
 
   const firstChat =
     nextSender === messageObj.from && prevSender !== messageObj.from;
@@ -72,10 +69,15 @@ export default function Chat({
 
   //scroll the new message into view
   useEffect(() => {
-    if (chatRef.current) {
+    console.log('SCROLLING');
+    if (chatRef.current && !rendered.current) {
       chatRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messageObj]);
+  }, []);
+
+  useEffect(() => {
+    // rendered.current = true;
+  }, []);
 
   useEffect(() => {
     if (progress && progress[messageObj.time]) {
@@ -151,6 +153,7 @@ export default function Chat({
   }
 
   function openChatOptions(e) {
+    if (!chatHistoryRef.current) return;
     const menuWidth = 160;
     const menuHeight = 250;
     setOpenOptions((prev) => !prev);
@@ -159,6 +162,10 @@ export default function Chat({
     setMenuVertical(rect.bottom - e.clientY < menuHeight ? 'up' : 'down');
     setMenuHorizontal(e.clientX - rect.left < menuWidth ? 'right' : 'left');
   }
+
+  const style = useMemo(() => {
+    return { minWidth: '150px' };
+  }, []);
 
   return (
     <div
@@ -180,7 +187,7 @@ export default function Chat({
         )}
       </AnimatePresence>
       <div
-        className={`p-2 group break-words max-w-sm border-main relative 
+        className={`p-2 select-text group break-words max-w-sm border-main relative shadow-lg
         ${firstChat && 'mt-4'}
         ${firstChat && messageIsFromMe && 'rounded-tl-2xl'}
         ${firstChat && !messageIsFromMe && 'rounded-tr-2xl'}
@@ -191,19 +198,18 @@ export default function Chat({
           !lastChat &&
           !intermediateChat &&
           messageIsFromMe &&
-          'rounded-2xl rounded-tr-none'
+          'rounded-2xl rounded-tr-none mt-4'
         }
         ${
           !firstChat &&
           !lastChat &&
           !intermediateChat &&
           !messageIsFromMe &&
-          'rounded-2xl rounded-tl-none'
+          'rounded-2xl rounded-tl-none mt-4'
         }
-      ${messageIsFromMe ? 'bg-indigo-300' : 'bg-blue-300'}`}
-        style={{
-          minWidth: '100px',
-        }}
+      ${messageIsFromMe ? 'bg-indigo-300' : 'bg-blue-300'}
+      `}
+        style={style}
       >
         {/* Options button */}
         {!messageObj.deleted && !forwardMode && (
@@ -232,7 +238,7 @@ export default function Chat({
         {messageObj.messageToReply && (
           <div
             onClick={() => scrollIntoView(messageObj.messageToReply.time)}
-            className="p-1 border-l-8 border-yellow-700 rounded-lg cursor-pointer bg-dim"
+            className="p-1 mb-2 bg-black border-l-8 border-green-700 rounded-md cursor-pointer bg-opacity-10"
           >
             {messageObj.messageToReply.mediaUrl && (
               <div>
@@ -300,3 +306,11 @@ export default function Chat({
     </div>
   );
 }
+
+function areEqual(a, b) {
+  return true;
+}
+
+Chat.whyDidYouRender = true;
+export default memo(Chat);
+// export default Chat;

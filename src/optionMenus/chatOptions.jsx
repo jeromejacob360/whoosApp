@@ -129,9 +129,6 @@ export default function ChatOptions({
           >
             <div className="py-1 pl-6">Forward message</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
-            <div className="py-1 pl-6">Star message</div>
-          </li>
           <li
             onClick={deleteForMe}
             className="w-full cursor-pointer hover:bg-dim"

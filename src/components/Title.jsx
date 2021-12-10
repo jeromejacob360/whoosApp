@@ -7,6 +7,7 @@ import logo from '../assets/images/logo.jpg';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Options from '../optionMenus/Options';
 export default function Title() {
+  console.count('Title');
   const [openContacts, setOpenContacts] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
 
@@ -56,8 +57,9 @@ export default function Title() {
     </div>
   ) : (
     <div className="z-10">
-      <div className="flex items-center justify-between px-10 py-5 bg-blue-200 sm:hidden">
-        <img className="object-center w-10 h-10" src={logo} alt="" />
+      <div className="relative flex items-center justify-between px-5 py-5 bg-blue-200 sm:hidden">
+        <img className="object-center w-10 h-10 rounded-lg" src={logo} alt="" />
+        <h1 className="flex-1 pl-10 text-3xl text-gray-700">WhoosApp</h1>
         <BsThreeDotsVertical
           size={20}
           onClick={() => setOpenOptions(!openOptions)}

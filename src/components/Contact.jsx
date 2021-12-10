@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { chatNameGenerator, textTrimmer } from '../helper-functions/formatters';
+import { chatNameGenerator } from '../helper-functions/formatters';
 import {
   NAMELESS_CHAT,
   PAGE_RENDERED,
@@ -7,14 +7,14 @@ import {
   SET_CURRENT_CHAT,
 } from '../store/chatSlice';
 import noAvatar from '../assets/images/no_avatar.png';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
 import { AnimatePresence, motion } from 'framer-motion';
-import MessageStats from '../minor-components/MessageStats';
 
 //----------------------------------------------//
-export default function Contact({ contact, setOpenContacts }) {
+function Contact({ contact, setOpenContacts }) {
+  console.count('Contact');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -122,37 +122,38 @@ export default function Contact({ contact, setOpenContacts }) {
           >
             {contactName}
           </h4>
-          <p className="hidden text-xs text-black lowercase md:block whitespace-nowrap">
-            {lastMessage?.time &&
-              new Date(lastMessage?.time).toLocaleTimeString()}
-          </p>
-        </div>
-        <p
-          className={`text-sm text-black flex items-center justify-start space-x-2 ${
-            unreadMessagecount > 0 ? 'font-bold text-black' : ''
-          }`}
-        >
-          {lastMessage && (
-            <MessageStats messageObj={lastMessage} messageIsFromMe={true} />
-          )}
-          <span>
-            {lastMessage?.message && textTrimmer(lastMessage?.message)}
-          </span>
-        </p>
-      </div>
-
-      <AnimatePresence>
-        {unreadMessagecount > 0 && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ x: 20, opacity: 0, transition: { ease: 'linear' } }}
-            className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-600 rounded-md right-4 top-10"
-          >
-            {unreadMessagecount > 99 ? '99+' : unreadMessagecount}
+          <motion.div className="flex flex-col items-end">
+            <motion.p className="hidden text-xs text-black lowercase md:block whitespace-nowrap">
+              {lastMessage?.time &&
+                new Date(lastMessage?.time).toLocaleTimeString()}
+            </motion.p>
+            <AnimatePresence>
+              {unreadMessagecount > 0 && (
+                <motion.span
+                  className={`text-sm text-black pt-2 flex items-center justify-start space-x-2 ${
+                    unreadMessagecount > 0 ? 'font-bold text-black' : ''
+                  }`}
+                >
+                  {unreadMessagecount > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="flex items-center justify-center w-5 h-5 text-xs text-white bg-blue-600 rounded-md"
+                    >
+                      {unreadMessagecount > 99 ? '99+' : unreadMessagecount}
+                    </motion.div>
+                  )}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 }
+
+// Contact.whyDidYouRender = true;
+// export default memo(Contact);
+export default Contact;

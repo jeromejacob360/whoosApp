@@ -1,5 +1,5 @@
 import { onSnapshot, collection } from 'firebase/firestore';
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { db } from '../firebase/firebase';
 import { useSubscribeToUserContactsFromContactsApp } from '../hooks/useSubscribeToUserContactsFromContactsApp';
@@ -11,7 +11,8 @@ import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPo
 import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
-export default function Contacts({ setOpenContacts }) {
+function Contacts({ setOpenContacts }) {
+  console.count('');
   const dispatch = useDispatch();
 
   //Access the store
@@ -68,3 +69,5 @@ export default function Contacts({ setOpenContacts }) {
     );
   else return null;
 }
+
+export default memo(Contacts);

@@ -55,7 +55,7 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.div className="w-screen h-screen overflow-x-auto bg-gradient-to-b from-blue-100 to-indigo-300">
+      <motion.div className="w-screen h-screen overflow-x-auto overflow-y-hidden select-none bg-gradient-to-b from-blue-100 to-indigo-300">
         <div className="w-screen h-screen px-0 py-0 sm:py-4 sm:pb-10 sm:px-6 rounded-3xl">
           <AnimatePresence exitBeforeEnter>
             <motion.div

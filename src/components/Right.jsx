@@ -4,6 +4,7 @@ import MessageInput from './MessageInput';
 import Title from './Title';
 
 export default function Right() {
+  console.count('Right');
   const [openContacts, setOpenContacts] = useState(false);
   const chatHistoryRef = useRef();
 

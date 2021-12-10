@@ -6,6 +6,7 @@ import { ADD_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 
 export default function ContactsPicker({ setOpenContactsPicker }) {
+  console.count('ContactsPicker');
   const [selectedContacts, setSelectedContacts] = useState([]);
 
   const dispatch = useDispatch();

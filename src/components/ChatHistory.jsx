@@ -2,7 +2,7 @@ import Chat from './Chat';
 import { onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   ADD_MESSAGE,
   CLEAR_MESSAGE_INFO,
@@ -16,7 +16,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Intro from '../pages/Intro';
 
 //----------------------------------------------//
-export default function ChatHistory({ chatHistoryRef }) {
+function ChatHistory({ chatHistoryRef }) {
+  console.count('ChatHistory');
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
@@ -180,3 +181,6 @@ export default function ChatHistory({ chatHistoryRef }) {
     <Intro />
   );
 }
+
+export default memo(ChatHistory);
+ChatHistory.wdyr = true;

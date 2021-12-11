@@ -230,7 +230,7 @@ export default function MessageInput() {
 
   return (
     currentChatName && (
-      <>
+      <div className="relative">
         <AnimatePresence>
           {photoMode && (
             <CameraPreview
@@ -246,14 +246,15 @@ export default function MessageInput() {
           {/* EMOJI PICKER */}
           {openEmojiPicker && (
             <motion.div
-              initial={{ height: 0, display: 'none', opacity: 0 }}
-              animate={{ height: 'auto', display: 'block', opacity: 1 }}
+              className="absolute h-20 overflow-hidden bottom-16"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: '350px', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.1 }}
+              transition={{ duration: 0.2 }}
             >
               <ClickAway onClickAway={() => setOpenEmojiPicker(false)}>
                 <Picker
-                  pickerStyle={{ width: '100%' }}
+                  pickerStyle={{ width: '100%', height: '350px' }}
                   onEmojiClick={onEmojiClick}
                 />
               </ClickAway>
@@ -328,7 +329,7 @@ export default function MessageInput() {
             </AnimatePresence>
           </div>
         )}
-      </>
+      </div>
     )
   );
 }

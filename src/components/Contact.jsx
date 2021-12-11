@@ -11,6 +11,8 @@ import { memo, useEffect, useState } from 'react';
 import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
 import { AnimatePresence, motion } from 'framer-motion';
+import MessageStats from '../minor-components/MessageStats';
+import { BsCardImage } from 'react-icons/bs';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
@@ -35,10 +37,8 @@ function Contact({ contact, setOpenContacts }) {
     (state) => state?.chatState?.unreadMessages[chatName],
   );
 
-  const lastMessage = useSelector(
-    (state) => state?.chatState?.lastMessages[chatName],
-  );
-
+  const thisChat = useSelector((state) => state?.chatState?.chats[chatName]);
+  const lastMessage = thisChat?.[thisChat.length - 1];
   //Check if the contact has a name
   useEffect(() => {
     setContactHasName(!!(contact.firstName || contact.surname));
@@ -111,16 +111,42 @@ function Contact({ contact, setOpenContacts }) {
       </div>
       <div className="flex flex-col items-start justify-center w-full px-2 h-18">
         {!contactHasName && !chatOpened && (
-          <div className="absolute text-xs text-red-600 top-2">New!</div>
+          <div className="absolute text-xs text-red-600 top-1 right-6">
+            New!
+          </div>
         )}
         <div className="flex items-center justify-between w-full">
-          <h4
-            className={`whitespace-nowrap ${
-              contactHasName ? '' : 'text-blue-800'
-            } ${unreadMessagecount > 0 ? 'text-gray-900' : 'text-gray-600'}`}
-          >
-            {contactName}
-          </h4>
+          <div>
+            <h4
+              className={`whitespace-nowrap ${
+                contactHasName ? '' : 'text-blue-800'
+              } ${unreadMessagecount > 0 ? 'text-gray-900' : 'text-gray-600'}`}
+            >
+              {contactName}
+            </h4>
+            <div className="relative flex items-center">
+              <div className="absolute left-0">
+                {lastMessage && (
+                  <MessageStats
+                    messageObj={lastMessage}
+                    messageIsFromMe={lastMessage.from === currentUserEmail}
+                  />
+                )}
+              </div>
+              {lastMessage && (
+                <p className="px-5">
+                  {lastMessage.message ? (
+                    lastMessage.message
+                  ) : lastMessage.mediaUrl ? (
+                    <BsCardImage size={25} />
+                  ) : (
+                    ''
+                  )}
+                </p>
+              )}
+            </div>
+          </div>
+
           <motion.div className="flex flex-col items-end">
             <motion.p className="hidden text-xs text-black lowercase md:block whitespace-nowrap">
               {lastMessage?.time &&

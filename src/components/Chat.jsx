@@ -92,7 +92,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
           />,
         );
       } else if (currentProgress === 100) {
-        setProgressIndicator(<TiTick />);
+        setProgressIndicator('');
       }
     }
   }, [messageObj.time, progress]);

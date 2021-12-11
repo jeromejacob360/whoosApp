@@ -17,7 +17,6 @@ import MessageStats from '../minor-components/MessageStats';
 
 //----------------------------------------------//
 function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
-  console.count('Chat');
   //State variables
   const [openOptions, setOpenOptions] = useState(false);
   const [largeMessage, setLargeMessage] = useState('');
@@ -69,7 +68,6 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
 
   //scroll the new message into view
   useEffect(() => {
-    console.log('SCROLLING');
     if (chatRef.current && !rendered.current) {
       chatRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -129,6 +127,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
   //read receipt
   const now = Date.now();
   useEffect(() => {
+    if (messageObj.status === 'read' || messageObj.status === 'sent') return;
     getDoc(
       doc(db, `whatsApp/chats/${currentChatName}/${messageObj.time}`),
     ).then((document) => {
@@ -307,10 +306,11 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
   );
 }
 
-function areEqual(a, b) {
-  return true;
-}
-
 Chat.whyDidYouRender = true;
-export default memo(Chat);
-// export default Chat;
+export default memo(Chat, (prevProps, nextProps) => {
+  return (
+    prevProps.message.status === nextProps.message.status &&
+    prevProps.nextSender === nextProps.nextSender &&
+    prevProps.prevSender === nextProps.prevSender
+  );
+});

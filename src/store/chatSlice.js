@@ -10,6 +10,7 @@ const initialState = {
   userContacts: '',
   currentChatterEmail: '',
   currentChatterName: '',
+  currentUserAvatar: '',
   chatNames: '',
   userWAContacts: '',
   messageToReply: '',
@@ -158,21 +159,19 @@ export const chatSlice = createSlice({
 
       if (userWAContacts.length > 1) {
         //sort contacts list
-
         //find the chat in the contacts list
-        const senderEmail = chatName.replace(currentUserEmail, '');
-        let indexOfContact;
-        userWAContacts.forEach((contact, index) => {
-          if (contact.email === senderEmail) {
-            indexOfContact = index;
-            return;
-          }
-        });
-
+        // const senderEmail = chatName.replace(currentUserEmail, '');
+        // let indexOfContact;
+        // userWAContacts.forEach((contact, index) => {
+        //   if (contact.email === senderEmail) {
+        //     indexOfContact = index;
+        //     return;
+        //   }
+        // });
         //sort!
-        const firstContact = userWAContacts[indexOfContact];
-        userWAContacts.splice(indexOfContact, 1);
-        userWAContacts.unshift(firstContact);
+        // const firstContact = userWAContacts[indexOfContact];
+        // userWAContacts.splice(indexOfContact, 1);
+        // userWAContacts.unshift(firstContact);
       }
 
       //push message to state

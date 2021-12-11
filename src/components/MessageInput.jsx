@@ -35,7 +35,6 @@ let newMessage;
 
 //----------------------------------------------//
 export default function MessageInput() {
-  console.count('MessageInput');
   //State variables
   const [message, setMessage] = useState('');
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
@@ -62,6 +61,7 @@ export default function MessageInput() {
   const currentUserName = useSelector((state) => state?.authState.user.email);
 
   const messageInfo = useSelector((state) => state.chatState.messageInfo);
+  const userWaContacts = useSelector((state) => state.chatState.userWAContacts);
 
   const messageToReply =
     useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
@@ -134,10 +134,6 @@ export default function MessageInput() {
       }),
     );
 
-    setTimeout(() => {
-      // chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
-    }, 0);
-
     setMessage('');
 
     if (capturedImage) {
@@ -145,10 +141,22 @@ export default function MessageInput() {
       setCapturedImage('');
     }
 
+    let mutualChat = false;
+    userWaContacts.forEach((contact) => {
+      if (currentChatterEmail === contact.email) {
+        if (contact.surname || contact.firstName) {
+          mutualChat = true;
+          return;
+        }
+      }
+    });
+
     sendMessagetoDB({
       newMessage: { ...newMessage, mediaUrl },
       currentChatName,
+      mutualChat,
     }).then((sentMessage) => {
+      console.log('message sent', sentMessage.message);
       dispatch(
         MESSAGE_SENT({ chatName: currentChatName, message: sentMessage }),
       );
@@ -210,7 +218,7 @@ export default function MessageInput() {
 
   if (openContactsPicker) {
     return (
-      <div className="px-4 bg-selected">
+      <div className="px-4 bg-blue-500">
         <ContactsPicker setOpenContactsPicker={setOpenContactsPicker} />
       </div>
     );
@@ -324,3 +332,5 @@ export default function MessageInput() {
     )
   );
 }
+
+MessageInput.wdyr = true;

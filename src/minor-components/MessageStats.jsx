@@ -3,7 +3,6 @@ import { RiCheckDoubleFill } from 'react-icons/ri';
 import SingleTick from '../assets/svgs/SingleTick';
 
 export default function MessageStats({ messageIsFromMe, messageObj }) {
-  console.count('MessageStats');
   return (
     messageIsFromMe && (
       <div>
@@ -12,9 +11,11 @@ export default function MessageStats({ messageIsFromMe, messageObj }) {
         )}
         {messageObj.status === 'delivered' && <RiCheckDoubleFill />}
         {messageObj.status === 'read' && (
-          <RiCheckDoubleFill className="text-dodgerblue" />
+          <RiCheckDoubleFill className="text-blue-800" />
         )}
       </div>
     )
   );
 }
+
+MessageStats.wdyr = true;

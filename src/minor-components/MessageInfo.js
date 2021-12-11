@@ -74,3 +74,5 @@ export default function MessageInfo() {
     </div>
   );
 }
+
+MessageInfo.wdyr = true;

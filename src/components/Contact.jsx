@@ -14,7 +14,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
-  console.count('Contact');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -154,6 +153,7 @@ function Contact({ contact, setOpenContacts }) {
   );
 }
 
-// Contact.whyDidYouRender = true;
-// export default memo(Contact);
-export default Contact;
+Contact.whyDidYouRender = true;
+export default memo(Contact, (prev, next) => {
+  return prev.email === next.email;
+});

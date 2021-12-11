@@ -6,7 +6,6 @@ import { ADD_MESSAGE, FORWARD_MODE_OFF } from '../store/chatSlice';
 import ClickAway from '../hooks/ClickAway';
 
 export default function ContactsPicker({ setOpenContactsPicker }) {
-  console.count('ContactsPicker');
   const [selectedContacts, setSelectedContacts] = useState([]);
 
   const dispatch = useDispatch();
@@ -37,15 +36,30 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
     const messages = Object.values(messagesToForward);
     selectedContacts.forEach((contact) => {
       const currentChatName = chatNameGenerator(contact, currentUserName);
-      messages.forEach((message) => {
-        argsList.push({ currentChatName, message });
+      messages.forEach((messageObj) => {
+        const { message, mediaUrl, time } = messageObj;
+        argsList.push({
+          currentChatName,
+          message: {
+            message,
+            mediaUrl,
+            time,
+            to: contact,
+            from: currentUserEmail,
+            deletedForMe: [],
+            status: '',
+          },
+        });
       });
     });
+
+    console.log(`argsList`, argsList);
 
     setOpenContactsPicker(false);
 
     argsList.forEach(async (obj) => {
       const { currentChatName, message } = obj;
+
       dispatch(
         ADD_MESSAGE({
           chatName: currentChatName,
@@ -64,22 +78,24 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
   }
 
   return (
-    <main className="fixed inset-0 grid w-screen h-screen bg-white bg-opacity-80 place-items-center">
+    <main className="fixed inset-0 grid w-screen h-screen text-gray-800 bg-white bg-opacity-80 place-items-center">
       <ClickAway onClickAway={endForwardMode}>
-        <div className="relative flex flex-col p-2 border rounded-md shadow-lg bg-main">
+        <div className="relative flex flex-col py-2 bg-blue-300 border rounded-md shadow-lg">
           {userWAContacts?.map((contact) => {
-            const contactName = `${contact.firstName} ${contact.surname}`;
+            const contactName = `${
+              contact.firstName ? contact.firstName : contact.email
+            } ${contact.surname ? contact.surname : ''}`;
             return (
               contact.email !== currentChatterEmail && (
                 <label
                   key={contactName}
                   htmlFor={contactName}
-                  className="px-3 py-3 cursor-pointer hover:bg-selected"
+                  className="px-4 py-2 bg-white cursor-pointer bg-opacity-30 hover:bg-selected"
                 >
                   <input
-                    value={contact.email}
                     onChange={(e) => addOrRemoveContact(e, contact)}
                     className="mr-3"
+                    value={contact.email}
                     type="checkbox"
                     name="contactName"
                     id={contactName}

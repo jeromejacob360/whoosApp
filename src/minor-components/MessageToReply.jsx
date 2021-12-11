@@ -21,13 +21,14 @@ export default function MessageToReply() {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ height: 0, opacity: 0 }}
-      className="w-full p-2 rounded-md rounded-bl-none rounded-br-none cursor-pointer bg-main"
+      className="w-full p-2 bg-blue-200 rounded-md rounded-bl-none rounded-br-none cursor-pointer"
     >
       <AiOutlineClose
+        size={25}
         onClick={() => dispatch(CLEAR_REPLY_MESSAGE())}
-        className="w-4 h-4 top-1 right-4"
+        className="p-1 mb-2 text-blue-900 border border-blue-700 rounded-md top-1 right-4"
       />
-      <div className="py-1 pl-2 border-l-8 border-yellow-700 rounded-md bg-dim">
+      <div className="py-1 pl-2 bg-black border-l-8 border-green-700 rounded-md bg-opacity-10">
         {messageToReply.mediaUrl ? (
           <div>
             <span>Photo</span>

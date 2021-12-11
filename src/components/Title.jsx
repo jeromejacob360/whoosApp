@@ -7,7 +7,6 @@ import logo from '../assets/images/logo.jpg';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Options from '../optionMenus/Options';
 export default function Title() {
-  console.count('Title');
   const [openContacts, setOpenContacts] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
 

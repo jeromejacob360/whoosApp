@@ -3,7 +3,6 @@ import React from 'react';
 import Contacts from '../components/Contacts';
 
 export default function ContactsListMobile({ openContacts, setOpenContacts }) {
-  console.count('ContactsListMobile');
   return (
     <AnimatePresence>
       {openContacts && (
@@ -19,3 +18,5 @@ export default function ContactsListMobile({ openContacts, setOpenContacts }) {
     </AnimatePresence>
   );
 }
+
+ContactsListMobile.wdyr = true;

@@ -4,7 +4,6 @@ import Options from '../optionMenus/Options';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
 export default function Header() {
-  console.count('Header');
   const imageUrl = useSelector((state) => state.authState.user.photoURL);
   const [openOptions, setOpenOptions] = useState(false);
 

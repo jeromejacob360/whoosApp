@@ -1,29 +1,24 @@
 import Chat from './Chat';
-import { onSnapshot, collection, query, where } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { memo, useEffect, useState } from 'react';
 import {
-  ADD_MESSAGE,
   CLEAR_MESSAGE_INFO,
   CLEAR_REPLY_MESSAGE,
   CLEAR_UNREAD_MESSAGES,
-  DELETE_MESSAGE,
   FORWARD_MODE_OFF,
-  MODIFY_MESSAGE,
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import Intro from '../pages/Intro';
 
 //----------------------------------------------//
 function ChatHistory({ chatHistoryRef }) {
-  console.count('ChatHistory');
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
 
   //Access the store
-  const chatNames = useSelector((state) => state?.chatState?.chatNames);
+  // const chatNames = useSelector((state) => state?.chatState?.chatNames);
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
@@ -35,7 +30,6 @@ function ChatHistory({ chatHistoryRef }) {
   const currentChatterEmail = useSelector(
     (state) => state?.chatState?.currentChatterEmail,
   );
-  const currentUserEmail = useSelector((state) => state?.authState.user?.email);
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
 
   //turn off forward mode when chat changes
@@ -74,56 +68,6 @@ function ChatHistory({ chatHistoryRef }) {
       setAddOptionsToSaveContact(false);
     }
   }, [currentChatName, namelessChats]);
-
-  //Side effects
-
-  // loop through each of these chatNames and get all the chats. (No pagination yet)
-  useEffect(() => {
-    const unsubList = [];
-
-    if (chatNames?.length > 0) {
-      chatNames.forEach(async (chatName) => {
-        const q = query(
-          collection(db, 'whatsApp/chats', chatName),
-          // prevent reading flag as that will add to unread messages count
-          where('from', '>=', ''), //TODO limit this to last say, 50
-        );
-
-        const unsub = onSnapshot(q, (snapshot) => {
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added') {
-              const message = change.doc.data();
-              dispatch(
-                ADD_MESSAGE({
-                  chatName,
-                  message,
-                  currentUserEmail,
-                  from: 'server',
-                }),
-              );
-              if (
-                message.from === currentUserEmail &&
-                (!message.status || message.status === 'sent')
-              ) {
-              }
-            }
-            if (change.type === 'modified') {
-              const message = change.doc.data();
-              dispatch(MODIFY_MESSAGE({ chatName, message }));
-            }
-            if (change.type === 'removed') {
-              const message = change.doc.data();
-              dispatch(DELETE_MESSAGE({ chatName, message }));
-            }
-          });
-        });
-        unsubList.push(unsub);
-      });
-    }
-
-    return unsubList.forEach((unsub) => unsub);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatNames, currentUserEmail, dispatch]);
 
   return currentChatName ? (
     <div
@@ -182,5 +126,7 @@ function ChatHistory({ chatHistoryRef }) {
   );
 }
 
+// export default memo(ChatHistory);
 export default memo(ChatHistory);
+
 ChatHistory.wdyr = true;

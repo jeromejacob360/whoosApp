@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
 import { AiOutlineCamera, AiOutlineClose } from 'react-icons/ai';
 import { BiUndo } from 'react-icons/bi';
+import { useSelector } from 'react-redux';
 import ClickAway from '../hooks/ClickAway';
 
 export default function CameraPreview({
@@ -14,6 +15,13 @@ export default function CameraPreview({
 }) {
   const [cameraPreviewOn, setCameraPreviewOn] = useState(false);
   const [cameraGranted, setCameraGranted] = useState(false);
+
+  const currentChatName = useSelector(
+    (state) => state?.chatState.currentChatName,
+  );
+  const messageToReply =
+    useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
+    '';
 
   const openCamera = useCallback(() => {
     navigator.mediaDevices &&
@@ -78,9 +86,9 @@ export default function CameraPreview({
         y: '100%',
         transition: { duration: 0.3 },
       }}
-      className={`absolute top-20 flex items-center justify-center w-full bottom-0 ${
-        capturedImage ? 'mb-16' : ''
-      }`}
+      className={`absolute top-20 flex items-center justify-center w-full ${
+        messageToReply ? 'bottom-16' : 'bottom-0'
+      } ${capturedImage ? 'mb-16' : ''}`}
     >
       <ClickAway
         className="flex w-full h-full"

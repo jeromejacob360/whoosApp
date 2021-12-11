@@ -26,7 +26,7 @@ export default function useGetChats() {
       chatNames.forEach(async (chatName) => {
         const q = query(
           collection(db, 'whatsApp/chats', chatName),
-          limitToLast(50),
+          limitToLast(5),
           orderBy('time', 'asc'),
         );
 
@@ -66,3 +66,5 @@ export default function useGetChats() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatNames, currentUserEmail, dispatch]);
 }
+
+useGetChats.wdyr = true;

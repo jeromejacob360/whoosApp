@@ -113,6 +113,23 @@ export const chatSlice = createSlice({
     ADD_MESSAGE: (state, action) => {
       const { chatName, message, currentUserEmail, from } = action.payload;
 
+      const chatterEmail = chatName.split(currentUserEmail).join('');
+      if (!state.userWAContacts) return;
+      state.userWAContacts = state.userWAContacts.map((contact) => {
+        if (contact.email === chatterEmail) {
+          return {
+            ...contact,
+            lastMessageTime: message.time,
+          };
+        } else return contact;
+      });
+
+      state.userWAContacts = state.userWAContacts.sort((a, b) => {
+        if (a.lastMessageTime > b.lastMessageTime) return -1;
+        if (a.lastMessageTime < b.lastMessageTime) return 1;
+        return 0;
+      });
+
       if (from === 'server' && message.from !== currentUserEmail) {
         const q = doc(
           db,

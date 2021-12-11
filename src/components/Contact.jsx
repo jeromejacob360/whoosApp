@@ -16,10 +16,13 @@ import { BsCardImage } from 'react-icons/bs';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
+  // console.count('CONTACTTTTTT');
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(PAGE_RENDERED());
+    setTimeout(() => {
+      dispatch(PAGE_RENDERED());
+    }, 1000);
   }, [dispatch]);
 
   const [contactHasName, setContactHasName] = useState(true);

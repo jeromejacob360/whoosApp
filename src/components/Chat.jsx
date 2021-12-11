@@ -8,7 +8,6 @@ import {
 import Modal from './Modal';
 import ChatOptions from '../optionMenus/chatOptions';
 import NotSent from '../assets/svgs/NotSent';
-import { TiTick } from 'react-icons/ti';
 import { AnimatePresence } from 'framer-motion';
 import { AiOutlineDown } from 'react-icons/ai';
 import { doc, getDoc, setDoc } from '@firebase/firestore';

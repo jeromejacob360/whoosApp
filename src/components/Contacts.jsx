@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contacts({ setOpenContacts }) {
+  // console.count('CONTACTS');
   const dispatch = useDispatch();
 
   //Access the store
@@ -70,4 +71,8 @@ function Contacts({ setOpenContacts }) {
 }
 
 export default memo(Contacts);
+
 Contacts.wdyr = true;
+Contacts.whyDidYouRender = {
+  logOnDifferentValues: true,
+};

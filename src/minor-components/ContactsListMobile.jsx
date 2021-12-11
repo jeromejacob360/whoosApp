@@ -18,5 +18,3 @@ export default function ContactsListMobile({ openContacts, setOpenContacts }) {
     </AnimatePresence>
   );
 }
-
-ContactsListMobile.wdyr = true;

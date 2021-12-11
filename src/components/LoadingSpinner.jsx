@@ -10,9 +10,9 @@ export default function LoadingSpinner() {
       {!pageRendered && (
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 1, transition: { duration: 0.1 } }}
           exit={{ height: 0, overflow: 'hidden' }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center w-screen h-screen bg-blue-200"
         >
           <div className="flex flex-col items-center">

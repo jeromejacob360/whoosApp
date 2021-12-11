@@ -156,7 +156,6 @@ export default function MessageInput() {
       currentChatName,
       mutualChat,
     }).then((sentMessage) => {
-      console.log('message sent', sentMessage.message);
       dispatch(
         MESSAGE_SENT({ chatName: currentChatName, message: sentMessage }),
       );
@@ -333,5 +332,3 @@ export default function MessageInput() {
     )
   );
 }
-
-MessageInput.wdyr = true;

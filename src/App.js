@@ -62,9 +62,9 @@ function App() {
           <div className="w-screen h-screen px-0 py-0 sm:py-4 sm:pb-10 sm:px-6 rounded-3xl">
             <AnimatePresence exitBeforeEnter>
               <motion.div
-                initial={{ scale: 0.5, opacity: 0, y: 200 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.5, opacity: 0, y: 200 }}
+                initial={{ scale: 0.9, y: 200 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 200 }}
                 transition={{ duration: 0.1, delay: 0.1 }}
                 className={`mx-auto overflow-x-auto ${
                   location.pathname === '/' && 'bg-blue-100'

@@ -16,7 +16,6 @@ import { BsCardImage } from 'react-icons/bs';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
-  // console.count('CONTACTTTTTT');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,6 +41,7 @@ function Contact({ contact, setOpenContacts }) {
 
   const thisChat = useSelector((state) => state?.chatState?.chats[chatName]);
   const lastMessage = thisChat?.[thisChat.length - 1];
+
   //Check if the contact has a name
   useEffect(() => {
     setContactHasName(!!(contact.firstName || contact.surname));

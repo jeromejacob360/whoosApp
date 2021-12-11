@@ -12,7 +12,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contacts({ setOpenContacts }) {
-  // console.count('CONTACTS');
   const dispatch = useDispatch();
 
   //Access the store
@@ -22,6 +21,8 @@ function Contacts({ setOpenContacts }) {
   const currentUserEmail = useSelector(
     (state) => state?.authState?.user?.email,
   );
+
+  const windowWidth = useSelector((state) => state?.chatState?.windowWidth);
 
   // Side effects
 
@@ -59,7 +60,7 @@ function Contacts({ setOpenContacts }) {
         {userWAContacts?.map((contact) => {
           return (
             contact?.email && (
-              <motion.div layout key={contact.email}>
+              <motion.div layout={windowWidth > 640} key={contact.email}>
                 <Contact setOpenContacts={setOpenContacts} contact={contact} />
               </motion.div>
             )
@@ -71,8 +72,3 @@ function Contacts({ setOpenContacts }) {
 }
 
 export default memo(Contacts);
-
-Contacts.wdyr = true;
-Contacts.whyDidYouRender = {
-  logOnDifferentValues: true,
-};

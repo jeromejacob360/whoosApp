@@ -7,8 +7,9 @@ import { PAGE_LOADING } from '../store/chatSlice';
 //----------------------------------------------//
 export default function Login() {
   //State variables
-  const [email, setEmail] = useState('jerome@gmail.com');
+  const [email, setEmail] = useState('jane@gmail.com');
   const [password, setPassword] = useState('123123');
+  const [error, setError] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -17,19 +18,21 @@ export default function Login() {
     e.preventDefault();
     if (email && password)
       try {
-        dispatch(PAGE_LOADING());
+        setError(false);
         await signInWithEmailAndPassword(getAuth(), email, password);
+        dispatch(PAGE_LOADING());
         await addUserToContactsMaster(email);
       } catch (error) {
-        console.log(`error.message`, error.message);
+        setError(true);
+        console.log(`error.message`, error);
       }
   }
 
   return (
-    <div className="flex items-center justify-center w-full h-full">
+    <div className="flex items-center justify-center w-full h-full ">
       <form
         onSubmit={loginUser}
-        className="flex flex-col px-3 py-4 space-y-4 rounded-md shadow-2xl bg-gradient-to-tl from-blue-300 to-blue-100 w-80 bg-opacity-60"
+        className="relative flex flex-col px-3 py-4 space-y-4 rounded-md shadow-2xl bg-gradient-to-tl from-blue-300 to-blue-100 w-80 bg-opacity-60"
       >
         <input
           value={email}
@@ -50,6 +53,11 @@ export default function Login() {
         <button className="flex items-center justify-center py-1 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90 text-icons">
           <span> Login</span>
         </button>
+        {error && (
+          <p className="absolute left-0 right-0 text-xs text-center text-red-600 bottom-10">
+            Incorrect credentials
+          </p>
+        )}
         <a
           target="_blank"
           className="pt-4 text-sm text-center text-blue-800 underline"

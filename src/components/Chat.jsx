@@ -79,7 +79,6 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
   useEffect(() => {
     if (progress && progress[messageObj.time]) {
       const currentProgress = progress[messageObj.time];
-      console.log(`currentProgress`, currentProgress);
       if (currentProgress === -1) {
         setProgressIndicator(<NotSent />);
       } else if (currentProgress > 0 && currentProgress < 100) {

@@ -44,6 +44,7 @@ export default function Title() {
       </div>
 
       <BsThreeDotsVertical
+        className="block sm:hidden"
         size={20}
         onClick={() => setOpenOptions(!openOptions)}
       />

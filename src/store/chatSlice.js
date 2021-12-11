@@ -121,7 +121,10 @@ export const chatSlice = createSlice({
             ...contact,
             lastMessageTime: message.time,
           };
-        } else return contact;
+        } else
+          return contact.lastMessageTime
+            ? contact
+            : { ...contact, lastMessageTime: 0 };
       });
 
       state.userWAContacts = state.userWAContacts.sort((a, b) => {

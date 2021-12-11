@@ -19,5 +19,3 @@ export default function MessageStats({ messageIsFromMe, messageObj }) {
     )
   );
 }
-
-MessageStats.wdyr = true;

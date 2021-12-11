@@ -66,5 +66,3 @@ export default function useGetChats() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatNames, currentUserEmail, dispatch]);
 }
-
-useGetChats.wdyr = true;

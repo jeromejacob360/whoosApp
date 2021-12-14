@@ -26,7 +26,7 @@ export default function useGetChats() {
       chatNames.forEach(async (chatName) => {
         const q = query(
           collection(db, 'whatsApp/chats', chatName),
-          limitToLast(5),
+          limitToLast(50),
           orderBy('time', 'asc'),
         );
 

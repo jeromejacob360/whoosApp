@@ -105,10 +105,10 @@ function ChatHistory({ chatHistoryRef }) {
                       >
                         <Chat
                           nextSender={
-                            messages[index + 1] && messages[index + 1].from
+                            messages[index + 1] && messages[index + 1]
                           }
                           prevSender={
-                            messages[index - 1] && messages[index - 1].from
+                            messages[index - 1] && messages[index - 1]
                           }
                           chatHistoryRef={chatHistoryRef}
                           message={message}

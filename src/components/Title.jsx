@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { BiMenu } from 'react-icons/bi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ContactsListMobile from '../minor-components/ContactsListMobile';
 import logo from '../assets/images/logo.jpg';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import Options from '../optionMenus/Options';
+import { CLEAR_CURRENT_CHAT } from '../store/chatSlice';
 export default function Title() {
   const [openContacts, setOpenContacts] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
@@ -19,9 +20,15 @@ export default function Title() {
   const messageInfo = useSelector((state) => state.chatState.messageInfo);
   const user = useSelector((state) => state?.authState.user);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setOpenContacts(true);
   }, []);
+
+  useEffect(() => {
+    dispatch(CLEAR_CURRENT_CHAT());
+  }, [dispatch]);
 
   return currentChatterName ? (
     <div
@@ -32,7 +39,7 @@ export default function Title() {
         <BiMenu
           size={45}
           className="block sm:hidden"
-          onClick={() => setOpenContacts((prev) => !prev)}
+          onClick={() => setOpenContacts(true)}
         />
         <img
           className="object-cover w-10 h-10 rounded-xl"

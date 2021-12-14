@@ -16,6 +16,7 @@ import { BsCardImage } from 'react-icons/bs';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
+  console.count('CONTACT');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -151,7 +152,7 @@ function Contact({ contact, setOpenContacts }) {
           </div>
 
           <motion.div className="flex flex-col items-end">
-            <motion.p className="hidden text-xs text-black lowercase md:block whitespace-nowrap">
+            <motion.p className="text-xs text-black lowercase whitespace-nowrap">
               {lastMessage?.time &&
                 new Date(lastMessage?.time).toLocaleTimeString()}
             </motion.p>

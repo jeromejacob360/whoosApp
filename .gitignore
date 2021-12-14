@@ -24,6 +24,7 @@ functions
 .env.test.local
 .env.production.local
 wdyr.js
+test.js
 
 features.md
 .dccache

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SingleTick from '../assets/svgs/SingleTick';
 import Chat from '../components/Chat';
 import { CLEAR_MESSAGE_INFO } from '../store/chatSlice';
+import dateFormat from 'dateformat';
 
 export default function MessageInfo() {
   const message = useSelector((state) => state.chatState.messageInfo);
@@ -37,25 +38,43 @@ export default function MessageInfo() {
         </div>
 
         <div
-          className="h-full px-10 text-gray-500 bg-blue-100"
+          className="h-full pl-10 text-gray-500 bg-blue-100 border-2 border-blue-600"
           style={{ minHeight: '300px' }}
         >
-          {message.status === 'read' && (
+          {message.readTime && (
             <div className="py-4 pl-4 border-b">
               <div className="flex items-center space-x-2 text-dodgerblue">
                 <RiCheckDoubleFill className="text-dodgerblue" />
                 <span>Read</span>
               </div>
-              <div>{new Date(message.readTime).toLocaleString()}</div>
+              <div className="flex space-x-2">
+                <div>
+                  {dateFormat(new Date(message.readTime), 'DDDD', 'h:MM:ss')}
+                </div>
+                <div>
+                  {dateFormat(new Date(message.readTime), 'h:MM:ss TT')}
+                </div>
+              </div>
             </div>
           )}
-          {(message.status === 'read' || message.status === 'delivered') && (
+          {message.deliveredTime && (
             <div className="py-4 pl-4 border-b">
               <div className="flex items-center space-x-2">
                 <RiCheckDoubleFill />
                 <span>Delivered</span>
               </div>
-              <div>{new Date(message.deliveredTime).toLocaleString()}</div>
+              <div className="flex space-x-2">
+                <div>
+                  {dateFormat(
+                    new Date(message.deliveredTime),
+                    'DDDD',
+                    'h:MM:ss',
+                  )}
+                </div>
+                <div>
+                  {dateFormat(new Date(message.deliveredTime), 'h:MM:ss TT')}
+                </div>
+              </div>
             </div>
           )}
           {(message.status === 'read' ||
@@ -66,7 +85,12 @@ export default function MessageInfo() {
                 <SingleTick className="transform rotate-12" />
                 <span>Sent</span>
               </div>
-              <div>{new Date(message.time).toLocaleString()}</div>
+              <div className="flex space-x-2">
+                <div>
+                  {dateFormat(new Date(message.time), 'DDDD', 'h:MM:ss')}
+                </div>
+                <div>{dateFormat(new Date(message.time), 'h:MM:ss TT')}</div>
+              </div>
             </div>
           )}
         </div>

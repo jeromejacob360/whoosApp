@@ -8,6 +8,7 @@
     "@emotion/styled": "^11.6.0",
     "@mui/material": "^5.1.0",
     "@reduxjs/toolkit": "^1.6.2",
+    "dateformat": "^5.0.2",
     "emoji-picker-react": "^3.4.8",
     "firebase": "^9.1.2",
     "framer-motion": "^4.1.17",

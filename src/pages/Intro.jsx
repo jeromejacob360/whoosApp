@@ -12,8 +12,7 @@ export default function Intro() {
       <img
         src={intro}
         alt=""
-        className="object-cover w-full h-full shadow-md rounded-tr-3xl"
-        style={{ borderTopLeftRadius: '50%', borderBottomRightRadius: '50%' }}
+        className="object-cover w-full h-full shadow-md rounded-br-md rounded-tr-3xl"
       />
       <div className="absolute text-7xl bottom-32">Whoosapp</div>
     </main>

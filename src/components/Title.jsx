@@ -17,6 +17,7 @@ export default function Title() {
     (state) => state?.chatState.currentUserAvatar,
   );
   const messageInfo = useSelector((state) => state.chatState.messageInfo);
+  const user = useSelector((state) => state?.authState.user);
 
   useEffect(() => {
     setOpenContacts(true);
@@ -59,7 +60,9 @@ export default function Title() {
     <div className="z-10">
       <div className="relative flex items-center justify-between px-5 py-5 bg-blue-200 sm:hidden">
         <img className="object-center w-10 h-10 rounded-lg" src={logo} alt="" />
-        <h1 className="flex-1 pl-10 text-3xl text-gray-700">WhoosApp</h1>
+        <h1 className="flex-1 pl-10 text-2xl text-gray-700">
+          {user.displayName}
+        </h1>
         <BsThreeDotsVertical
           size={20}
           onClick={() => setOpenOptions(!openOptions)}

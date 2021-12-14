@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SET_USERS_WA_CONTACTS } from '../store/chatSlice';
+import { ADD_TO_INVITEES, SET_USERS_WA_CONTACTS } from '../store/chatSlice';
 import {
   collection,
   doc,
@@ -31,6 +31,9 @@ export default async function useGetUserContactsAndPopulateChats(
               where(encodeEmail(contact.email), '==', true),
             ),
           );
+          if (snap.empty) {
+            dispatch(ADD_TO_INVITEES(contact));
+          }
           snap.forEach(async () => {
             await setDoc(
               doc(db, 'whatsApp/userContacts', currentUserEmail, contact.email),

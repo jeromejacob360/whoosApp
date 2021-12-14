@@ -16,7 +16,6 @@ import { BsCardImage } from 'react-icons/bs';
 
 //----------------------------------------------//
 function Contact({ contact, setOpenContacts }) {
-  console.count('CONTACT');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -183,7 +182,6 @@ function Contact({ contact, setOpenContacts }) {
   );
 }
 
-Contact.whyDidYouRender = true;
 export default memo(Contact, (prev, next) => {
   return prev.email === next.email;
 });

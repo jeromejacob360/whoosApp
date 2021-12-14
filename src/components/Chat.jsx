@@ -323,5 +323,4 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
   );
 }
 
-Chat.whyDidYouRender = true;
 export default memo(Chat);

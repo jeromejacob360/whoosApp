@@ -16,6 +16,7 @@ export default function Login() {
   //Side effects
   async function loginUser(e) {
     e.preventDefault();
+
     if (email && password)
       try {
         setError(false);
@@ -24,7 +25,6 @@ export default function Login() {
         await addUserToContactsMaster(email);
       } catch (error) {
         setError(true);
-        console.log(`error.message`, error);
       }
   }
 
@@ -50,7 +50,7 @@ export default function Login() {
           className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="password"
         />
-        <button className="flex items-center justify-center py-1 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90 text-gray-600">
+        <button className="flex items-center justify-center py-1 text-gray-600 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90">
           <span> Login</span>
         </button>
         {error && (

@@ -5,7 +5,7 @@ import { db } from '../firebase/firebase';
 import { useSubscribeToUserContactsFromContactsApp } from '../hooks/useSubscribeToUserContactsFromContactsApp';
 import { chatNameGenerator } from '../helper-functions/formatters';
 import { ADD_CHATNAMES } from '../store/chatSlice';
-
+import InviteContact from '../components/InviteContact';
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -15,6 +15,8 @@ function Contacts({ setOpenContacts }) {
   const dispatch = useDispatch();
 
   //Access the store
+  const contactsToInviteObj = useSelector((state) => state.chatState.invitees);
+  const contactsToInvite = Object.values(contactsToInviteObj);
   const userWAContacts = useSelector(
     (state) => state?.chatState?.userWAContacts,
   );
@@ -54,10 +56,10 @@ function Contacts({ setOpenContacts }) {
     return unsub;
   }, [currentUserEmail, dispatch]);
 
-  if (userWAContacts.length > 0)
-    return (
-      <AnimatePresence>
-        {userWAContacts?.map((contact) => {
+  return (
+    <AnimatePresence>
+      {userWAContacts &&
+        userWAContacts?.map((contact) => {
           return (
             contact?.email && (
               <motion.div layout={windowWidth > 640} key={contact.email}>
@@ -66,9 +68,22 @@ function Contacts({ setOpenContacts }) {
             )
           );
         })}
-      </AnimatePresence>
-    );
-  else return null;
+      <div className="h-2 bg-gray-200"></div>
+      {contactsToInvite &&
+        contactsToInvite?.map((contact) => {
+          return (
+            contact?.email && (
+              <motion.div
+                layout={windowWidth > 640}
+                key={contact.email + 'invite'}
+              >
+                <InviteContact contact={contact} />
+              </motion.div>
+            )
+          );
+        })}
+    </AnimatePresence>
+  );
 }
 
 export default memo(Contacts);

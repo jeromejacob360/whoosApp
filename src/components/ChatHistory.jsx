@@ -126,5 +126,4 @@ function ChatHistory({ chatHistoryRef }) {
   );
 }
 
-// export default memo(ChatHistory);
 export default memo(ChatHistory);

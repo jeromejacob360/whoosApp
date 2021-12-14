@@ -27,6 +27,7 @@ const initialState = {
   messageInfo: '',
   windowWidth: 0,
   chatHistoryRef: '',
+  invitees: {},
 };
 
 function calculateForwardMessagesLength(state) {
@@ -90,6 +91,11 @@ export const chatSlice = createSlice({
 
     ADD_CHATNAMES: (state, action) => {
       state.chatNames = action.payload;
+    },
+
+    ADD_TO_INVITEES: (state, action) => {
+      const { email } = action.payload;
+      state.invitees[email] = action.payload;
     },
 
     NAMELESS_CHAT: (state, action) => {
@@ -173,25 +179,6 @@ export const chatSlice = createSlice({
         state.unreadMessages[chatName]
           ? state.unreadMessages[chatName]++
           : (state.unreadMessages[chatName] = 1);
-      }
-
-      const userWAContacts = state.userWAContacts;
-
-      if (userWAContacts.length > 1) {
-        //sort contacts list
-        //find the chat in the contacts list
-        // const senderEmail = chatName.replace(currentUserEmail, '');
-        // let indexOfContact;
-        // userWAContacts.forEach((contact, index) => {
-        //   if (contact.email === senderEmail) {
-        //     indexOfContact = index;
-        //     return;
-        //   }
-        // });
-        //sort!
-        // const firstContact = userWAContacts[indexOfContact];
-        // userWAContacts.splice(indexOfContact, 1);
-        // userWAContacts.unshift(firstContact);
       }
 
       //push message to state
@@ -361,6 +348,7 @@ export const {
   FORWARD_MODE_OFF,
   ADD_MESSAGE_TO_FORWARDS,
   REMOVE_MESSAGE_TO_FORWARDS,
+  ADD_TO_INVITEES,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

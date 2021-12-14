@@ -90,7 +90,7 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
                 <label
                   key={contactName}
                   htmlFor={contactName}
-                  className="px-4 py-2 bg-white cursor-pointer bg-opacity-30 hover:bg-selected"
+                  className="px-4 py-2 bg-white cursor-pointer bg-opacity-30 hover:bg-green-200"
                 >
                   <input
                     onChange={(e) => addOrRemoveContact(e, contact)}
@@ -107,7 +107,7 @@ export default function ContactsPicker({ setOpenContactsPicker }) {
           })}
           {selectedContacts.length > 0 && (
             <button
-              className="absolute right-0 px-4 py-1 mt-4 border rounded-full shadow-lg -bottom-6 bg-main text-dodgerblue"
+              className="absolute right-0 px-4 py-1 mt-4 text-blue-500 bg-gray-100 border rounded-full shadow-lg -bottom-6"
               onClick={sendAway}
             >
               SEND

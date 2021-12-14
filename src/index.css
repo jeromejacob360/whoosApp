@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 svg {
-  @apply cursor-pointer text-icons;
+  @apply cursor-pointer text-gray-600;
 }
 
 .no-cursor * {

@@ -50,7 +50,7 @@ export default function Login() {
           className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="password"
         />
-        <button className="flex items-center justify-center py-1 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90 text-icons">
+        <button className="flex items-center justify-center py-1 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90 text-gray-600">
           <span> Login</span>
         </button>
         {error && (

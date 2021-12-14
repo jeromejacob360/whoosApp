@@ -43,8 +43,8 @@ export default function MessageInfo() {
         >
           {message.readTime && (
             <div className="py-4 pl-4 border-b">
-              <div className="flex items-center space-x-2 text-dodgerblue">
-                <RiCheckDoubleFill className="text-dodgerblue" />
+              <div className="flex items-center space-x-2 text-blue-500">
+                <RiCheckDoubleFill className="text-blue-500" />
                 <span>Read</span>
               </div>
               <div className="flex space-x-2">

@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Search() {
   return (
-    <div className="bg-dimBG">
+    <div className="bg-gray-50">
       <label
-        className="flex p-2 pl-4 border rounded-full border-main"
+        className="flex p-2 pl-4 border border-gray-100 rounded-full"
         htmlFor="input"
       >
         <svg

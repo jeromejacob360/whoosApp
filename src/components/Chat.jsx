@@ -186,7 +186,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
         onClick={forwardMode ? addOrRemove : null}
         id={messageObj.time}
         className={`flex duration-500 bg-opacity-30 ${
-          selected ? 'bg-selected' : ''
+          selected ? 'bg-green-200' : ''
         } ${messageIsFromMe ? 'justify-end' : 'justify-start'} ${
           forwardMode ? 'cursor-pointer' : ''
         }`}
@@ -290,7 +290,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
                 <span>{largeMessage}</span>
                 <span
                   onClick={() => setLargeMessageCutoff((prev) => prev * 2)}
-                  className="text-dodgerblue"
+                  className="text-blue-500"
                 >
                   {' '}
                   more...

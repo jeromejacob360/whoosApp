@@ -20,20 +20,23 @@ export default function Options({ setOpenOptions }) {
         transition={{ ease: 'easeOut', duration: 0.2 }}
         className={`absolute bg-white rounded-md shadow-md right-16 top-10 overflow-hidden z-50`}
       >
-        <ul className="w-40 py-3 space-y-3 text-sm text-icons">
-          <li className="w-full cursor-pointer hover:bg-dim">
+        <ul className="w-40 py-3 space-y-3 text-sm text-gray-600">
+          <li className="w-full cursor-pointer hover:bg-gray-50">
             <div className="py-1 pl-6">New Group</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
+          <li className="w-full cursor-pointer hover:bg-gray-50">
             <div className="py-1 pl-6">Archived</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
+          <li className="w-full cursor-pointer hover:bg-gray-50">
             <div className="py-1 pl-6">Starred</div>
           </li>
-          <li className="w-full cursor-pointer hover:bg-dim">
+          <li className="w-full cursor-pointer hover:bg-gray-50">
             <div className="py-1 pl-6">Settings</div>
           </li>
-          <li onClick={signout} className="w-full cursor-pointer hover:bg-dim">
+          <li
+            onClick={signout}
+            className="w-full cursor-pointer hover:bg-gray-50"
+          >
             <div className="py-1 pl-6">Logout</div>
           </li>
         </ul>

@@ -103,13 +103,13 @@ export default function ChatOptions({
         exit={{ width: 0, height: 0, top: 0, right: 0 }}
         className={`group absolute bg-white rounded-md shadow-md overflow-hidden z-50`}
       >
-        <ul className="w-40 py-3 space-y-3 text-sm text-icons">
+        <ul className="w-40 py-3 space-y-3 text-sm text-gray-600">
           {messageIsFromMe && (
             <li
               onClick={() => {
                 dispatch(MESSAGE_INFO(message));
               }}
-              className="w-full cursor-pointer hover:bg-dim"
+              className="w-full cursor-pointer hover:bg-gray-50"
             >
               <div className="py-1 pl-6">Message info</div>
             </li>
@@ -119,26 +119,26 @@ export default function ChatOptions({
               reply();
               setOpenOptions(false);
             }}
-            className="w-full cursor-pointer hover:bg-dim"
+            className="w-full cursor-pointer hover:bg-gray-50"
           >
             <div className="py-1 pl-6">Reply</div>
           </li>
           <li
             onClick={forwardMessage}
-            className="w-full cursor-pointer hover:bg-dim"
+            className="w-full cursor-pointer hover:bg-gray-50"
           >
             <div className="py-1 pl-6">Forward message</div>
           </li>
           <li
             onClick={deleteForMe}
-            className="w-full cursor-pointer hover:bg-dim"
+            className="w-full cursor-pointer hover:bg-gray-50"
           >
             <div className="py-1 pl-6">Delete for me</div>
           </li>
           {messageIsFromMe && (
             <li
               onClick={deleteForEveryone}
-              className="w-full cursor-pointer hover:bg-dim"
+              className="w-full cursor-pointer hover:bg-gray-50"
             >
               <div className="py-1 pl-6">Delete for everyone</div>
             </li>

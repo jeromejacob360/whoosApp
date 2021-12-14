@@ -299,7 +299,7 @@ export default function MessageInput() {
                 disabled={!currentChatName}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-1 px-4 py-2 outline-none rounded-xl bg-whiteBG"
+                className="flex-1 px-4 py-2 bg-white outline-none rounded-xl"
                 placeholder="Message"
                 type="text"
                 style={{ minWidth: '20px' }}

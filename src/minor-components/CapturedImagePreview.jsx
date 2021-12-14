@@ -11,7 +11,7 @@ export default function CapturedImagePreview({
 }) {
   return (
     <motion.div
-      className="relative shadow-md bg-dim"
+      className="relative shadow-md bg-gray-50"
       initial={{ opacity: 0, scale: 0.8, y: -20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8 }}
@@ -21,7 +21,7 @@ export default function CapturedImagePreview({
           <AiOutlineLoading className="absolute w-12 h-12 spin" />
         </div>
       )}
-      <div className="flex justify-between py-1 bg-dim px-28">
+      <div className="flex justify-between py-1 bg-gray-50 px-28">
         <button
           onClick={retake}
           className="flex items-center px-2 rounded-md mr-28"
@@ -37,7 +37,7 @@ export default function CapturedImagePreview({
         </button>
       </div>
       <img
-        className="mx-auto bg-dim md:w-full xl:w-1/2 lg:w-2/3"
+        className="mx-auto bg-gray-50 md:w-full xl:w-1/2 lg:w-2/3"
         src={capturedImage}
         alt=""
       />

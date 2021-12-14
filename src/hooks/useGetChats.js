@@ -1,10 +1,4 @@
-import {
-  collection,
-  limitToLast,
-  onSnapshot,
-  orderBy,
-  query,
-} from '@firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from '@firebase/firestore';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { db } from '../firebase/firebase';

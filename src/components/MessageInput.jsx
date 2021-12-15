@@ -61,7 +61,7 @@ export default function MessageInput() {
   const currentUserName = useSelector((state) => state?.authState.user.email);
 
   const messageInfo = useSelector((state) => state.chatState.messageInfo);
-  const userWaContacts = useSelector((state) => state.chatState.userWAContacts);
+  // const userWaContacts = useSelector((state) => state.chatState.userWAContacts);
 
   const messageToReply =
     useSelector((state) => state?.chatState.messageToReply[currentChatName]) ||
@@ -141,20 +141,20 @@ export default function MessageInput() {
       setCapturedImage('');
     }
 
-    let mutualChat = false;
-    userWaContacts.forEach((contact) => {
-      if (currentChatterEmail === contact.email) {
-        if (contact.surname || contact.firstName) {
-          mutualChat = true;
-          return;
-        }
-      }
-    });
+    // let mutualChat = false;
+    // userWaContacts.forEach((contact) => {
+    //   if (currentChatterEmail === contact.email) {
+    //     if (contact.surname || contact.firstName) {
+    //       mutualChat = true;
+    //       return;
+    //     }
+    //   }
+    // });
 
     sendMessagetoDB({
       newMessage: { ...newMessage, mediaUrl },
       currentChatName,
-      mutualChat,
+      mutualChat: false,
     }).then((sentMessage) => {
       dispatch(
         MESSAGE_SENT({ chatName: currentChatName, message: sentMessage }),

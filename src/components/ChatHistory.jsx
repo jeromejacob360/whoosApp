@@ -18,7 +18,6 @@ function ChatHistory({ chatHistoryRef }) {
   const dispatch = useDispatch();
 
   //Access the store
-  // const chatNames = useSelector((state) => state?.chatState?.chatNames);
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );

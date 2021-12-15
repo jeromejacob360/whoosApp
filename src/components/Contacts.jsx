@@ -68,13 +68,13 @@ function Contacts({ setOpenContacts }) {
   useEffect(() => {
     setTimeout(() => {
       dispatch(PAGE_RENDERED());
-    }, 500);
+    }, 5000);
   }, [dispatch]);
 
   return (
     <>
       {noWaContacts && (
-        <div className=" px-4 py-2">
+        <div className="px-4 py-2 ">
           <h1 className="text-gray-500">
             Looks like your friends haven't found the app yet. Try inviting?
           </h1>

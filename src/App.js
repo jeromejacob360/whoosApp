@@ -13,8 +13,11 @@ import { RiFullscreenExitLine, RiFullscreenLine } from 'react-icons/ri';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 import { doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from './firebase/firebase';
+import MaintenanceMode from './pages/MaintenanceMode';
 
 function App() {
+  const maintenanceMode = true;
+
   const user = useSelector((state) => state?.authState.user);
   const pageRendered = useSelector((state) => state.chatState.pageRendered);
 
@@ -76,6 +79,10 @@ function App() {
   useAuth();
 
   useGetChats();
+
+  if (maintenanceMode) {
+    return <MaintenanceMode />;
+  }
 
   return (
     <>

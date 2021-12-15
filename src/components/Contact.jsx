@@ -182,6 +182,4 @@ function Contact({ contact, setOpenContacts }) {
   );
 }
 
-export default memo(Contact, (prev, next) => {
-  return prev.email === next.email;
-});
+export default memo(Contact);

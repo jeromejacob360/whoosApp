@@ -86,7 +86,7 @@ export default function CameraPreview({
         y: '100%',
         transition: { duration: 0.3 },
       }}
-      className={`absolute top-20 flex items-center justify-center w-full ${
+      className={`absolute h-96 w-96 top-20 flex items-center justify-center w-fuxll ${
         messageToReply ? 'bottom-16' : 'bottom-0'
       } ${capturedImage ? 'mb-16' : ''}`}
     >

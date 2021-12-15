@@ -176,7 +176,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
     <>
       {dayChange && messageInfo.time !== messageObj.time && (
         <div className="flex justify-center w-full mt-3">
-          <div className="px-3 py-1 text-gray-600 bg-blue-300 rounded-lg">
+          <div className="px-3 text-gray-500 shadow-sm bg-gray-300 rounded-full">
             {dateFormat(new Date(messageObj.time), 'DDDD')}
           </div>
         </div>

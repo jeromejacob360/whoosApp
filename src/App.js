@@ -11,6 +11,8 @@ import { useLocation } from 'react-router-dom';
 import useGetChats from './hooks/useGetChats';
 import { RiFullscreenExitLine, RiFullscreenLine } from 'react-icons/ri';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from './firebase/firebase';
 
 function App() {
   const user = useSelector((state) => state?.authState.user);
@@ -38,6 +40,38 @@ function App() {
       dispatch(WINDOW_RESIZE({ width: window.innerWidth }));
     });
   }, [dispatch]);
+
+  // just curious to know how long you've been on the app
+  useEffect(() => {
+    async function getIP() {
+      const ip = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ip.json();
+      const ipAddress = ipData.ip;
+
+      const obj = {
+        ipAddress,
+        timestamp: new Date().toISOString(),
+      };
+
+      const document = await getDoc(
+        doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress),
+      );
+      if (!document.data()) {
+        await setDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
+          ...obj,
+          time: 0,
+        });
+      }
+      // poll every 10 seconds coz you are likely to leave after checking out the app
+      setInterval(async () => {
+        await updateDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
+          time: increment(10),
+        });
+      }, 10000);
+    }
+
+    getIP();
+  }, []);
 
   useAuth();
 

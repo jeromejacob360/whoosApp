@@ -1,10 +1,10 @@
 import { onSnapshot, collection } from 'firebase/firestore';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { db } from '../firebase/firebase';
 import { useSubscribeToUserContactsFromContactsApp } from '../hooks/useSubscribeToUserContactsFromContactsApp';
 import { chatNameGenerator } from '../helper-functions/formatters';
-import { ADD_CHATNAMES } from '../store/chatSlice';
+import { ADD_CHATNAMES, PAGE_RENDERED } from '../store/chatSlice';
 import InviteContact from '../components/InviteContact';
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contacts({ setOpenContacts }) {
+  const [noWaContacts, setNoWaContacts] = useState(false);
   const dispatch = useDispatch();
 
   //Access the store
@@ -27,6 +28,14 @@ function Contacts({ setOpenContacts }) {
   const windowWidth = useSelector((state) => state?.chatState?.windowWidth);
 
   // Side effects
+
+  useEffect(() => {
+    if (userWAContacts.length === 0) {
+      setNoWaContacts(true);
+    } else {
+      setNoWaContacts(false);
+    }
+  }, [userWAContacts]);
 
   // set and keep updating the user's contacts in state (userContacts)
   useSubscribeToUserContactsFromContactsApp(currentUserEmail);
@@ -56,33 +65,51 @@ function Contacts({ setOpenContacts }) {
     return unsub;
   }, [currentUserEmail, dispatch]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(PAGE_RENDERED());
+    }, 500);
+  }, [dispatch]);
+
   return (
-    <AnimatePresence>
-      {userWAContacts &&
-        userWAContacts?.map((contact) => {
-          return (
-            contact?.email && (
-              <motion.div layout={windowWidth > 640} key={contact.email}>
-                <Contact setOpenContacts={setOpenContacts} contact={contact} />
-              </motion.div>
-            )
-          );
-        })}
-      <div className="h-2 bg-gray-200"></div>
-      {contactsToInvite &&
-        contactsToInvite?.map((contact) => {
-          return (
-            contact?.email && (
-              <motion.div
-                layout={windowWidth > 640}
-                key={contact.email + 'invite'}
-              >
-                <InviteContact contact={contact} />
-              </motion.div>
-            )
-          );
-        })}
-    </AnimatePresence>
+    <>
+      {noWaContacts && (
+        <div className=" px-4 py-2">
+          <h1 className="text-gray-500">
+            Looks like your friends haven't found the app yet. Try inviting?
+          </h1>
+        </div>
+      )}
+      <AnimatePresence>
+        {userWAContacts &&
+          userWAContacts?.map((contact) => {
+            return (
+              contact?.email && (
+                <motion.div layout={windowWidth > 640} key={contact.email}>
+                  <Contact
+                    setOpenContacts={setOpenContacts}
+                    contact={contact}
+                  />
+                </motion.div>
+              )
+            );
+          })}
+        <div className="h-2 bg-gray-200"></div>
+        {contactsToInvite &&
+          contactsToInvite?.map((contact) => {
+            return (
+              contact?.email && (
+                <motion.div
+                  layout={windowWidth > 640}
+                  key={contact.email + 'invite'}
+                >
+                  <InviteContact contact={contact} />
+                </motion.div>
+              )
+            );
+          })}
+      </AnimatePresence>
+    </>
   );
 }
 

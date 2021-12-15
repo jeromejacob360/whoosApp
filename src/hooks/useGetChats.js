@@ -24,7 +24,6 @@ export default function useGetChats() {
 
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {
-        console.log(`chatName`, chatName);
         const q = query(
           collection(db, 'whatsApp/chats', chatName),
           limitToLast(50),
@@ -35,7 +34,6 @@ export default function useGetChats() {
           snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
               const message = change.doc.data();
-              console.log(`message`, message.message);
               dispatch(
                 ADD_MESSAGE({
                   chatName,

@@ -72,7 +72,7 @@ function Contacts({ setOpenContacts }) {
   }, [dispatch]);
 
   return (
-    <>
+    <motion.div layout>
       {noWaContacts && (
         <div className="px-4 py-2 ">
           <h1 className="text-gray-500">
@@ -109,7 +109,7 @@ function Contacts({ setOpenContacts }) {
             );
           })}
       </AnimatePresence>
-    </>
+    </motion.div>
   );
 }
 

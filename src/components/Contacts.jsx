@@ -8,7 +8,7 @@ import { ADD_CHATNAMES, PAGE_RENDERED } from '../store/chatSlice';
 import InviteContact from '../components/InviteContact';
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contacts({ setOpenContacts }) {
@@ -80,35 +80,30 @@ function Contacts({ setOpenContacts }) {
           </h1>
         </div>
       )}
-      <AnimatePresence>
-        {userWAContacts &&
-          userWAContacts?.map((contact) => {
-            return (
-              contact?.email && (
-                <motion.div layout={windowWidth > 640} key={contact.email}>
-                  <Contact
-                    setOpenContacts={setOpenContacts}
-                    contact={contact}
-                  />
-                </motion.div>
-              )
-            );
-          })}
-        <div className="h-2 bg-gray-200"></div>
-        {contactsToInvite &&
-          contactsToInvite?.map((contact) => {
-            return (
-              contact?.email && (
-                <motion.div
-                  layout={windowWidth > 640}
-                  key={contact.email + 'invite'}
-                >
-                  <InviteContact contact={contact} />
-                </motion.div>
-              )
-            );
-          })}
-      </AnimatePresence>
+      {userWAContacts &&
+        userWAContacts?.map((contact) => {
+          return (
+            contact?.email && (
+              <motion.div layout={windowWidth >= 640} key={contact.email}>
+                <Contact setOpenContacts={setOpenContacts} contact={contact} />
+              </motion.div>
+            )
+          );
+        })}
+      <div className="h-2 bg-gray-200"></div>
+      {contactsToInvite &&
+        contactsToInvite?.map((contact) => {
+          return (
+            contact?.email && (
+              <motion.div
+                layout={windowWidth >= 640}
+                key={contact.email + 'invite'}
+              >
+                <InviteContact contact={contact} />
+              </motion.div>
+            )
+          );
+        })}
     </motion.div>
   );
 }

@@ -82,7 +82,7 @@ export default function MessageInput() {
   //Side effects
 
   useEffect(() => {
-    if (windowWidth > 640) inputRef.current && inputRef.current.focus();
+    if (windowWidth >= 640) inputRef.current && inputRef.current.focus();
   }, [currentChatName, windowWidth]);
 
   //send message
@@ -314,7 +314,7 @@ export default function MessageInput() {
               </button>
             </form>
             <AnimatePresence>
-              {messageInfo && windowWidth < 1028 && (
+              {messageInfo && windowWidth <= 1028 && (
                 <motion.div
                   className="absolute block w-full p-1 overflow-hidden bg-blue-400 shadow-lg bottom-16 lg:hidden"
                   initial={{ opacity: 0, height: 0 }}

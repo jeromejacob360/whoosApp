@@ -16,7 +16,7 @@ import { db } from './firebase/firebase';
 import MaintenanceMode from './pages/MaintenanceMode';
 
 function App() {
-  const maintenanceMode = true;
+  const maintenanceMode = false;
 
   const user = useSelector((state) => state?.authState.user);
   const pageRendered = useSelector((state) => state.chatState.pageRendered);

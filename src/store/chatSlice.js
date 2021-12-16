@@ -119,6 +119,7 @@ export const chatSlice = createSlice({
     ADD_MESSAGE: (state, action) => {
       const { chatName, message, currentUserEmail, from } = action.payload;
 
+      //add the message to last messages
       const chatterEmail = chatName.split(currentUserEmail).join('');
       if (!state.userWAContacts) return;
       state.userWAContacts = state.userWAContacts.map((contact) => {
@@ -157,6 +158,7 @@ export const chatSlice = createSlice({
         });
       }
 
+      //prevent adding sent messages to state
       const chat = state.chats[chatName];
       if (chat)
         for (let i = chat.length - 1; i >= 0; i--) {
@@ -189,6 +191,13 @@ export const chatSlice = createSlice({
       state.chats[chatName] = state.chats[chatName].sort((a, b) => {
         return a.time - b.time;
       });
+
+      const thisChat = state.chats[chatName];
+      if (thisChat && thisChat.length === 1) {
+        if (state.invitees && state.invitees[message.from]) {
+          delete state.invitees[message.from];
+        }
+      }
     },
 
     MESSAGE_SENT: (state, action) => {
@@ -241,9 +250,11 @@ export const chatSlice = createSlice({
 
     DELETE_MESSAGE: (state, action) => {
       const { chatName, message } = action.payload;
-      state.chats[chatName] = state.chats[chatName].filter(
-        (chat) => chat.time !== message.time,
-      );
+      if (state.chats[chatName]) {
+        state.chats[chatName] = state.chats[chatName].filter(
+          (chat) => chat.time !== message.time,
+        );
+      }
     },
 
     MODIFY_MESSAGE: (state, action) => {

@@ -21,6 +21,7 @@ export default function useGetChats() {
   const dispatch = useDispatch();
   useEffect(() => {
     const unsubList = [];
+    if (!currentUserEmail) return;
 
     if (chatNames?.length > 0) {
       chatNames.forEach(async (chatName) => {

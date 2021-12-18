@@ -20,10 +20,14 @@ module.exports = {
       spacing: {
         18: '72px',
       },
+      screens: {
+        xs: '420px',
+      },
     },
   },
   variants: {
     extend: {
+      boxShadow: ['active'],
       opacity: ['disabled', 'hover'],
       cursor: ['disabled'],
       display: ['hover', 'group-hover'],

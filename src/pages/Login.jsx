@@ -3,13 +3,15 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { addUserToContactsMaster } from '../helper-functions/contactsHelper';
 import { useDispatch } from 'react-redux';
 import { PAGE_LOADING } from '../store/chatSlice';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 //----------------------------------------------//
 export default function Login() {
   //State variables
   const [email, setEmail] = useState('joey@gmail.com');
   const [password, setPassword] = useState('123123');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
   const dispatch = useDispatch();
   const optionsRef = useRef();
@@ -23,8 +25,10 @@ export default function Login() {
         setError(false);
         await signInWithEmailAndPassword(getAuth(), email, password);
         dispatch(PAGE_LOADING());
+        await deleteDoc(doc(db, 'contactsApp/invites/for/' + email));
         await addUserToContactsMaster(email);
       } catch (error) {
+        console.log('error', error);
         setError(true);
       }
   }
@@ -70,12 +74,12 @@ export default function Login() {
           className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="password"
         />
-        <button className="flex items-center justify-center py-1 text-gray-600 duration-200 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90">
+        <button className="flex active:shadow-md items-center justify-center py-1 text-gray-600 duration-00 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90">
           <span> Login</span>
         </button>
         {error && (
           <p className="absolute left-0 right-0 text-xs text-center text-red-600 bottom-10">
-            Incorrect credentials
+            {error}
           </p>
         )}
         <a

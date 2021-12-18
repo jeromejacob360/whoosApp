@@ -8,11 +8,12 @@ import { ADD_CHATNAMES, PAGE_RENDERED } from '../store/chatSlice';
 import InviteContact from '../components/InviteContact';
 import Contact from './Contact';
 import useGetUserContactsAndPopulateChats from '../hooks/useGetUserContactsAndPopulateChats';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 //----------------------------------------------//
 function Contacts({ setOpenContacts }) {
   const [noWaContacts, setNoWaContacts] = useState(false);
+  const [toast, setToast] = useState(false);
   const dispatch = useDispatch();
 
   //Access the store
@@ -72,7 +73,7 @@ function Contacts({ setOpenContacts }) {
   }, [dispatch]);
 
   return (
-    <motion.div layout>
+    <motion.div className="relative h-full" layout>
       {noWaContacts && (
         <div className="px-4 py-2 ">
           <h1 className="text-gray-500">
@@ -99,11 +100,23 @@ function Contacts({ setOpenContacts }) {
                 layout={windowWidth >= 640}
                 key={contact.email + 'invite'}
               >
-                <InviteContact contact={contact} />
+                <InviteContact setToast={setToast} contact={contact} />
               </motion.div>
             )
           );
         })}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, bottom: 0 }}
+            animate={{ opacity: 1, bottom: 100 }}
+            exit={{ opacity: 0, bottom: 0 }}
+            className="fixed max-w-sm mx-auto px-2 xs:px-8 left-4 right-4 bottom-20 py-1 flex justify-center bg-gray-400 text-white rounded-lg text-center"
+          >
+            <span>They will see the invite in their contacts app</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

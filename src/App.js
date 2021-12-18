@@ -6,7 +6,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoadingSpinner from './components/LoadingSpinner';
 import { PAGE_RENDERED, WINDOW_RESIZE } from './store/chatSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useGetChats from './hooks/useGetChats';
 import { RiFullscreenExitLine, RiFullscreenLine } from 'react-icons/ri';
@@ -18,6 +18,8 @@ import MaintenanceMode from './pages/MaintenanceMode';
 function App() {
   const maintenanceMode = false;
 
+  const [intervalTimer, setIntervalTimer] = useState('');
+
   const user = useSelector((state) => state?.authState.user);
   const pageRendered = useSelector((state) => state.chatState.pageRendered);
 
@@ -28,6 +30,8 @@ function App() {
   useEffect(() => {
     if (user) {
       document.title = user.displayName;
+    } else {
+      document.title = 'WhoosApp';
     }
   }, [user]);
 
@@ -47,34 +51,42 @@ function App() {
   // just curious to know how long you've been on the app
   useEffect(() => {
     async function getIP() {
-      const ip = await fetch('https://api.ipify.org?format=json');
-      const ipData = await ip.json();
-      const ipAddress = ipData.ip;
+      if (!user) return;
+      try {
+        const ip = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ip.json();
+        const ipAddress = ipData.ip;
 
-      const obj = {
-        ipAddress,
-        timestamp: new Date().toISOString(),
-      };
+        const obj = {
+          ipAddress,
+          timestamp: new Date().toISOString(),
+        };
 
-      const document = await getDoc(
-        doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress),
-      );
-      if (!document.data()) {
-        await setDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
-          ...obj,
-          time: 0,
-        });
-      }
-      // poll every 10 seconds coz you are likely to leave after checking out the app
-      setInterval(async () => {
-        await updateDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
-          time: increment(10),
-        });
-      }, 10000);
+        const document = await getDoc(
+          doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress),
+        );
+        if (!document.data()) {
+          await setDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
+            ...obj,
+            time: 0,
+          });
+        }
+        // poll every 10 seconds coz you are likely to leave after checking out the app
+        const interval = setInterval(async () => {
+          await updateDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
+            time: increment(10),
+          });
+        }, 10000);
+        setIntervalTimer(interval);
+      } catch (e) {}
     }
 
     getIP();
-  }, []);
+
+    return () => {
+      clearInterval(intervalTimer);
+    };
+  }, [intervalTimer, user]);
 
   useAuth();
 

@@ -16,6 +16,10 @@ function ChatHistory({ chatHistoryRef }) {
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
 
   const dispatch = useDispatch();
+  const redirectUrl =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/'
+      : process.env.REACT_APP_contactsRedirectUrl;
 
   //Access the store
   const currentChatName = useSelector(
@@ -78,7 +82,7 @@ function ChatHistory({ chatHistoryRef }) {
           <button className="px-4 py-1 text-white bg-blue-500 rounded-md">
             <a
               target="_blank"
-              href={`${process.env.REACT_APP_contactsRedirectUrl}/person/edit/${currentChatterEmail}`}
+              href={`${redirectUrl}new/${currentChatterEmail}`}
               rel="noreferrer"
             >
               Add to contacts

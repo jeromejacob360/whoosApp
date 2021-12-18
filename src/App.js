@@ -6,7 +6,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import LoadingSpinner from './components/LoadingSpinner';
 import { PAGE_RENDERED, WINDOW_RESIZE } from './store/chatSlice';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useGetChats from './hooks/useGetChats';
 import { RiFullscreenExitLine, RiFullscreenLine } from 'react-icons/ri';
@@ -17,8 +17,6 @@ import MaintenanceMode from './pages/MaintenanceMode';
 
 function App() {
   const maintenanceMode = false;
-
-  const [intervalTimer, setIntervalTimer] = useState('');
 
   const user = useSelector((state) => state?.authState.user);
   const pageRendered = useSelector((state) => state.chatState.pageRendered);
@@ -71,22 +69,21 @@ function App() {
             time: 0,
           });
         }
-        // poll every 10 seconds coz you are likely to leave after checking out the app
-        const interval = setInterval(async () => {
-          await updateDoc(doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress), {
-            time: increment(10),
-          });
+        setInterval(async () => {
+          try {
+            await updateDoc(
+              doc(db, 'whatsApp/visitorDetails/ips/' + ipAddress),
+              {
+                time: increment(10),
+              },
+            );
+          } catch (e) {}
         }, 10000);
-        setIntervalTimer(interval);
       } catch (e) {}
     }
 
     getIP();
-
-    return () => {
-      clearInterval(intervalTimer);
-    };
-  }, [intervalTimer, user]);
+  }, [user]);
 
   useAuth();
 
@@ -112,7 +109,7 @@ function App() {
         )}
         <LoadingSpinner />
         <motion.div className="w-screen h-screen overflow-x-auto overflow-y-hidden select-none bg-gradient-to-b from-blue-100 to-indigo-300">
-          <div className="w-screen h-screen px-0 py-0 sm:py-4 sm:pb-10 sm:px-6 rounded-3xl">
+          <div className="w-full h-full px-0 py-0 sm:py-4 sm:pb-10 sm:px-6 rounded-3xl">
             <AnimatePresence exitBeforeEnter>
               <motion.div
                 initial={{ scale: 0.9, y: 200 }}

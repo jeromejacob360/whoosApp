@@ -75,14 +75,10 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
 
   //scroll the new message into view
   useEffect(() => {
-    if (chatRef.current && !rendered.current) {
-      chatRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (chatHistoryRef.current && !rendered.current) {
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, []);
-
-  useEffect(() => {
-    // rendered.current = true;
-  }, []);
+  }, [chatHistoryRef]);
 
   useEffect(() => {
     if (progress && progress[messageObj.time]) {
@@ -176,7 +172,7 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
     <>
       {dayChange && messageInfo.time !== messageObj.time && (
         <div className="flex justify-center w-full mt-3">
-          <div className="px-3 text-gray-500 shadow-sm bg-gray-300 rounded-full">
+          <div className="px-3 text-gray-500 bg-gray-300 rounded-full shadow-sm">
             {dateFormat(new Date(messageObj.time), 'DDDD')}
           </div>
         </div>

@@ -10,11 +10,11 @@ import {
 } from '../store/chatSlice';
 import { AnimatePresence, motion } from 'framer-motion';
 import Intro from '../pages/Intro';
+import useGetChats from '../hooks/useGetChats';
 
 //----------------------------------------------//
 function ChatHistory({ chatHistoryRef }) {
   const [addOptionsToSaveContact, setAddOptionsToSaveContact] = useState(false);
-
   const dispatch = useDispatch();
   const redirectUrl =
     process.env.NODE_ENV === 'development'
@@ -25,7 +25,6 @@ function ChatHistory({ chatHistoryRef }) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
-
   const messages = useSelector(
     (state) => state?.chatState?.chats[currentChatName],
   );
@@ -34,6 +33,9 @@ function ChatHistory({ chatHistoryRef }) {
     (state) => state?.chatState?.currentChatterEmail,
   );
   const currentUserName = useSelector((state) => state?.authState?.user?.email);
+  const windowWidth = useSelector((state) => state?.chatState.windowWidth);
+
+  useGetChats();
 
   //turn off forward mode when chat changes
   useEffect(() => {
@@ -51,7 +53,6 @@ function ChatHistory({ chatHistoryRef }) {
   }, [dispatch, currentChatterEmail]);
 
   //scroll to bottom when chat is opened
-
   useEffect(() => {
     setTimeout(() => {
       if (chatHistoryRef.current)
@@ -72,7 +73,7 @@ function ChatHistory({ chatHistoryRef }) {
     }
   }, [currentChatName, namelessChats]);
 
-  return currentChatName ? (
+  return currentChatName || windowWidth < 640 ? (
     <div
       ref={chatHistoryRef}
       className="relative flex-1 h-full px-4 overflow-x-hidden overflow-y-scroll duration-500 scrollbar hover:scrollbar-thumb-blue-400 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-transparent bg-blue-50"

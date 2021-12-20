@@ -8,7 +8,6 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import Options from '../optionMenus/Options';
 import { CLEAR_CURRENT_CHAT } from '../store/chatSlice';
 export default function Title() {
-  const [openContacts, setOpenContacts] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
 
   const currentChatterName = useSelector(
@@ -23,10 +22,6 @@ export default function Title() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setOpenContacts(true);
-  }, []);
-
-  useEffect(() => {
     dispatch(CLEAR_CURRENT_CHAT());
   }, [dispatch]);
 
@@ -39,7 +34,9 @@ export default function Title() {
         <BiMenu
           size={45}
           className="block sm:hidden"
-          onClick={() => setOpenContacts(true)}
+          onClick={() => {
+            dispatch(CLEAR_CURRENT_CHAT());
+          }}
         />
         <img
           className="object-cover w-10 h-10 rounded-xl"
@@ -51,16 +48,20 @@ export default function Title() {
         </motion.h4>
       </div>
 
+      {openOptions && <Options setOpenOptions={setOpenOptions} />}
+      <motion.div
+        initial={{ opacity: 0, scale: 1.02 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.02 }}
+      >
+        <ContactsListMobile />
+      </motion.div>
       <BsThreeDotsVertical
         className="block sm:hidden"
         size={20}
-        onClick={() => setOpenOptions(!openOptions)}
-      />
-      {openOptions && <Options setOpenOptions={setOpenOptions} />}
-
-      <ContactsListMobile
-        openContacts={openContacts}
-        setOpenContacts={setOpenContacts}
+        onClick={() => {
+          setOpenOptions(!openOptions);
+        }}
       />
     </div>
   ) : (
@@ -72,14 +73,13 @@ export default function Title() {
         </h1>
         <BsThreeDotsVertical
           size={20}
-          onClick={() => setOpenOptions(!openOptions)}
+          onClick={() => {
+            setOpenOptions(!openOptions);
+          }}
         />
         {openOptions && <Options setOpenOptions={setOpenOptions} />}
       </div>
-      <ContactsListMobile
-        openContacts={openContacts}
-        setOpenContacts={setOpenContacts}
-      />
+      <ContactsListMobile />
     </div>
   );
 }

@@ -33,7 +33,7 @@ function Contact({ contact, setOpenContacts }) {
   const currentChatName = useSelector(
     (state) => state?.chatState?.currentChatName,
   );
-
+  const windowWidth = useSelector((state) => state?.chatState.windowWidth);
   const chatName = chatNameGenerator(contact.email, currentUserEmail);
   const unreadMessagecount = useSelector(
     (state) => state?.chatState?.unreadMessages[chatName],
@@ -63,7 +63,7 @@ function Contact({ contact, setOpenContacts }) {
       }
       findThisContactInUsersContacts(contact.email);
     }
-  }, [contact, contact.email, contactHasName, currentUserEmail]);
+  }, [contact, contactHasName, currentUserEmail]);
 
   useEffect(() => {
     if (contactHasName === false) {
@@ -93,10 +93,11 @@ function Contact({ contact, setOpenContacts }) {
     );
   }
 
+  if (!contact) return null;
   return (
     <div
       className={`relative flex items-center px-3 duration-100 w-full cursor-pointer ${
-        currentChatName === chatName
+        windowWidth > 640 && currentChatName === chatName
           ? 'bg-blue-300 transform scale-x-105 shadow-md rounded-xl'
           : 'bg-blue-50 hover:bg-blue-100 border-b'
       }`}
@@ -182,4 +183,6 @@ function Contact({ contact, setOpenContacts }) {
   );
 }
 
-export default memo(Contact);
+export default memo(Contact, (prev, next) => {
+  return prev.contact.email === next.contact.email;
+});

@@ -16,7 +16,9 @@ import MessageStats from '../minor-components/MessageStats';
 import dateFormat from 'dateformat';
 
 //----------------------------------------------//
-function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
+function Chat(props) {
+  const { message: messageObj, chatHistoryRef, nextSender, prevSender } = props;
+
   const nextFrom = nextSender && nextSender.from;
   const prevFrom = prevSender && prevSender.from;
 
@@ -168,10 +170,12 @@ function Chat({ message: messageObj, chatHistoryRef, nextSender, prevSender }) {
     return { minWidth: '150px' };
   }, []);
 
+  if (!messageObj) return null;
+
   return (
     <>
       {dayChange && messageInfo.time !== messageObj.time && (
-        <div className="flex justify-center w-full mt-3">
+        <div className="flex justify-center w-full my-3">
           <div className="px-3 text-gray-500 bg-gray-300 rounded-full shadow-sm">
             {dateFormat(new Date(messageObj.time), 'DDDD')}
           </div>

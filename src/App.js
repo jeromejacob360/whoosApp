@@ -8,7 +8,6 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { PAGE_RENDERED, WINDOW_RESIZE } from './store/chatSlice';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import useGetChats from './hooks/useGetChats';
 import { RiFullscreenExitLine, RiFullscreenLine } from 'react-icons/ri';
 import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 import { doc, getDoc, increment, setDoc, updateDoc } from 'firebase/firestore';
@@ -86,8 +85,6 @@ function App() {
   }, [user]);
 
   useAuth();
-
-  useGetChats();
 
   if (maintenanceMode) {
     return <MaintenanceMode />;

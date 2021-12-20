@@ -169,7 +169,7 @@ export const chatSlice = createSlice({
         }
 
       //set last message of that chat
-      state.lastMessages[chatName] = message;
+      // state.lastMessages[chatName] = message;
 
       // add to unread messages count
       if (

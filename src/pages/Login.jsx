@@ -20,6 +20,8 @@ export default function Login() {
   async function loginUser(e) {
     e.preventDefault();
 
+    if (!email || !password) return setError('Please fill out all fields');
+
     if (email && password)
       try {
         setError(false);
@@ -28,8 +30,10 @@ export default function Login() {
         await deleteDoc(doc(db, 'contactsApp/invites/for/' + email));
         await addUserToContactsMaster(email);
       } catch (error) {
-        console.log('error', error);
-        setError(true);
+        console.log('error', error.message);
+        if (error.message.includes('Firebase'))
+          setError('Username or password is incorrect');
+        else setError(error.message);
       }
   }
 
@@ -74,7 +78,7 @@ export default function Login() {
           className="px-4 py-2 bg-white border rounded-md outline-none bg-opacity-90"
           type="password"
         />
-        <button className="flex active:shadow-md items-center justify-center py-1 text-gray-600 duration-00 bg-white rounded-md shadow-md cursor-pointer hover:shadow-lg bg-opacity-90">
+        <button className="flex items-center justify-center py-1 text-gray-600 bg-white rounded-md shadow-md cursor-pointer active:shadow-md duration-00 hover:shadow-lg bg-opacity-90">
           <span> Login</span>
         </button>
         {error && (

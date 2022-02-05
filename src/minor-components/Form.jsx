@@ -4,11 +4,11 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
-import { AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+// import { AnimatePresence } from 'framer-motion';
+// import { useState } from 'react';
 import { BiSend } from 'react-icons/bi';
 import { IoMdHappy } from 'react-icons/io';
-import { MdOutlineAttachFile } from 'react-icons/md';
+// import { MdOutlineAttachFile } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import sendMessagetoDB from '../helper-functions/sendMessage';
 import {
@@ -19,7 +19,7 @@ import {
   SET_UPLOAD_PROGRESS,
   UPLOAD_STARTED,
 } from '../store/chatSlice';
-import AttachOptions from './AttachOptions';
+// import AttachOptions from './AttachOptions';
 
 let newMessage;
 
@@ -34,7 +34,7 @@ export default function Form({
   photoMode,
   inputRef,
 }) {
-  const [attachOptions, setAttachOptions] = useState(false);
+  // const [attachOptions, setAttachOptions] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -185,7 +185,7 @@ export default function Form({
         <IoMdHappy className="w-6 h-6 mr-2" />
       </span>
 
-      <div className="relative mr-4" onClick={() => setAttachOptions(true)}>
+      {/* <div className="relative mr-4" onClick={() => setAttachOptions(true)}>
         {!photoMode && <MdOutlineAttachFile size={25} />}
         <AnimatePresence>
           {attachOptions && (
@@ -195,7 +195,7 @@ export default function Form({
             />
           )}
         </AnimatePresence>
-      </div>
+      </div> */}
       <input
         ref={inputRef}
         disabled={!currentChatName}

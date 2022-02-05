@@ -167,7 +167,7 @@ function Chat(props) {
   }
 
   const style = useMemo(() => {
-    return { minWidth: '150px' };
+    return { minWidth: '250px' };
   }, []);
 
   if (!messageObj) return null;
@@ -200,7 +200,7 @@ function Chat(props) {
           )}
         </AnimatePresence>
         <div
-          className={`p-2 select-text group break-words max-w-sm border-main relative shadow-lg
+          className={`p-2 select-text group break-words max-w-sm border-main relative shadow-lg bg-red-300
         ${firstChat && 'mt-4'}
         ${firstChat && messageIsFromMe && 'rounded-tl-2xl'}
         ${firstChat && !messageIsFromMe && 'rounded-tr-2xl'}
@@ -221,6 +221,7 @@ function Chat(props) {
           'rounded-2xl rounded-tl-none mt-4'
         }
       ${messageIsFromMe ? 'bg-indigo-300' : 'bg-blue-300'}
+      
       `}
           style={style}
         >

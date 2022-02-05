@@ -14,7 +14,7 @@ export default function Intro() {
         alt=""
         className="object-cover w-full h-full shadow-md rounded-br-md rounded-tr-3xl"
       />
-      <div className="absolute text-7xl bottom-32">Whoosapp</div>
+      <div className="absolute text-5xl bottom-20">Whoosapp</div>
     </main>
   ) : null;
 }
